@@ -60,6 +60,5 @@ class KategoriController extends Controller
         $kategori->delete();
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
-    }
-
+    } 
 }
