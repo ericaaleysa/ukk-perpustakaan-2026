@@ -4,8 +4,8 @@
 */
 
 :root {
-    --brand: #c2410c;
-    --brand-dark: #9a3412;
+    --brand: #87ceeb;
+    --brand-dark: #6495ED;
     --brand-subtle: #fff7ed;
 }
 
@@ -113,11 +113,12 @@ body {
 }
 
 .text-brand   { color: var(--brand) !important; }
+.text-brand-dark { color: var(--brand-dark) !important; }
 .bg-brand-subtle { background-color: var(--brand-subtle) !important; }
 
 .badge-brand {
-    background-color: var(--brand-subtle);
-    color: var(--brand-dark);
+    background-color: var(--brand-dark);
+    color: #fff;
     font-weight: 600;
 }
 
@@ -237,11 +238,17 @@ code.inline {
     background: var(--bs-body-bg);
 }
 
-[data-bs-theme="dark"] .badge-brand,
 [data-bs-theme="dark"] .bg-brand-subtle,
 [data-bs-theme="dark"] .step-number {
     background-color: rgba(194, 65, 12, .18) !important;
     color: #fb923c;
+}
+
+/* badge-brand sengaja dipisah supaya warnanya tetap biru cornflower
+   konsisten di mode terang maupun gelap, tidak ikut jadi oranye. */
+[data-bs-theme="dark"] .badge-brand {
+    background-color: var(--brand-dark) !important;
+    color: #fff !important;
 }
 
 [data-bs-theme="dark"] .demo-box {
@@ -255,4 +262,3 @@ code.inline {
     border-color: rgba(99, 102, 241, .4);
     color: #a5b4fc;
 }
-

@@ -22,9 +22,7 @@ use Sakuci\Route;
 |   function () { ... }                -> closure
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [DataBukuController::class, 'beranda'])->name('home');
 
 Route::get('/docs', [DocsController::class, 'index'])->name('docs');
 

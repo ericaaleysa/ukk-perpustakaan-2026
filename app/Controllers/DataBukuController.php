@@ -9,6 +9,13 @@ use App\Models\Kategori;
 
 class DataBukuController extends Controller
 {
+    public function beranda(Request $request) //halaman utama perpustakaan
+    {
+        $daftarKategori = Kategori::all();
+        $data_buku = DataBuku::orderBy('id_buku', 'desc')->paginate(8);
+        return view('welcome', compact('daftarKategori', 'data_buku'));
+    }
+
     public function index(Request $request)
     {
         $data_buku = DataBuku::orderBy('id_buku', 'desc')
@@ -31,10 +38,9 @@ class DataBukuController extends Controller
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
+            'thumbnail' => 'nullable|url|max:255',
         ]);
-
         DataBuku::create($validatedData);
-
         return redirect()->route('data_buku.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
@@ -53,6 +59,7 @@ class DataBukuController extends Controller
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
+            'thumbnail' => 'nullable|url|max:255',
         ]);
 
         $data_buku = DataBuku::findOrFail($id_buku);
@@ -62,6 +69,7 @@ class DataBukuController extends Controller
             'pengarang' => $request->pengarang,
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
+            'thumbnail' => $request->thumbnail,
         ]);
 
         return redirect()->route('data_buku.index')->with('success', 'Data Buku berhasil diperbarui.');

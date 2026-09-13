@@ -32,6 +32,12 @@
         <input type="text" name="tahun_terbit" id="tahun_terbit" class="form-control" required>
     </div>
 
+    <div class="form-group mb-3">
+        <label for="thumbnail">URL Thumbnail (Opsional)</label>
+        <input type="url" name="thumbnail" id="thumbnail" class="form-control" placeholder="https://contoh.com/gambar-buku.jpg">
+        <small class="text-secondary">Tempel link gambar sampul buku dari internet.</small>
+    </div>
+
     <button type="submit" class="btn btn-primary">Simpan</button>
 </form>
 
