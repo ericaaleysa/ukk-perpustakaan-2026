@@ -21,6 +21,7 @@
 <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
 
 @include('partials.navbar')
+@include('partials.sidebar')
 
 <main class="container flex-grow-1 py-4 py-lg-5">
     @include('partials.flash')

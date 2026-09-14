@@ -1,6 +1,14 @@
 <nav class="navbar navbar-expand-lg bg-body border-bottom sticky-top">
     <div class="container">
         <div class="d-flex align-items-center gap-2">
+            <button id="sidebarToggle" type="button" class="btn btn-sm btn-outline-secondary border-0 px-2"
+                    data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama"
+                    aria-label="Buka menu sidebar" title="Buka menu">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 4a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 4a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
+                </svg>
+            </button>
+
             @php
                 $dbConnected = false;
                 try {
@@ -29,22 +37,33 @@
 
         {{-- Tambahkan menu aplikasi Anda di sini --}}
         <div class="collapse navbar-collapse" id="menuUtama">
+            @php
+                $currentUser = \App\Models\User::current();
+                $isAdmin = $currentUser && $currentUser->role === 'admin';
+            @endphp
+
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
-                <li class="nav-item">
-                    <a class="nav-link {{ is_route('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ is_route('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ is_route('data_buku.index') ? 'active' : '' }}" href="{{ route('data_buku.index') }}">Data Buku</a>
-                @php
-                    $currentUser = \App\Models\User::current();
-                @endphp
-                @if ($currentUser)
+
+                @if ($isAdmin)
                     <li class="nav-item">
-                        <a class="nav-link {{ is_route('admin.dashboard', 'dashboard') ? 'active' : '' }}"
-                           href="{{ $currentUser->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link {{ is_route('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ is_route('data_buku.index') ? 'active' : '' }}" href="{{ route('data_buku.index') }}">Data Buku</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-secondary w-100 mt-2 mt-lg-0">Logout ({{ $currentUser->username }})</button>
+                        </form>
+                    </li>
+                @elseif ($currentUser)
+                    {{-- Pengguna login tapi bukan admin (misal role siswa) --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ is_route('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
