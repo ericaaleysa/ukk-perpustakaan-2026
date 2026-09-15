@@ -16,6 +16,13 @@ class DataBukuController extends Controller
         return view('welcome', compact('daftarKategori', 'data_buku'));
     }
 
+    public function byKategori($id_kategori) //halaman buku per kategori
+    {
+        $kategori = Kategori::findOrFail($id_kategori);
+        $data_buku = DataBuku::where('id_kategori', $id_kategori)->orderBy('id_buku', 'desc')->get();
+        return view('data_buku.by_kategori', compact('kategori', 'data_buku'));
+    }
+
     public function index(Request $request)
     {
         $data_buku = DataBuku::orderBy('id_buku', 'desc')

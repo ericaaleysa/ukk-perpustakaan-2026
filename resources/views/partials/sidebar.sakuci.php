@@ -1,12 +1,12 @@
 {{-- Sidebar utama, dibuka lewat tombol di navbar. Perlu di-@include sekali di layouts.app --}}
 
-<div class="offcanvas offcanvas-start" style="--bs-offcanvas-width: 280px; tabindex="-1" id="sidebarUtama" aria-labelledby="sidebarUtamaLabel">
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarUtama" aria-labelledby="sidebarUtamaLabel">
     <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title fw-semibold" id="sidebarUtamaLabel">Menu</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Tutup"></button>
     </div>
     <div class="offcanvas-body p-0">
-        <ul class="nav nav-pills flex-column p-1 gap-1">
+        <ul class="nav nav-pills flex-column p-2 gap-1">
             <li class="nav-item">
                 <a class="nav-link {{ is_route('home') ? 'active' : '' }}" href="{{ route('home') }}">Beranda</a>
             </li>
@@ -20,7 +20,6 @@
                         <path d="M4 6l4 4 4-4H4z"/>
                     </svg>
                 </button>
-
                 <div class="collapse" id="sidebarKategoriList">
                     @php
                         $sidebarKategori = [];
@@ -34,7 +33,7 @@
                     <ul class="nav flex-column ms-3 mt-1">
                         @forelse($sidebarKategori as $kat)
                             <li class="nav-item">
-                                <a class="nav-link py-1" href="{{ route('home') }}#kategori-{{ $kat->id_kategori }}" data-bs-dismiss="offcanvas">
+                                <a class="nav-link py-1" href="{{ route('kategori.show', [$kat->id_kategori]) }}">
                                     {{ $kat->nama_kategori }}
                                 </a>
                             </li>
