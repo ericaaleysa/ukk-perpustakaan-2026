@@ -122,6 +122,11 @@ body {
     font-weight: 600;
 }
 
+#sidebarUtama {
+    --bs-offcanvas-width: 250px;
+}
+
+
 /* Blok kode */
 pre.code {
     margin: 0;

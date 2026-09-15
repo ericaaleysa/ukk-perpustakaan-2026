@@ -26,7 +26,7 @@
                     <circle cx="16" cy="16" r="9" fill="{{ $dbConnected ? '#28a745' : '#dc3545' }}"/>
                 </svg>
             </button>
-            <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">Perpustakaan Online</a>
+            <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">DigiLib Vokasi Quanta</a>
         </div>
 
         <button class="navbar-toggler border-0" type="button"
