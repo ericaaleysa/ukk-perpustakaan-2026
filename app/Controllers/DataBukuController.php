@@ -23,11 +23,13 @@ class DataBukuController extends Controller
         return view('data_buku.by_kategori', compact('kategori', 'data_buku'));
     }
 
+
+    //bagian yang admin disini...
     public function index(Request $request)
     {
         $data_buku = DataBuku::orderBy('id_buku', 'desc')
         
-        ->paginate(5);
+        ->paginate(7);
         return view('data_buku.index', compact('data_buku'));
     }
 

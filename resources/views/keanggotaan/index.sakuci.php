@@ -32,7 +32,7 @@
             <td>{{ $p->kelas }}</td>
             <td>{{ $p->tanggal_pengajuan }}</td>
             <td>
-                <form action="{{ route('admin.keanggotaan.approve', [$p->id_pengajuan]) }}" method="POST" class="d-inline">
+                <form action="{{ route('keanggotaan.approve', [$p->id_pengajuan]) }}" method="POST" class="d-inline">
                     @csrf
                     @method('PUT')
                     <button type="submit" class="btn btn-sm btn-success">Setujui</button>
@@ -43,7 +43,7 @@
                 </button>
 
                 <div class="collapse mt-2" id="tolak{{ $p->id_pengajuan }}">
-                    <form action="{{ route('admin.keanggotaan.reject', [$p->id_pengajuan]) }}" method="POST">
+                    <form action="{{ route('keanggotaan.reject', [$p->id_pengajuan]) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="input-group input-group-sm">

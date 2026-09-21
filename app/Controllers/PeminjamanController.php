@@ -99,7 +99,7 @@ class PeminjamanController extends Controller
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
         $peminjaman->update(['status' => 'dipinjam']);
 
-        return redirect()->route('admin.peminjaman.index')->with('success', 'Pengajuan peminjaman disetujui.');
+        return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman disetujui.');
     }
 
     public function reject(Request $request, $id_peminjaman) //tolak pengajuan (admin)
@@ -115,7 +115,7 @@ class PeminjamanController extends Controller
             'catatan_admin' => $validatedData['catatan_admin'] ?? null,
         ]);
 
-        return redirect()->route('admin.peminjaman.index')->with('success', 'Pengajuan peminjaman ditolak.');
+        return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman ditolak.');
     }
 
     public function konfirmasiKembali(Request $request, $id_peminjaman) //konfirmasi pengembalian (admin)
@@ -137,6 +137,6 @@ class PeminjamanController extends Controller
             'denda' => $denda,
         ]);
 
-        return redirect()->route('admin.peminjaman.index')->with('success', 'Pengembalian buku berhasil dikonfirmasi.');
+        return redirect()->route('peminjaman.index')->with('success', 'Pengembalian buku berhasil dikonfirmasi.');
     }
 }

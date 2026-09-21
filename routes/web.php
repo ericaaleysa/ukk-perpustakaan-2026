@@ -54,7 +54,6 @@ Route::get('/peminjaman/ajukan', [PeminjamanController::class, 'create'])->name(
 Route::post('/peminjaman/ajukan', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('auth');
 Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat')->middleware('auth');
 
-
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', [DashboardController::class, 'admin'])->name('admin.dashboard');
 
@@ -84,10 +83,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::put('data_buku/{id_buku}', [DataBukuController::class, 'update'])->name('data_buku.update');
     Route::delete('data_buku/{id_buku}', [DataBukuController::class, 'destroy'])->name('data_buku.destroy');
 
+    //Verifikasi Keanggotaan
     Route::get('/keanggotaan', [PengajuanKeanggotaanController::class, 'index'])->name('keanggotaan.index');
     Route::put('/keanggotaan/{id_pengajuan}/setujui', [PengajuanKeanggotaanController::class, 'approve'])->name('keanggotaan.approve');
     Route::put('/keanggotaan/{id_pengajuan}/tolak', [PengajuanKeanggotaanController::class, 'reject'])->name('keanggotaan.reject');
 
+    //Kelola Anggota
+    Route::get('/anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::put('/anggota/{id_user}/aktifkan', [AnggotaController::class, 'aktifkan'])->name('anggota.aktifkan');
+    Route::put('/anggota/{id_user}/nonaktifkan', [AnggotaController::class, 'nonaktifkan'])->name('anggota.nonaktifkan');
+
+    //Kelola Transaksi Peminjaman
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
     Route::put('/peminjaman/{id_peminjaman}/setujui', [PeminjamanController::class, 'approve'])->name('peminjaman.setujui');
     Route::put('/peminjaman/{id_peminjaman}/tolak', [PeminjamanController::class, 'reject'])->name('peminjaman.tolak');
@@ -129,4 +135,3 @@ Route::group(['prefix' => 'siswa', 'middleware' => 'siswa'], function () {
 |     Route::get('/dashboard', [DashboardController::class, 'index']);
 | });
 */
-

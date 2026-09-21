@@ -19,7 +19,7 @@ class AnggotaController extends Controller
         $siswa = User::findOrFail($id_user);
         $siswa->update(['status_keanggotaan' => 'aktif']);
 
-        return redirect()->route('admin.anggota.index')->with('success', 'Keanggotaan siswa berhasil diaktifkan kembali.');
+        return redirect()->route('anggota.index')->with('success', 'Keanggotaan siswa berhasil diaktifkan kembali.');
     }
 
     public function nonaktifkan(Request $request, $id_user) //admin menonaktifkan anggota
@@ -27,6 +27,6 @@ class AnggotaController extends Controller
         $siswa = User::findOrFail($id_user);
         $siswa->update(['status_keanggotaan' => 'non_aktif']);
 
-        return redirect()->route('admin.anggota.index')->with('success', 'Keanggotaan siswa berhasil dinonaktifkan.');
+        return redirect()->route('anggota.index')->with('success', 'Keanggotaan siswa berhasil dinonaktifkan.');
     }
 }

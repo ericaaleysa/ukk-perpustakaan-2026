@@ -28,7 +28,7 @@ class PengajuanKeanggotaanController extends Controller
 
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'nis' => 'required|string|max:50',
+            'nis' => 'required|string',
             'kelas' => 'required|string|max:50',
         ]);
 
@@ -73,7 +73,7 @@ class PengajuanKeanggotaanController extends Controller
         $pemohon = User::findOrFail($pengajuan->id_user);
         $pemohon->update(['status_keanggotaan' => 'aktif']);
 
-        return redirect()->route('admin.keanggotaan.index')->with('success', 'Pengajuan disetujui, siswa sekarang berstatus Anggota.');
+        return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan disetujui, siswa sekarang berstatus Anggota.');
     }
 
     public function reject(Request $request, $id_pengajuan) //tolak (admin)
@@ -95,6 +95,6 @@ class PengajuanKeanggotaanController extends Controller
         $pemohon = User::findOrFail($pengajuan->id_user);
         $pemohon->update(['status_keanggotaan' => 'non_anggota']);
 
-        return redirect()->route('admin.keanggotaan.index')->with('success', 'Pengajuan ditolak.');
+        return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan ditolak.');
     }
 }

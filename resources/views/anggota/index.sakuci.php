@@ -37,13 +37,13 @@
             </td>
             <td>
                 @if($s->status_keanggotaan === 'aktif')
-                    <form action="{{ route('admin.anggota.nonaktifkan', [$s->id]) }}" method="POST" class="d-inline">
+                    <form action="{{ route('anggota.nonaktifkan', [$s->id]) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-outline-secondary">Nonaktifkan</button>
                     </form>
                 @elseif($s->status_keanggotaan === 'non_aktif')
-                    <form action="{{ route('admin.anggota.aktifkan', [$s->id]) }}" method="POST" class="d-inline">
+                    <form action="{{ route('anggota.aktifkan', [$s->id]) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-success">Aktifkan Kembali</button>

@@ -1,14 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body border-bottom sticky-top">
     <div class="container">
+        
         <div class="d-flex align-items-center gap-2">
-            <button id="sidebarToggle" type="button" class="btn btn-sm btn-outline-secondary border-0 px-2"
-                    data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama"
-                    aria-label="Buka menu sidebar" title="Buka menu">
-                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 4a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 4a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11z"/>
-                </svg>
-            </button>
-
             @php
                 $dbConnected = false;
                 try {
@@ -26,6 +19,7 @@
                     <circle cx="16" cy="16" r="9" fill="{{ $dbConnected ? '#28a745' : '#dc3545' }}"/>
                 </svg>
             </button>
+
             <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">NEX-LIB</a>
         </div>
 
@@ -43,21 +37,21 @@
             @endphp
 
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-1" href="#"
+                       data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama"
+                       role="button">
+                        Lainnya
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M4 6l4 4 4-4H4z"/>
+                        </svg>
+                    </a>
+                </li>
 
                 @if ($isAdmin)
                     <li class="nav-item">
                         <a class="nav-link {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ is_route('peminjaman.index') ? 'active' : '' }}" href="{{ route('peminjaman.index') }}">Peminjaman</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ is_route('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ is_route('data_buku.index') ? 'active' : '' }}" href="{{ route('data_buku.index') }}">Data Buku</a>
-                    </li>
-
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
                             @csrf

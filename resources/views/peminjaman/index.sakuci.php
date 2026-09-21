@@ -45,14 +45,14 @@
             <td>{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
             <td>
                 @if($p->status === 'menunggu_konfirmasi')
-                    <form action="{{ route('admin.peminjaman.setujui', [$p->id_peminjaman]) }}" method="POST" class="d-inline">
+                    <form action="{{ route('peminjaman.setujui', [$p->id_peminjaman]) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-success">Setujui</button>
                     </form>
                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_peminjaman }}">Tolak</button>
                     <div class="collapse mt-2" id="tolak{{ $p->id_peminjaman }}">
-                        <form action="{{ route('admin.peminjaman.tolak', [$p->id_peminjaman]) }}" method="POST">
+                        <form action="{{ route('peminjaman.tolak', [$p->id_peminjaman]) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="input-group input-group-sm">
@@ -62,7 +62,7 @@
                         </form>
                     </div>
                 @elseif($p->status === 'dipinjam')
-                    <form action="{{ route('admin.peminjaman.kembali', [$p->id_peminjaman]) }}" method="POST" class="d-inline">
+                    <form action="{{ route('peminjaman.kembali', [$p->id_peminjaman]) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PUT')
                         <button type="submit" class="btn btn-sm btn-outline-primary">Konfirmasi Kembali</button>

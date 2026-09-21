@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', config('app.name') . ' -- Perpustakaan')
+@section('title', 'Nexus Digital Library')
 
 @section('content')
 
