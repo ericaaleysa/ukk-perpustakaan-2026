@@ -8,6 +8,9 @@ use App\Controllers\Core\RoleController;
 use App\Controllers\Core\UserController;
 use App\Controllers\KategoriController;
 use App\Controllers\DataBukuController;
+use App\Controllers\PengajuanKeanggotaanController;
+use App\Controllers\AnggotaController;
+use App\Controllers\PeminjamanController;
 use Sakuci\Route;
 
 /*
@@ -44,6 +47,14 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.at
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
+Route::get('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'create'])->name('keanggotaan.create')->middleware('auth');
+Route::post('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'store'])->name('keanggotaan.store')->middleware('auth');
+
+Route::get('/peminjaman/ajukan', [PeminjamanController::class, 'create'])->name('peminjaman.create')->middleware('auth');
+Route::post('/peminjaman/ajukan', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('auth');
+Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat')->middleware('auth');
+
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', [DashboardController::class, 'admin'])->name('admin.dashboard');
 
@@ -72,6 +83,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('data_buku/{id_buku}/edit', [DataBukuController::class, 'edit'])->name('data_buku.edit');
     Route::put('data_buku/{id_buku}', [DataBukuController::class, 'update'])->name('data_buku.update');
     Route::delete('data_buku/{id_buku}', [DataBukuController::class, 'destroy'])->name('data_buku.destroy');
+
+    Route::get('/keanggotaan', [PengajuanKeanggotaanController::class, 'index'])->name('keanggotaan.index');
+    Route::put('/keanggotaan/{id_pengajuan}/setujui', [PengajuanKeanggotaanController::class, 'approve'])->name('keanggotaan.approve');
+    Route::put('/keanggotaan/{id_pengajuan}/tolak', [PengajuanKeanggotaanController::class, 'reject'])->name('keanggotaan.reject');
+
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::put('/peminjaman/{id_peminjaman}/setujui', [PeminjamanController::class, 'approve'])->name('peminjaman.setujui');
+    Route::put('/peminjaman/{id_peminjaman}/tolak', [PeminjamanController::class, 'reject'])->name('peminjaman.tolak');
+    Route::put('/peminjaman/{id_peminjaman}/kembali', [PeminjamanController::class, 'konfirmasiKembali'])->name('peminjaman.kembali');
 
 });
 

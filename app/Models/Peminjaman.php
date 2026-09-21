@@ -6,7 +6,17 @@ use Sakuci\Database\Model;
 
 class Peminjaman extends Model
 {
-    protected static ?string $table = 'peminjamans';
+    protected static ?string $table = 'peminjaman';
+    protected string $primaryKey = 'id_peminjaman';
 
-    protected array $fillable = [];
+    protected array $fillable = [
+        'id_user',
+        'id_buku',
+        'tanggal_pinjam',
+        'tanggal_wajib_kembali',
+        'tanggal_dikembalikan',
+        'status',
+        'denda',
+        'catatan_admin',
+    ];
 }

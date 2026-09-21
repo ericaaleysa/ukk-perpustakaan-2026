@@ -26,7 +26,7 @@
                     <circle cx="16" cy="16" r="9" fill="{{ $dbConnected ? '#28a745' : '#dc3545' }}"/>
                 </svg>
             </button>
-            <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">DigiLib Vokasi Quanta</a>
+            <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">NEX-LIB</a>
         </div>
 
         <button class="navbar-toggler border-0" type="button"
@@ -46,14 +46,18 @@
 
                 @if ($isAdmin)
                     <li class="nav-item">
+                        <a class="nav-link {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ is_route('peminjaman.index') ? 'active' : '' }}" href="{{ route('peminjaman.index') }}">Peminjaman</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {{ is_route('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ is_route('data_buku.index') ? 'active' : '' }}" href="{{ route('data_buku.index') }}">Data Buku</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    </li>
+
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
                             @csrf

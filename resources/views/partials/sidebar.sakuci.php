@@ -48,14 +48,13 @@
                 </li>
 
                 <li class="nav-item">
-                    {{-- TODO: ganti href="#" dengan route('peminjaman.index') setelah fitur peminjaman dibuat --}}
-                    <a class="nav-link" href="#">Peminjaman Buku</a>
+                    <a class="nav-link" href="">Peminjaman Buku</a>
                 </li>
             </ul>
         </div>
 
         <div class="p-3 border-top text-center flex-shrink-0">
-            <div class="fw-semibold small">DigiLib <span class="text-brand ">Vokasi Quanta</span></div>
+            <div class="fw-semibold small"><span class="text-brand ">NEXUS</span>-LIBRARY</div>
             <div class="text-secondary" style="font-size: 0.7rem;">Akselerasi Literasi, Memicu Energi Vokasi</div>
         </div>
     </div>
