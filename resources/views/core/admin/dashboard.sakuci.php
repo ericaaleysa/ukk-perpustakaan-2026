@@ -29,6 +29,25 @@
                 </div>
             </a>
         </div>
+
+        <div class="col-md-6">
+            <a href="{{ route('anggota.index') }}" class="card border-0 shadow-sm text-decoration-none h-100">
+                <div class="card-body p-4">
+                    <h2 class="h6 mb-1">Manage Anggota</h2>
+                    <p class="text-secondary small mb-0">Kelola keanggotaan dari para Siswa.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a href="{{ route('peminjaman.index') }}" class="card border-0 shadow-sm text-decoration-none h-100">
+                <div class="card-body p-4">
+                    <h2 class="h6 mb-1">Manage Peminjaman</h2>
+                    <p class="text-secondary small mb-0">Kelola peminjaman dan pengembalian buku.</p>
+                </div>
+            </a>
+        </div>
+
+
         <div class="col-md-6">
             <a href="{{ route('admin.database.export') }}" class="card border-0 shadow-sm text-decoration-none h-100">
                 <div class="card-body p-4">

@@ -4,10 +4,32 @@
 
 @section('content')
 
-<h1 class="h4 mb-3">Kelola Transaksi Peminjaman</h1>
+<div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h4 mb-0">Manage Transaksi Peminjaman</h1>
+        </div>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+    </div>
+
+<form method="GET" action="{{ route('peminjaman.index') }}" class="row g-2 align-items-end mb-3">
+    <div class="col-auto">
+        <label class="form-label small mb-0">Dari Tanggal Pinjam</label>
+        <input type="date" name="tanggal_dari" class="form-control form-control-sm" value="{{ $tanggalDari }}">
+    </div>
+    <div class="col-auto">
+        <label class="form-label small mb-0">Sampai Tanggal Pinjam</label>
+        <input type="date" name="tanggal_sampai" class="form-control form-control-sm" value="{{ $tanggalSampai }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-primary">Cari</button>
+        @if($tanggalDari || $tanggalSampai)
+            <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
+        @endif
+    </div>
+</form>
 
 @if(count($daftarPeminjaman) === 0)
-    <p class="text-secondary">Belum ada transaksi peminjaman.</p>
+    <p class="text-secondary">Tidak ada transaksi peminjaman yang cocok.</p>
 @else
 <table class="table table-striped table-hover align-middle">
     <thead>

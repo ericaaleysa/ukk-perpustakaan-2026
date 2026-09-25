@@ -11,9 +11,32 @@ class DataBukuController extends Controller
 {
     public function beranda(Request $request) //halaman utama perpustakaan
     {
+        $keyword = $request->q ?? null;
+
+        if ($keyword) {
+            $hasilPencarian = [];
+            foreach (DataBuku::all() as $b) {
+                if (stripos($b->judul_buku, $keyword) !== false) {
+                    $hasilPencarian[] = $b;
+                }
+            }
+
+            return view('welcome', [
+                'keyword' => $keyword,
+                'hasilPencarian' => $hasilPencarian,
+                'daftarKategori' => [],
+                'data_buku' => [],
+            ]);
+        }
+
         $daftarKategori = Kategori::all();
-        $data_buku = DataBuku::orderBy('id_buku', 'desc')->paginate(8);
-        return view('welcome', compact('daftarKategori', 'data_buku'));
+        $data_buku = DataBuku::orderBy('id_buku', 'desc')->get();
+        return view('welcome', [
+            'keyword' => null,
+            'hasilPencarian' => [],
+            'daftarKategori' => $daftarKategori,
+            'data_buku' => $data_buku,
+        ]);
     }
 
     public function byKategori($id_kategori) //halaman buku per kategori
@@ -23,14 +46,19 @@ class DataBukuController extends Controller
         return view('data_buku.by_kategori', compact('kategori', 'data_buku'));
     }
 
-
-    //bagian yang admin disini...
     public function index(Request $request)
     {
-        $data_buku = DataBuku::orderBy('id_buku', 'desc')
-        
-        ->paginate(7);
-        return view('data_buku.index', compact('data_buku'));
+        $id_kategori = $request->id_kategori ?? null;
+
+        if ($id_kategori) {
+            $data_buku = DataBuku::where('id_kategori', $id_kategori)->orderBy('id_buku', 'desc')->paginate(5);
+        } else {
+            $data_buku = DataBuku::orderBy('id_buku', 'desc')->paginate(5);
+        }
+
+        $daftarKategori = Kategori::all();
+
+        return view('data_buku.index', compact('data_buku', 'daftarKategori', 'id_kategori'));
     }
 
     public function create(Request $request)
@@ -49,7 +77,9 @@ class DataBukuController extends Controller
             'tahun_terbit' => 'required|integer|digits:4',
             'thumbnail' => 'nullable|url|max:255',
         ]);
+
         DataBuku::create($validatedData);
+
         return redirect()->route('data_buku.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 

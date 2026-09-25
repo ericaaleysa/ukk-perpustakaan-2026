@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Keanggotaan')
+@section('title', 'NEX-LIB ADMIN -- Verifikasi Keanggotaan')
 
 @section('content')
 
-<h1 class="h4 mb-3">Verifikasi Pengajuan Keanggotaan</h1>
+<div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h4 mb-0">Verif Keanggotaan</h1>
+        </div>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+    </div>
 
 @if(count($daftarPengajuan) === 0)
     <p class="text-secondary">Tidak ada pengajuan yang menunggu verifikasi.</p>

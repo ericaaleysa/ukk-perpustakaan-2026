@@ -84,14 +84,33 @@ class PeminjamanController extends Controller
 
     public function index(Request $request) //semua transaksi peminjaman (admin)
     {
-        $daftarPeminjaman = Peminjaman::orderBy('id_peminjaman', 'desc')->get();
+        $tanggalDari = $request->tanggal_dari ?? null;
+        $tanggalSampai = $request->tanggal_sampai ?? null;
+
+        $semuaPeminjaman = Peminjaman::orderBy('id_peminjaman', 'desc')->get();
+
+        $daftarPeminjaman = [];
+        foreach ($semuaPeminjaman as $p) {
+            $cocok = true;
+
+            if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
+                $cocok = false;
+            }
+            if ($tanggalSampai && $p->tanggal_pinjam > $tanggalSampai) {
+                $cocok = false;
+            }
+
+            if ($cocok) {
+                $daftarPeminjaman[] = $p;
+            }
+        }
 
         foreach ($daftarPeminjaman as $p) {
             $p->peminjam = User::find($p->id_user);
             $p->buku = DataBuku::find($p->id_buku);
         }
 
-        return view('peminjaman.index', compact('daftarPeminjaman'));
+        return view('peminjaman.index', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai'));
     }
 
     public function approve(Request $request, $id_peminjaman) //setujui pengajuan (admin)

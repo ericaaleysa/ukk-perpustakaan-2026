@@ -1,10 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Kelola Anggota')
+@section('title', 'NEX-LIB ADMIN -- Kelola Anggota')
 
 @section('content')
 
-<h1 class="h4 mb-3">Kelola Anggota</h1>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h4 mb-0">Manage Anggota</h1>
+    </div>
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+</div>
 
 @if(count($daftarSiswa) === 0)
     <p class="text-secondary">Belum ada akun siswa terdaftar.</p>

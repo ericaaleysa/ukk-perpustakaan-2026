@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `data_buku` (
     tahun_terbit    YEAR NOT NULL,
     created_at DATETIME NULL,
     updated_at DATETIME NULL,
+    
     id_kategori INT UNSIGNED,
     CONSTRAINT fk_buku_kategori
     FOREIGN KEY (id_kategori)

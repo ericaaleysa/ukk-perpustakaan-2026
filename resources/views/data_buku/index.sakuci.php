@@ -4,8 +4,31 @@
 
 @section ('content')
 
-<h1>Data Buku</h1>
-<a href="{{ route('data_buku.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Buku</a>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h1 class="h4 mb-0">Manage User</h1>
+    </div>
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+</div>
+
+<form method="GET" action="{{ route('data_buku.index') }}" class="row g-2 align-items-center mb-3">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div class="col-auto">
+            <select name="id_kategori" class="form-control" onchange="this.form.submit()">
+                <option value="">Semua Kategori</option>
+                @foreach($daftarKategori as $kat)
+                    <option value="{{ $kat->id_kategori }}" {{ ($id_kategori == $kat->id_kategori) ? 'selected' : '' }}>{{ $kat->nama_kategori }}</option>
+                @endforeach
+            </select>
+        </div>
+        @if($id_kategori)
+            <div class="col-auto">
+                <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary">Reset Filter</a>
+            </div>
+        @endif
+        <a href="{{ route('data_buku.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Buku</a>
+    </div>
+</form>
 
 <table class="table table-striped table-hover">
     <thead>

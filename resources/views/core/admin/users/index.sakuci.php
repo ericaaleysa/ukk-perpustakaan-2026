@@ -6,7 +6,6 @@
 
     <div class="d-flex align-items-center justify-content-between mb-4">
         <div>
-            <span class="badge rounded-pill badge-brand px-3 py-2 mb-2">Area Admin</span>
             <h1 class="h4 mb-0">Manage User</h1>
         </div>
         <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>

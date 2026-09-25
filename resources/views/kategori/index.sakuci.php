@@ -4,8 +4,14 @@
 
 @section ('content')
 
-<h1>Kategori</h1>
-<a href="{{ route('kategori.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Kategori</a>
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <span class="badge rounded-pill badge-brand px-3 py-2 mb-2">Area Admin</span>
+        <h1 class="h4 mb-0">Kategori Buku</h1>
+    </div>
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+    <a href="{{ route('kategori.create') }}" class="btn btn-primary btn-sm mb-3">Tambah Kategori</a>
+</div>
 
 <table class="table table-striped table-hover">
     <thead>
