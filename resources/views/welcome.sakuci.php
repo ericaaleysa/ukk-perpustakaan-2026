@@ -15,7 +15,7 @@
             <!-- Penggunaan Font Plus Jakarta Sans + Gradien Warna -->
             <h1 class="display-5 fw-extrabold mb-3">
                 Selamat Datang di<br class="d-none d-md-inline">
-                <span class="text-brand-dark">Perpustakaan Kita</span>
+                <span class="text-brand-dark">NEXUS DIGITAL LIBRARY</span>
             </h1>
 
             <!-- Penggunaan Font Inter untuk deskripsi -->
@@ -95,8 +95,8 @@
                 </div>
             </div>
 
-            <div class="text-center mb-4">
-                <h2 class="h4 fw-bold mb-2">Kenapa Memilih Nexus Digital Library?</h2>
+            <div class="text-center mb-5">
+                <h2 class="h4 fw-bold mb-2">Kenapa Memilih NEX-LIB?</h2>
                 <p class="text-secondary mx-auto" style="max-width: 600px;">
                     Nikmati kemudahan mengakses ribuan koleksi buku, kapan saja dan di mana saja.
                 </p>
@@ -155,7 +155,7 @@
             <div class="text-center mt-5">
                 <button type="button" class="btn btn-outline-brand rounded-pill px-4"
                         data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama">
-                    Jelajahi Kategori Buku
+                    <- Jelajahi Perpustakaan
                 </button>
             </div>
         </section>

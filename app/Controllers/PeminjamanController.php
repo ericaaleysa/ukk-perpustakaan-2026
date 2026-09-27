@@ -10,6 +10,43 @@ use App\Models\User;
 
 class PeminjamanController extends Controller
 {
+    public function dashboardSiswa(Request $request)
+    {
+        $currentUser = User::current();
+
+        // Query buku yang sedang dipinjam atau menunggu konfirmasi
+        $bukuSedangDipinjam = Peminjaman::where('id_user', $currentUser->id)
+            ->whereIn('status', ['menunggu_konfirmasi', 'dipinjam'])
+            ->get();
+        foreach ($bukuSedangDipinjam as $p) {
+            $p->buku = DataBuku::find($p->id_buku);
+        }
+
+        // Query riwayat transaksi selesai / ditolak
+        $riwayatTerakhir = Peminjaman::where('id_user', $currentUser->id)
+            ->whereIn('status', ['dikembalikan', 'ditolak'])
+            ->orderBy('id_peminjaman', 'desc')
+            ->take(5)
+            ->get();
+        foreach ($riwayatTerakhir as $r) {
+            $r->buku = DataBuku::find($r->id_buku);
+        }
+
+        // Hitung ringkasan statistik
+        $totalPinjamAktif = $bukuSedangDipinjam->count();
+        $totalDikembalikan = Peminjaman::where('id_user', $currentUser->id)->where('status', 'dikembalikan')->count();
+        $totalDenda = Peminjaman::where('id_user', $currentUser->id)->sum('denda');
+
+        return view('dashboard-siswa', [
+            'user' => $currentUser,
+            'bukuSedangDipinjam' => $bukuSedangDipinjam,
+            'riwayatTerakhir' => $riwayatTerakhir,
+            'totalPinjamAktif' => $totalPinjamAktif,
+            'totalDikembalikan' => $totalDikembalikan,
+            'totalDenda' => $totalDenda,
+        ]);
+    }
+
     public function create(Request $request) //form ajukan peminjaman (siswa)
     {
         $currentUser = User::current();

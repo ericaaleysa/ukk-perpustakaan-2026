@@ -24,7 +24,7 @@
                     @endif
                 </div>
                 <h1 class="h3 fw-bold mb-2">
-                    Selamat Datang, <span class="text-brand-dark">{{ $user->username }}</span>! 👋
+                    Selamat Datang, <span class="text-brand-dark">{{ $user->username }} </span>! 👋
                 </h1>
                 <p class="text-secondary mb-0 small">
                     Kelola dan pantau pengajuan pinjaman buku perpustakaan kamu di sini.

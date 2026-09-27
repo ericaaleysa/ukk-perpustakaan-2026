@@ -1,15 +1,21 @@
-{{-- Sidebar utama, dibuka lewat tombol di navbar. Perlu di-@include sekali di layouts.app --}}
-
 <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarUtama" aria-labelledby="sidebarUtamaLabel">
-        @php
-            $sidebarUser = \App\Models\User::current();
-            $sidebarIsAdmin = $sidebarUser && $sidebarUser->role === 'admin';
-        @endphp
+    @php
+        $sidebarUser = \App\Models\User::current();
+        $sidebarIsAdmin = $sidebarUser && $sidebarUser->role === 'admin';
+        
+        $dbConnected = false;
+        try {
+            \Sakuci\Database\Connection::pdo();
+            $dbConnected = true;
+        } catch (\Throwable $e) {
+            $dbConnected = false;
+        }
+    @endphp
 
-        <div class="flex-grow-1" style="overflow-y: auto;">
+    <div class="flex-grow-1 d-flex flex-column justify-content-between" style="overflow-y: auto;">
+        <div>
             @if ($sidebarIsAdmin)
-                {{-- Admin login: sidebar khusus menu pengelolaan, menu pengguna
-                     biasa (Beranda, Kategori Buku, dst.) sengaja tidak ditampilkan. --}}
+                {{-- Admin login --}}
                 <div class="sidebar-section-title">Fitur Admin</div>
                 <ul class="nav nav-pills flex-column p-2 gap-1">
                     <li class="nav-item">
@@ -47,12 +53,11 @@
                     </li>
                 </ul>
             @else
-                {{-- Bukan admin (pengguna biasa atau belum login): menu jelajah
-                     perpustakaan untuk publik/anggota. --}}
+                {{-- Pengguna biasa / Publik --}}
                 <div class="sidebar-section-title">Fitur Utama</div>
                 <ul class="nav nav-pills flex-column p-2 gap-1">
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
                                 <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4h3v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L8.354 1.146z"/>
                             </svg>
@@ -139,9 +144,61 @@
             @endif
         </div>
 
-        <div class="p-3 border-top text-center flex-shrink-0">
-            <div class="fw-semibold small"><span class="text-brand ">NEXUS </span>DIGITAL LIBRARY</div>
-            <div class="text-secondary" style="font-size: 0.7rem;">Akselerasi Literasi, Memicu Energi Vokasi</div>
+        {{-- Section Login/Logout & Akun di bawah Menu Sidebar --}}
+        <div class="p-3 border-top mt-auto">
+            @if ($sidebarUser)
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                    <div class="text-truncate">
+                        <div class="fw-semibold small text-truncate">{{ $sidebarUser->username }}</div>
+                        <div class="text-secondary opacity-75" style="font-size: 0.75rem;">{{ ucfirst($sidebarUser->role) }}</div>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                        </svg>
+                        Logout
+                    </button>
+                </form>
+            @else
+                @php
+                    $canRegister = false;
+                    if ($dbConnected) {
+                        try {
+                            $canRegister = \App\Models\Role::where('can_register', 1)->exists();
+                        } catch (\Throwable $e) {
+                            $canRegister = false;
+                        }
+                    }
+                @endphp
+                <div class="d-grid gap-2">
+                    <a class="btn btn-sm btn-brand rounded-pill px-3 d-flex align-items-center justify-content-center gap-2" href="{{ route('login') }}">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="8" cy="5" r="3" fill="currentColor" stroke="none"/>
+                            <path d="M2.5 14c0-3.6 2.9-5.8 5.5-5.8s5.5 2.2 5.5 5.8"/>
+                        </svg>
+                        Masuk
+                    </a>
+                    @if ($canRegister)
+                        <a class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-center" href="{{ route('register') }}">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="8" cy="5" r="3" fill="currentColor" stroke="none"/>
+                                <path d="M2.5 14c0-3.6 2.9-5.8 5.5-5.8s5.5 2.2 5.5 5.8"/>
+                            </svg>
+                            Daftar
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
+    </div>
+
+    {{-- Footer Sidebar --}}
+    <div class="p-3 border-top text-center flex-shrink-0">
+        <div class="fw-semibold small"><span class="text-brand">NEXUS </span>DIGITAL LIBRARY</div>
+        <div class="text-secondary" style="font-size: 0.7rem;">Akselerasi Literasi, Memicu Energi Vokasi</div>
     </div>
 </div>
