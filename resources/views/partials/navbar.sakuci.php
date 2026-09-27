@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand bg-body border-bottom sticky-top">
-    <div class="container">
+    <div class="container-fluid px-3 px-lg-4">
         
         <div class="d-flex align-items-center gap-2">
             @php
@@ -12,13 +12,13 @@
                 }
             @endphp
 
-            <a class="nav-link d-flex align-items-center gap-1 p-0" href="#"
-               data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama"
-               role="button" title="Menu Lainnya" aria-label="Buka menu lainnya">
+            <button type="button" class="nav-link d-flex align-items-center gap-1 p-0 border-0 bg-transparent"
+                    data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama"
+                    title="Menu Lainnya" aria-label="Buka menu lainnya">
                 <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M2.5 3.5A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0 4.5A.5.5 0 0 1 3 7.5h10a.5.5 0 0 1 0 1H3A.5.5 0 0 1 2.5 8zm0 4.5a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                 </svg>
-            </a>
+            </button>
 
             <button id="themeToggle" type="button" class="logo-toggle"
                     aria-label="Ganti tema terang/gelap (status database: {{ $dbConnected ? 'terhubung' : 'tidak terhubung' }})"
@@ -32,12 +32,6 @@
             <a class="navbar-brand fw-semibold m-0" href="{{ route('home') }}">NEX-LIB</a>
         </div>
 
-        <button class="navbar-toggler border-0" type="button"
-                data-bs-toggle="collapse" data-bs-target="#menuUtama"
-                aria-controls="menuUtama" aria-expanded="false" aria-label="Buka menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         {{-- Tambahkan menu aplikasi Anda di sini --}}
         <div class="collapse navbar-collapse" id="menuUtama">
             @php
@@ -48,9 +42,6 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
                 @if ($isAdmin)
                     <li class="nav-item">
-                        <a class="nav-link {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
                             @csrf
                             <button type="submit" class="btn btn-sm btn-outline-secondary w-100 mt-2 mt-lg-0">Logout ({{ $currentUser->username }})</button>
@@ -58,9 +49,6 @@
                     </li>
                 @elseif ($currentUser)
                     {{-- Pengguna login tapi bukan admin (misal role siswa) --}}
-                    <li class="nav-item">
-                        <a class="nav-link {{ is_route('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-lg-inline">
                             @csrf
@@ -97,3 +85,19 @@
         </div>
     </div>
 </nav>
+
+{{-- Mengukur tinggi navbar secara dinamis, dipakai app.css supaya sidebar
+     (offcanvas) di desktop bisa "menempel" persis di bawah navbar tanpa
+     perlu angka px yang di-hardcode. Tidak berpengaruh ke tampilan mobile. --}}
+<script>
+    (function () {
+        function setNavbarHeightVar() {
+            var navbar = document.querySelector('.navbar');
+            if (navbar) {
+                document.documentElement.style.setProperty('--navbar-height', navbar.offsetHeight + 'px');
+            }
+        }
+        setNavbarHeightVar();
+        window.addEventListener('resize', setNavbarHeightVar);
+    })();
+</script>

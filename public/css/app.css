@@ -4,12 +4,13 @@
 */
 
 :root {
-    --brand: #87ceeb;
-    --brand-dark: #6495ED;
-    --brand-subtle: #fff7ed;
+    --brand: #3b7fb0;
+    --brand-dark: #1567b3;
+    --brand-subtle: #eaf4fb;
 }
 
 body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 15.5px;
 }
 
@@ -53,6 +54,44 @@ body {
     height: 2px;
     border-radius: 2px;
     background: var(--brand);
+}
+
+/* Sidebar (offcanvas) -- disamakan dengan gaya navbar supaya senada,
+   bukan lagi warna biru bawaan Bootstrap. */
+#sidebarUtama .nav-link {
+    color: var(--bs-secondary-color);
+    font-weight: 500;
+    transition: color .15s ease, background-color .15s ease;
+}
+
+#sidebarUtama .nav-link:hover {
+    color: var(--brand-dark);
+}
+
+#sidebarUtama .nav-pills .nav-link.active {
+    background-color: var(--brand-dark);
+    color: #fff;
+}
+
+.sidebar-section-title {
+    padding: .75rem 1rem .25rem;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--bs-secondary-color);
+}
+
+.sidebar-divider {
+    margin: .25rem .75rem;
+    border: 0;
+    border-top: 1px solid var(--bs-border-color);
+    opacity: 1;
+}
+
+/* Icon di depan tiap item sidebar -- jangan ikut menyusut kalau labelnya panjang */
+#sidebarUtama .nav-link svg {
+    flex-shrink: 0;
 }
 
 /* Logo navbar merangkap tombol toggle tema gelap/terang. Titik tengah
@@ -112,6 +151,20 @@ body {
     color: #fff;
 }
 
+.btn-primary {
+    background-color: var(--brand) !important;
+    border-color: var(--brand) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--brand-dark) !important;
+    border-color: var(--brand-dark) !important;
+    color: #ffffff !important;
+}
+
 .text-brand   { color: var(--brand) !important; }
 .text-brand-dark { color: var(--brand-dark) !important; }
 .bg-brand-subtle { background-color: var(--brand-subtle) !important; }
@@ -122,27 +175,34 @@ body {
     font-weight: 600;
 }
 
+/* Lebar sidebar utama (offcanvas) */
 #sidebarUtama {
-    --bs-offcanvas-width: 250px;
+    --bs-offcanvas-width: 280px;
 }
 
-/* Label pemisah antar kelompok menu di sidebar (mis. "Fitur Utama", "Kelola") */
-.sidebar-section-title {
-    padding: .75rem 1rem .25rem;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--bs-secondary-color);
-}
+/* ===================================================================
+   Sidebar "menyatu" dengan navbar -- KHUSUS DESKTOP (>= 992px / lg).
+   Di mobile, offcanvas dibiarkan default Bootstrap: slide dari kiri,
+   tinggi penuh layar, dengan backdrop gelap seperti biasa.
 
-.sidebar-divider {
-    margin: .25rem .75rem;
-    border: 0;
-    border-top: 1px solid var(--bs-border-color);
-    opacity: 1;
-}
+   Di desktop, sidebar diposisikan mulai dari bawah navbar (bukan dari
+   atas layar), jadi terasa seperti layer/panel yang menempel di bawah
+   navbar, bukan drawer terpisah yang menutupi navbar.
+   =================================================================== */
+@media (min-width: 992px) {
+    #sidebarUtama {
+        top: var(--navbar-height, 64px);
+        height: calc(100% - var(--navbar-height, 64px));
+        box-shadow: 0 16px 32px -12px rgba(0, 0, 0, .2);
+    }
 
+    /* Backdrop dibuat transparan di desktop -- klik di luar sidebar tetap
+       menutupnya, tapi halaman & navbar di baliknya tidak jadi digelapkan,
+       jadi kesannya panel dropdown yang menyatu, bukan modal terpisah. */
+    .offcanvas-backdrop {
+        background: transparent;
+    }
+}
 
 /* Blok kode */
 pre.code {
@@ -206,7 +266,7 @@ code.inline {
 .demo-box {
     padding: .6rem .5rem;
     background: var(--brand-subtle);
-    border: 1px solid #fdba8c;
+    border: 1px solid #db3cfb;
     border-radius: 6px;
     color: var(--brand-dark);
     font-size: .8rem;
@@ -262,25 +322,178 @@ code.inline {
 
 [data-bs-theme="dark"] .bg-brand-subtle,
 [data-bs-theme="dark"] .step-number {
-    background-color: rgba(194, 65, 12, .18) !important;
-    color: #fb923c;
+    background-color: #bc0cc266 !important;
+    color: #db3cfb;
 }
 
 /* badge-brand sengaja dipisah supaya warnanya tetap biru cornflower
-   konsisten di mode terang maupun gelap, tidak ikut jadi oranye. */
+   konsisten di mode terang maupun gelap, tidak ikut jadi magenta. */
 [data-bs-theme="dark"] .badge-brand {
     background-color: var(--brand-dark) !important;
     color: #fff !important;
 }
 
 [data-bs-theme="dark"] .demo-box {
-    background-color: rgba(194, 65, 12, .18);
-    border-color: rgba(194, 65, 12, .4);
-    color: #fb923c;
+    background-color: rgba(188, 12, 194, 0.18);
+    border-color: #bc0cc266;
+    color: rgb(219, 60, 251);
 }
 
 [data-bs-theme="dark"] .demo-box-alt {
     background-color: rgba(99, 102, 241, .18);
     border-color: rgba(99, 102, 241, .4);
     color: #a5b4fc;
+}
+
+/* ===================================================================
+   Hero halaman utama -- panel tersendiri dengan animasi gradasi warna
+   di background yang menyesuaikan mode terang/gelap.
+
+   Cuma 3 warna utama yang dipakai (selain hitam-putih bawaan tema):
+   --brand, --brand-dark, dan --brand-subtle. Di mode gelap, --brand-subtle
+   (biru sangat muda) diganti jadi warna aksen magenta/pink -- warna yang
+   SAMA dengan yang sudah dipakai di badge/demo-box mode gelap di atas --
+   supaya tetap konsisten dengan bahasa desain yang sudah ada, sekaligus
+   kontrasnya jelas kelihatan di atas latar gelap.
+   =================================================================== */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 3rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-tertiary-bg);
+    --hero-c1: var(--brand);
+    --hero-c2: var(--brand-dark);
+    --hero-c3: var(--brand-subtle);
+}
+
+[data-bs-theme="dark"] .hero-section {
+    --hero-c3: #db3cfb;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: .4;
+    animation: heroFloat 18s ease-in-out infinite;
+}
+
+[data-bs-theme="dark"] .hero-blob {
+    opacity: .32;
+}
+
+.hero-blob-1 {
+    width: 320px;
+    height: 320px;
+    left: -60px;
+    top: -90px;
+    background: var(--hero-c1);
+}
+
+.hero-blob-2 {
+    width: 280px;
+    height: 280px;
+    right: -50px;
+    top: 0;
+    background: var(--hero-c2);
+    animation-duration: 22s;
+    animation-delay: -4s;
+}
+
+.hero-blob-3 {
+    width: 260px;
+    height: 260px;
+    left: 35%;
+    bottom: -110px;
+    background: var(--hero-c3);
+    animation-duration: 24s;
+    animation-delay: -9s;
+}
+
+@keyframes heroFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%      { transform: translate(30px, 20px) scale(1.08); }
+    66%      { transform: translate(-25px, 25px) scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-blob {
+        animation: none;
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em; 
+}
+
+.hero-content .text-brand-dark {
+    background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+[data-bs-theme="dark"] .hero-content .text-brand-dark {
+    background: linear-gradient(135deg, #60a5fa, #db3cfb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Ikon bulat untuk kartu fitur di beranda -- gaya sama seperti .step-number
+   supaya senada. Sengaja tetap biru (bukan ikut aksen magenta mode gelap)
+   sesuai pilihan warna saat ini. */
+.feature-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--brand-subtle);
+    color: var(--brand-dark);
+    flex-shrink: 0;
+}
+
+[data-bs-theme="dark"] .feature-icon {
+    background: #3b7fb0af;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .feature-icon {
+    background: #3b7fb0af;
+    color: #ffffff;
+}
+
+/*Penyesuaian untuk warna bagian Paginaton */
+.pagination .page-item.active .page-link {
+    background-color: var(--brand) !important;
+    border-color: var(--brand) !important;
+    color: #ffffff !important;
+}
+
+/* Kustomisasi Link Pagination saat Di-hover & Di-focus */
+.pagination .page-link {
+    color: var(--brand);
+}
+
+.pagination .page-link:hover,
+.pagination .page-link:focus {
+    color: var(--brand-dark);
+    background-color: var(--brand-subtle);
+    border-color: var(--bs-border-color);
 }

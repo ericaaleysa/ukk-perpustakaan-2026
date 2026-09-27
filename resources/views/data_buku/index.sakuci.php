@@ -6,9 +6,8 @@
 
 <div class="d-flex align-items-center justify-content-between mb-4">
     <div>
-        <h1 class="h4 mb-0">Manage User</h1>
+        <h1 class="h4 fw-bold mb-0">Manage User</h1>
     </div>
-    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
 </div>
 
 <form method="GET" action="{{ route('data_buku.index') }}" class="row g-2 align-items-center mb-3">
@@ -72,6 +71,9 @@
     </tbody>
 </table>
 
-{!! $data_buku->links() !!}
+<div class="d-flex align-items-center justify-content-between mb-4">
+    {!! $data_buku->links() !!}
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+</div>
 
 @endsection
