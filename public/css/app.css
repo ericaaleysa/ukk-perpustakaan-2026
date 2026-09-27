@@ -121,8 +121,7 @@ html.dark .icon-moon {
     line-height: 1;
 }
 
-/* Sidebar (offcanvas) -- disamakan dengan gaya navbar supaya senada,
-   bukan lagi warna biru bawaan Bootstrap. */
+/* Sidebar (offcanvas) -- disamakan dengan gaya navbar supaya senada */
 #sidebarUtama .nav-link {
     color: var(--bs-secondary-color);
     font-weight: 500;
@@ -154,14 +153,10 @@ html.dark .icon-moon {
     opacity: 1;
 }
 
-/* Icon di depan tiap item sidebar -- jangan ikut menyusut kalau labelnya panjang */
 #sidebarUtama .nav-link svg {
     flex-shrink: 0;
 }
 
-/* Logo navbar merangkap tombol toggle tema gelap/terang. Titik tengah
-   (hijau/merah) tetap menunjukkan status koneksi database seperti biasa;
-   cincin luarnya yang berubah warna mengikuti tema aktif. */
 .logo-toggle {
     display: inline-flex;
     flex: 0 0 auto;
@@ -191,7 +186,7 @@ html.dark .icon-moon {
     fill: #ffffff;
 }
 
-/* Tombol warna khas Sakuci */
+/* Tombol warna khas */
 .btn-brand {
     background-color: var(--brand);
     border-color: var(--brand);
@@ -240,20 +235,10 @@ html.dark .icon-moon {
     font-weight: 600;
 }
 
-/* Lebar sidebar utama (offcanvas) */
 #sidebarUtama {
     --bs-offcanvas-width: 260px;
 }
 
-/* ===================================================================
-   Sidebar "menyatu" dengan navbar -- KHUSUS DESKTOP (>= 992px / lg).
-   Di mobile, offcanvas dibiarkan default Bootstrap: slide dari kiri,
-   tinggi penuh layar, dengan backdrop gelap seperti biasa.
-
-   Di desktop, sidebar diposisikan mulai dari bawah navbar (bukan dari
-   atas layar), jadi terasa seperti layer/panel yang menempel di bawah
-   navbar, bukan drawer terpisah yang menutupi navbar.
-   =================================================================== */
 @media (min-width: 992px) {
     #sidebarUtama {
         top: var(--navbar-height, 64px);
@@ -261,9 +246,6 @@ html.dark .icon-moon {
         box-shadow: 0 16px 32px -12px rgba(0, 0, 0, .2);
     }
 
-    /* Backdrop dibuat transparan di desktop -- klik di luar sidebar tetap
-       menutupnya, tapi halaman & navbar di baliknya tidak jadi digelapkan,
-       jadi kesannya panel dropdown yang menyatu, bukan modal terpisah. */
     .offcanvas-backdrop {
         background: transparent;
     }
@@ -304,7 +286,7 @@ code.inline {
     font-weight: 700;
 }
 
-/* Kotak pratinjau komponen di halaman /docs */
+/* Kotak pratinjau komponen */
 .demo-preview {
     border: 1px dashed #cbd5e1;
     border-radius: 10px;
@@ -327,7 +309,6 @@ code.inline {
     background: #fff;
 }
 
-/* Kotak warna untuk contoh grid & spacing di /docs */
 .demo-box {
     padding: .6rem .5rem;
     background: var(--brand-subtle);
@@ -353,14 +334,12 @@ code.inline {
     color: var(--brand);
 }
 
-/* Varian tema gelap untuk komponen yang warnanya di-hardcode di atas */
+/* Varian tema gelap */
 [data-bs-theme="dark"] code.inline {
     background: #1e293b;
     color: #e2e8f0;
 }
 
-/* pre.code sengaja navy gelap di mode terang (biar kontras) -- tapi di mode
-   gelap dia harus ikut warna permukaan Bootstrap, bukan navy sendiri. */
 [data-bs-theme="dark"] pre.code {
     background: var(--bs-tertiary-bg);
     color: var(--bs-body-color);
@@ -391,8 +370,6 @@ code.inline {
     color: #db3cfb;
 }
 
-/* badge-brand sengaja dipisah supaya warnanya tetap biru cornflower
-   konsisten di mode terang maupun gelap, tidak ikut jadi magenta. */
 [data-bs-theme="dark"] .badge-brand {
     background-color: var(--brand-dark) !important;
     color: #fff !important;
@@ -411,21 +388,14 @@ code.inline {
 }
 
 /* ===================================================================
-   Hero halaman utama -- panel tersendiri dengan animasi gradasi warna
-   di background yang menyesuaikan mode terang/gelap.
-
-   Cuma 3 warna utama yang dipakai (selain hitam-putih bawaan tema):
-   --brand, --brand-dark, dan --brand-subtle. Di mode gelap, --brand-subtle
-   (biru sangat muda) diganti jadi warna aksen magenta/pink -- warna yang
-   SAMA dengan yang sudah dipakai di badge/demo-box mode gelap di atas --
-   supaya tetap konsisten dengan bahasa desain yang sudah ada, sekaligus
-   kontrasnya jelas kelihatan di atas latar gelap.
+   Hero halaman utama -- panel tersendiri dengan animasi gradasi
    =================================================================== */
 .hero-section {
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    padding: 3rem 1.5rem;
+    padding: 4rem 1.5rem !important; /* Margin & Padding diperbesar */
+    margin-bottom: 3.5rem !important;
     border-radius: 20px;
     border: 1px solid var(--bs-border-color);
     background: var(--bs-tertiary-bg);
@@ -497,6 +467,43 @@ code.inline {
     }
 }
 
+/* ANIMASI BINTANG/SPARKLE (PUTIH) DI AREA HERO */
+.hero-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.hero-section:hover .hero-stars {
+    opacity: 1;
+}
+
+.star-icon {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.95); /* Warna sparkle diubah jadi putih */
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8)); /* Glow efek putih */
+    animation: sparkleFade 2s infinite ease-in-out;
+}
+
+.star-1 { top: 15%; left: 10%; width: 18px; height: 18px; animation-delay: 0s; }
+.star-2 { top: 25%; right: 12%; width: 22px; height: 22px; animation-delay: 0.6s; }
+.star-3 { bottom: 20%; left: 15%; width: 16px; height: 16px; animation-delay: 1.2s; }
+.star-4 { bottom: 25%; right: 18%; width: 20px; height: 20px; animation-delay: 0.3s; }
+
+@keyframes sparkleFade {
+    0%, 100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
 .hero-content {
     position: relative;
     z-index: 1;
@@ -520,18 +527,20 @@ code.inline {
     -webkit-text-fill-color: transparent;
 }
 
-/* Ikon bulat untuk kartu fitur di beranda -- gaya sama seperti .step-number
-   supaya senada. Sengaja tetap biru (bukan ikut aksen magenta mode gelap)
-   sesuai pilihan warna saat ini. */
+/* FEATURE ICON & ANIMASI GARIS KILAU UNGU */
 .feature-icon {
-    display: grid;
+    display: inline-flex;
     place-items: center;
+    justify-content: center;
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: var(--brand-subtle);
-    color: var(--brand-dark);
+    background: var(--brand); /* Dikembalikan ke BIRU bawaan tema */
+    color: #ffffff;
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 [data-bs-theme="dark"] .feature-icon {
@@ -539,19 +548,53 @@ code.inline {
     color: #ffffff;
 }
 
-[data-bs-theme="dark"] .feature-icon {
-    background: #3b7fb0af;
-    color: #ffffff;
+/* Efek garis menyapu kilau ungu (Sweep Line) */
+.card .feature-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent 0%, 
+        rgba(111, 66, 193, 0.4) 20%, 
+        rgba(111, 66, 193, 0.9) 50%, 
+        rgba(111, 66, 193, 0.4) 80%, 
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: none;
+    z-index: 2;
+    pointer-events: none;
 }
 
-/*Penyesuaian untuk warna bagian Paginaton */
+.card:hover .feature-icon::before {
+    animation: shineSweep 0.8s ease-in-out forwards;
+}
+
+@keyframes shineSweep {
+    0% {
+        left: -150%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+.card .feature-icon svg {
+    position: relative;
+    z-index: 3;
+}
+
+/* Penyesuaian warna pagination */
 .pagination .page-item.active .page-link {
     background-color: var(--brand) !important;
     border-color: var(--brand) !important;
     color: #ffffff !important;
 }
 
-/* Kustomisasi Link Pagination saat Di-hover & Di-focus */
 .pagination .page-link {
     color: var(--brand);
 }
@@ -561,4 +604,32 @@ code.inline {
     color: var(--brand-dark);
     background-color: var(--brand-subtle);
     border-color: var(--bs-border-color);
+}
+
+/* ===================================================================
+   Animasi Hover Kartu / Container Fitur (Zoom & Lift Effect)
+   =================================================================== */
+.card {
+    /* Transisi halus untuk transformasi, bayangan, dan perbatasan */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.3s ease, 
+                border-color 0.3s ease;
+    will-change: transform; /* Optimasi performa render */
+}
+
+/* Efek saat mouse mengarah (hover) ke kartu */
+.card:hover {
+    /* Membesar 3% (1.03) dan terangkat sedikit ke atas (-4px) */
+    transform: translateY(-4px) scale(1.03);
+    
+    /* Menambah bayangan lembut agar efek terangkat lebih terasa */
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15) !important;
+    
+    /* Mengubah urutan tumpukan agar kartu yang di-hover berada di atas kartu tetangga */
+    z-index: 2;
+}
+
+/* Penyesuaian bayangan untuk Mode Gelap (Dark Mode) saat di-hover */
+[data-bs-theme="dark"] .card:hover {
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5) !important;
 }

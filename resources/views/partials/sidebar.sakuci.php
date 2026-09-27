@@ -19,6 +19,15 @@
                 <div class="sidebar-section-title">Fitur Admin</div>
                 <ul class="nav nav-pills flex-column p-2 gap-1">
                     <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('home') ? 'active' : '' }}" href="{{ route('home') }}">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
+                                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4h3v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L8.354 1.146z"/>
+                            </svg>
+                            Beranda
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-2 {{ is_route('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
                                 <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
@@ -155,7 +164,7 @@
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-sm btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                             <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
@@ -198,7 +207,7 @@
 
     {{-- Footer Sidebar --}}
     <div class="p-3 border-top text-center flex-shrink-0">
-        <div class="fw-semibold small"><span class="text-brand">NEXUS </span>DIGITAL LIBRARY</div>
+        <div class="fw-semibold small">NEXUS DIGITAL LIBRARY</div>
         <div class="text-secondary" style="font-size: 0.7rem;">Akselerasi Literasi, Memicu Energi Vokasi</div>
     </div>
 </div>

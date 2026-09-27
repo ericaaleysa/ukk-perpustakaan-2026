@@ -1,29 +1,42 @@
 @extends('layouts.app')
 
-@section('title', 'Nexus Digital Library')
+@section('title', 'NEXUS - Dashboard')
 
 @section('content')
     {{-- Hero Section --}}
-    <section class="hero-section text-center mb-5">
+    <section class="hero-section text-center mb-5 py-4">
         <div class="hero-bg" aria-hidden="true">
             <span class="hero-blob hero-blob-1"></span>
             <span class="hero-blob hero-blob-2"></span>
             <span class="hero-blob hero-blob-3"></span>
         </div>
 
+        {{-- Bintang Dekoratif (Muncul & Berkelip Saat Hover Hero) --}}
+        <div class="hero-stars" aria-hidden="true">
+            <svg class="star-icon star-1" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star-icon star-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star-icon star-3" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star-icon star-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+        </div>
+
         <div class="hero-content">
-            <!-- Penggunaan Font Plus Jakarta Sans + Gradien Warna -->
             <h1 class="display-5 fw-extrabold mb-3">
                 Selamat Datang di<br class="d-none d-md-inline">
                 <span class="text-brand-dark">NEXUS DIGITAL LIBRARY</span>
             </h1>
 
-            <!-- Penggunaan Font Inter untuk deskripsi -->
             <p class="fs-6 text-secondary mx-auto mb-4" style="max-width: 700px;">
                 Jelajahi koleksi buku yang tersedia di perpustakaan secara online.
             </p>
 
-            <!-- Form Pencarian tetap seperti semula -->
             <form method="GET" action="{{ route('home') }}" class="mx-auto" style="max-width: 480px;">
                 <div class="input-group">
                     <input type="text" name="q" class="form-control" placeholder="Cari judul buku..." value="{{ $keyword }}">
@@ -95,8 +108,11 @@
                 </div>
             </div>
 
+            <hr class="my-5">
+            <br>
+
             <div class="text-center mb-5">
-                <h2 class="h4 fw-bold mb-2">Kenapa Memilih NEX-LIB?</h2>
+                <h2 class="h4 fw-bold mb-2">Kenapa Memilih NEXLIB?</h2>
                 <p class="text-secondary mx-auto" style="max-width: 600px;">
                     Nikmati kemudahan mengakses ribuan koleksi buku, kapan saja dan di mana saja.
                 </p>
@@ -155,7 +171,7 @@
             <div class="text-center mt-5">
                 <button type="button" class="btn btn-outline-brand rounded-pill px-4"
                         data-bs-toggle="offcanvas" data-bs-target="#sidebarUtama" aria-controls="sidebarUtama">
-                    <- Jelajahi Perpustakaan
+                    &leftarrow; Jelajahi Perpustakaan
                 </button>
             </div>
         </section>

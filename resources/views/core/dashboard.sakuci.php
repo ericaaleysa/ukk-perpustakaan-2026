@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Siswa')
+@section('title', 'NEX-LIB - Siswa')
 
 @section('content')
 
