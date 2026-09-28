@@ -4,64 +4,75 @@
 
 @section('content')
 
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="admin-page">
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
         <div>
-            <h1 class="h4 mb-0">Verif Keanggotaan</h1>
+            <h1 class="h3 admin-title">Verifikasi Keanggotaan</h1>
+            <p class="admin-subtitle">Periksa pengajuan siswa, lalu setujui atau tolak.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
     </div>
 
-@if(count($daftarPengajuan) === 0)
-    <p class="text-secondary">Tidak ada pengajuan yang menunggu verifikasi.</p>
-@else
-<table class="table table-striped table-hover align-middle">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Nama Lengkap</th>
-            <th>Username</th>
-            <th>NIS</th>
-            <th>Kelas</th>
-            <th>Tanggal Pengajuan</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php $no = 1; @endphp
-        @foreach($daftarPengajuan as $p)
-        <tr>
-            <td>{{ $no++ }}</td>
-            <td>{{ $p->nama_lengkap }}</td>
-            <td>{{ $p->pemohon->username ?? '-' }}</td>
-            <td>{{ $p->nis }}</td>
-            <td>{{ $p->kelas }}</td>
-            <td>{{ $p->tanggal_pengajuan }}</td>
-            <td>
-                <form action="{{ route('keanggotaan.approve', [$p->id_pengajuan]) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('PUT')
-                    <button type="submit" class="btn btn-sm btn-success">Setujui</button>
-                </form>
+    <div class="card admin-panel no-hover-lift">
+        @if(count($daftarPengajuan) === 0)
+            <div class="admin-empty">
+                <strong>Tidak ada pengajuan</strong>
+                Semua pengajuan keanggotaan sudah diproses.
+            </div>
+        @else
+        <div class="table-responsive">
+            <table class="table admin-table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No</th>
+                        <th>Nama lengkap</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>Tanggal pengajuan</th>
+                        <th class="text-end">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $no = 1; @endphp
+                    @foreach($daftarPengajuan as $p)
+                    <tr>
+                        <td class="cell-meta">{{ $no++ }}</td>
+                        <td>
+                            <div class="cell-main">{{ $p->nama_lengkap }}</div>
+                            <div class="cell-meta">{{ $p->pemohon->username ?? '-' }}</div>
+                        </td>
+                        <td>{{ $p->nis }}</td>
+                        <td>{{ $p->kelas }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_pengajuan }}</td>
+                        <td class="text-end">
+                            <div class="text-nowrap">
+                                <form action="{{ route('keanggotaan.approve', [$p->id_pengajuan]) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Setujui</button>
+                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_pengajuan }}">Tolak</button>
+                            </div>
+                            <div class="collapse mt-2" id="tolak{{ $p->id_pengajuan }}">
+                                <form action="{{ route('keanggotaan.reject', [$p->id_pengajuan]) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="catatan_admin" class="form-control" placeholder="Alasan penolakan (opsional)">
+                                        <button type="submit" class="btn btn-outline-secondary">Kirim penolakan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @endif
+    </div>
 
-                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_pengajuan }}">
-                    Tolak
-                </button>
-
-                <div class="collapse mt-2" id="tolak{{ $p->id_pengajuan }}">
-                    <form action="{{ route('keanggotaan.reject', [$p->id_pengajuan]) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="input-group input-group-sm">
-                            <input type="text" name="catatan_admin" class="form-control" placeholder="Alasan penolakan (opsional)">
-                            <button type="submit" class="btn btn-outline-danger">Kirim Penolakan</button>
-                        </div>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-@endif
+</div>
 
 @endsection

@@ -5,7 +5,7 @@
             {{-- Kolom Kiri: Penjelasan UKK & Fitur Keanggotaan --}}
             <div class="col-md-7">
                 <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
-                    <span class="badge bg-brand-subtle text-white fw-semibold px-2 py-1" style="font-size: 0.75rem;">P-UKK</span>
+                    <span class="badge badge-ukk px-2 py-1" style="font-size: 0.75rem;">UKK</span>
                     <h6 class="fw-bold mb-0">Nexus Digital Library</h6>
                 </div>
                 

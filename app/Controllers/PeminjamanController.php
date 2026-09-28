@@ -47,6 +47,32 @@ class PeminjamanController extends Controller
         ]);
     }
 
+    public function cetak(Request $request) //cetak laporan transaksi peminjaman (admin)
+    {
+        $tanggalDari = $request->tanggal_dari ?? null;
+        $tanggalSampai = $request->tanggal_sampai ?? null;
+
+        $semuaPeminjaman = Peminjaman::orderBy('id_peminjaman', 'desc')->get();
+
+        $daftarPeminjaman = [];
+        $totalDenda = 0;
+        foreach ($semuaPeminjaman as $p) {
+            if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
+                continue;
+            }
+            if ($tanggalSampai && $p->tanggal_pinjam > $tanggalSampai) {
+                continue;
+            }
+
+            $p->peminjam = User::find($p->id_user);
+            $p->buku = DataBuku::find($p->id_buku);
+            $totalDenda += $p->denda;
+            $daftarPeminjaman[] = $p;
+        }
+
+        return view('peminjaman.cetak', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai', 'totalDenda'));
+    }
+
     public function create(Request $request) //form ajukan peminjaman (siswa)
     {
         $currentUser = User::current();

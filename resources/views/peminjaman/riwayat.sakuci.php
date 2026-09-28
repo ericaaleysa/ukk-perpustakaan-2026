@@ -4,46 +4,73 @@
 
 @section('content')
 
-<h1 class="h4 mb-3">Riwayat Peminjaman Saya</h1>
+@php
+    $statusKelas = [
+        'menunggu_konfirmasi' => 'status-menunggu',
+        'dipinjam' => 'status-aktif',
+        'dikembalikan' => 'status-selesai',
+        'ditolak' => 'status-nonaktif',
+    ];
+    $statusLabel = [
+        'menunggu_konfirmasi' => 'Menunggu konfirmasi',
+        'dipinjam' => 'Dipinjam',
+        'dikembalikan' => 'Dikembalikan',
+        'ditolak' => 'Ditolak',
+    ];
+    $no = 1;
+@endphp
 
-@if(count($daftarPeminjaman) === 0)
-    <p class="text-secondary">Anda belum pernah mengajukan peminjaman buku.</p>
-@else
-<table class="table table-striped table-hover align-middle">
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Judul Buku</th>
-            <th>Tanggal Pinjam</th>
-            <th>Wajib Kembali</th>
-            <th>Status</th>
-            <th>Denda</th>
-        </tr>
-    </thead>
-    <tbody>
-        @php $no = 1; @endphp
-        @foreach($daftarPeminjaman as $p)
-        <tr>
-            <td>{{ $no++ }}</td>
-            <td>{{ $p->buku->judul_buku ?? '-' }}</td>
-            <td>{{ $p->tanggal_pinjam }}</td>
-            <td>{{ $p->tanggal_wajib_kembali }}</td>
-            <td>
-                @if($p->status === 'menunggu_konfirmasi')
-                    <span class="badge bg-warning text-dark">Menunggu Konfirmasi</span>
-                @elseif($p->status === 'dipinjam')
-                    <span class="badge bg-primary">Dipinjam</span>
-                @elseif($p->status === 'ditolak')
-                    <span class="badge bg-danger">Ditolak</span>
-                @elseif($p->status === 'dikembalikan')
-                    <span class="badge bg-success">Dikembalikan</span>
-                @endif
-            </td>
-            <td>{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-@endif
+<div class="admin-page">
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 admin-title">Riwayat Peminjaman</h1>
+            <p class="admin-subtitle">Semua pengajuan dan peminjaman bukumu.</p>
+        </div>
+        <a href="{{ route('peminjaman.create') }}" class="btn btn-brand rounded-pill px-3">Ajukan peminjaman</a>
+    </div>
+
+    <div class="card admin-panel no-hover-lift">
+        @if(count($daftarPeminjaman) === 0)
+            <div class="admin-empty">
+                <strong>Belum ada riwayat</strong>
+                Kamu belum pernah mengajukan peminjaman buku.
+            </div>
+        @else
+        <div class="table-responsive">
+            <table class="table admin-table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No</th>
+                        <th>Judul buku</th>
+                        <th>Tanggal pinjam</th>
+                        <th>Wajib kembali</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($daftarPeminjaman as $p)
+                    <tr>
+                        <td class="cell-meta">{{ $no++ }}</td>
+                        <td class="cell-main">{{ $p->buku->judul_buku ?? '-' }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_pinjam }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_wajib_kembali }}</td>
+                        <td>
+                            <span class="status-pill {{ $statusKelas[$p->status] ?? 'status-kosong' }}">{{ $statusLabel[$p->status] ?? $p->status }}</span>
+                            @if($p->status === 'ditolak' && $p->catatan_admin)
+                                <div class="cell-meta mt-1">{{ $p->catatan_admin }}</div>
+                            @endif
+                        </td>
+                        <td class="{{ $p->denda > 0 ? 'cell-main' : 'cell-meta' }}">{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @endif
+    </div>
+
+</div>
 
 @endsection

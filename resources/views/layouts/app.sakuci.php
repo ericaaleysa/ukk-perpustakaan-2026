@@ -24,8 +24,17 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
 
-@include('partials.navbar')
-@include('partials.sidebar')
+@php
+    // Halaman sambutan (welcome) untuk pengunjung yang belum login: tanpa navbar & sidebar.
+    // Halaman lain tidak terpengaruh.
+    $layoutUser = \App\Models\User::current();
+    $hideNavigation = !$layoutUser && is_route('home');
+@endphp
+
+@if (!$hideNavigation)
+    @include('partials.navbar')
+    @include('partials.sidebar')
+@endif
 
 <main class="container flex-grow-1 py-4 py-lg-5">
     @include('partials.flash')

@@ -54,6 +54,8 @@ Route::get('/peminjaman/ajukan', [PeminjamanController::class, 'create'])->name(
 Route::post('/peminjaman/ajukan', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('auth');
 Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat')->middleware('auth');
 
+Route::get('/cari-buku', [DataBukuController::class, 'cari'])->name('buku.cari')->middleware('auth');
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', [DashboardController::class, 'admin'])->name('admin.dashboard');
 
@@ -98,6 +100,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::put('/peminjaman/{id_peminjaman}/setujui', [PeminjamanController::class, 'approve'])->name('peminjaman.setujui');
     Route::put('/peminjaman/{id_peminjaman}/tolak', [PeminjamanController::class, 'reject'])->name('peminjaman.tolak');
     Route::put('/peminjaman/{id_peminjaman}/kembali', [PeminjamanController::class, 'konfirmasiKembali'])->name('peminjaman.kembali');
+    Route::get('/peminjaman/cetak', [PeminjamanController::class, 'cetak'])->name('peminjaman.cetak');
 
 });
 
