@@ -26,6 +26,9 @@ use Sakuci\Route;
 */
 
 Route::get('/', [DataBukuController::class, 'beranda'])->name('home');
+Route::get('/tentang', function () {
+    return view('about');
+})->name('about');
 
 Route::get('/kategori/{id_kategori}', [DataBukuController::class, 'byKategori'])->name('kategori.show');
 

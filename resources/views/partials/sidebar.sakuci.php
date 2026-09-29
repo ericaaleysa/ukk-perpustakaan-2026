@@ -23,7 +23,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
                                 <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
                             </svg>
-                            Kelola Perpustakaan
+                            Beranda
                         </a>
                     </li>
                     <li class="nav-item">
@@ -39,7 +39,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
                                 <path d="M2 2.5A1.5 1.5 0 0 1 3.5 1h4.086a1.5 1.5 0 0 1 1.06.44l5.914 5.914a1.5 1.5 0 0 1 0 2.12l-4.086 4.086a1.5 1.5 0 0 1-2.12 0L2.44 7.646A1.5 1.5 0 0 1 2 6.586V2.5zM5 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                             </svg>
-                            Kategori Buku
+                            Katalog Buku
                         </a>
                     </li>
                     <li class="nav-item">
@@ -133,7 +133,7 @@
                                     <a class="nav-link py-1 {{ is_route('peminjaman.create') ? 'active' : '' }}" href="{{ route('peminjaman.create') }}">Ajukan Peminjaman</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link py-1 {{ is_route('peminjaman.riwayat') ? 'active' : '' }}" href="{{ route('peminjaman.riwayat') }}">Riwayat Peminjaman</a>
+                                    <a class="nav-link py-1 {{ is_route('peminjaman.riwayat') ? 'active' : '' }}" href="{{ route('peminjaman.riwayat') }}">Cek Riwayat</a>
                                 </li>
                             </ul>
                         </div>

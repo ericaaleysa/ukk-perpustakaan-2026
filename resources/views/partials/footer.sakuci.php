@@ -17,13 +17,13 @@
                 {{-- Deskripsi Pengembangan Peminjaman & Keanggotaan --}}
                 <p class="text-secondary small mb-0" style="max-width: 540px;">
                     Pengembangan sistem <strong>Peminjaman Buku</strong> perpustakaan digital berbasis verifikasi <strong>Keanggotaan</strong>.
-                    Siswa wajib terdaftar dan diverifikasi sebagai anggota aktif sebelum dapat melakukan pengajuan peminjaman buku.
                 </p>
             </div>
 
             {{-- Kolom Kanan: Ikon Sosial Media & Website --}}
             <div class="col-md-4 text-md-end">
                 <div class="d-flex align-items-center justify-content-center justify-content-md-end gap-3 mb-2">
+
                     {{-- Instagram --}}
                     <a href="https://www.instagram.com/rirriiessa_/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noopener noreferrer" 
                        class="btn btn-sm btn-outline-secondary rounded-circle p-2 d-inline-flex align-items-center justify-content-center" 
@@ -53,7 +53,18 @@
                             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                         </svg>
                     </a>
+
+                    <a href="{{ route('about') }}"
+                       class="btn btn-sm btn-outline-secondary rounded-circle p-2 d-inline-flex align-items-center justify-content-center"
+                       style="width: 36px; height: 36px;" title="Tentang NEXLIB" aria-label="Tentang NEXLIB">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </a>
                 </div>
+                
             </div>
         </div>
 

@@ -29,6 +29,7 @@
     // Halaman lain tidak terpengaruh.
     $layoutUser = \App\Models\User::current();
     $hideNavigation = !$layoutUser && is_route('home');
+    $hideChrome = ! $layoutUser && is_route('home', 'about');
 @endphp
 
 @if (!$hideNavigation)
