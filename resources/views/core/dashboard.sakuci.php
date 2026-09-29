@@ -9,7 +9,7 @@
         <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="badge rounded-pill badge-brand px-3 py-1">
+                    <span class="badge rounded-pill badge-ukk px-3 py-1">
                         {{ ucfirst($user->role) }}
                     </span>
                     {{-- Validasi Status Keanggotaan dari User Model --}}

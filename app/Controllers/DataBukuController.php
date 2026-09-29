@@ -21,73 +21,6 @@ class DataBukuController extends Controller
         return view('welcome');
     }
 
-    public function cari(Request $request) //halaman pencarian buku (pengguna/siswa)
-    {
-        $user = User::current();
-        if ($user && $user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-
-        $keyword = trim((string) ($request->q ?? ''));
-        $id_kategori = $request->id_kategori ?? null;
-        if ($id_kategori === '') {
-            $id_kategori = null;
-        }
-
-        $daftarKategori = Kategori::orderBy('nama_kategori', 'asc')->get();
-        $semuaBuku = DataBuku::orderBy('judul_buku', 'asc')->get();
-
-        // Filter: kategori + kata kunci (judul / pengarang / penerbit)
-        $hasil = [];
-        foreach ($semuaBuku as $b) {
-            if ($id_kategori && $b->id_kategori != $id_kategori) {
-                continue;
-            }
-            if ($keyword !== '') {
-                $cocok = stripos($b->judul_buku, $keyword) !== false
-                    || stripos($b->pengarang, $keyword) !== false
-                    || stripos($b->penerbit, $keyword) !== false;
-                if (!$cocok) {
-                    continue;
-                }
-            }
-            $hasil[] = $b;
-        }
-
-        // Kelompokkan hasil per kategori (urut nama kategori), buku tanpa kategori di akhir
-        $kelompok = [];
-        foreach ($daftarKategori as $kat) {
-            $buku = [];
-            foreach ($hasil as $b) {
-                if ($b->id_kategori == $kat->id_kategori) {
-                    $buku[] = $b;
-                }
-            }
-            if (count($buku) > 0) {
-                $kelompok[] = ['id' => $kat->id_kategori, 'nama' => $kat->nama_kategori, 'buku' => $buku];
-            }
-        }
-
-        $tanpaKategori = [];
-        foreach ($hasil as $b) {
-            if (empty($b->id_kategori)) {
-                $tanpaKategori[] = $b;
-            }
-        }
-        if (count($tanpaKategori) > 0) {
-            $kelompok[] = ['id' => 'lain', 'nama' => 'Tanpa Kategori', 'buku' => $tanpaKategori];
-        }
-
-        return view('data_buku.cari', [
-            'keyword' => $keyword,
-            'id_kategori' => $id_kategori,
-            'daftarKategori' => $daftarKategori,
-            'kelompok' => $kelompok,
-            'totalBuku' => count($hasil),
-            'sedangMencari' => ($keyword !== '' || $id_kategori),
-        ]);
-    }
-
     public function byKategori($id_kategori) //halaman buku per kategori
     {
         $kategori = Kategori::findOrFail($id_kategori);
@@ -97,17 +30,30 @@ class DataBukuController extends Controller
 
     public function index(Request $request)
     {
+        $keyword = trim((string) ($request->q ?? ''));
         $id_kategori = $request->id_kategori ?? null;
-
-        if ($id_kategori) {
-            $data_buku = DataBuku::where('id_kategori', $id_kategori)->orderBy('id_buku', 'desc')->paginate(5);
-        } else {
-            $data_buku = DataBuku::orderBy('id_buku', 'desc')->paginate(5);
+        if ($id_kategori === '') {
+            $id_kategori = null;
         }
 
+        $query = DataBuku::orderBy('id_buku', 'desc');
+
+        if ($id_kategori) {
+            $query = $query->where('id_kategori', $id_kategori);
+        }
+
+        if ($keyword !== '') {
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->where('judul_buku', 'like', '%' . $keyword . '%')
+                  ->orWhere('pengarang', 'like', '%' . $keyword . '%')
+                  ->orWhere('penerbit', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        $data_buku = $query->paginate(5);
         $daftarKategori = Kategori::all();
 
-        return view('data_buku.index', compact('data_buku', 'daftarKategori', 'id_kategori'));
+        return view('data_buku.index', compact('data_buku', 'daftarKategori', 'id_kategori', 'keyword'));
     }
 
     public function create(Request $request)

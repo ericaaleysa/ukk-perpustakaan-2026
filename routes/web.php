@@ -57,8 +57,6 @@ Route::get('/peminjaman/ajukan', [PeminjamanController::class, 'create'])->name(
 Route::post('/peminjaman/ajukan', [PeminjamanController::class, 'store'])->name('peminjaman.store')->middleware('auth');
 Route::get('/peminjaman/riwayat', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat')->middleware('auth');
 
-Route::get('/cari-buku', [DataBukuController::class, 'cari'])->name('buku.cari')->middleware('auth');
-
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/', [DashboardController::class, 'admin'])->name('admin.dashboard');
 

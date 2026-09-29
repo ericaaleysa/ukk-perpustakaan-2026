@@ -77,10 +77,16 @@ class PeminjamanController extends Controller
     {
         $currentUser = User::current();
 
+        $keyword = trim((string) ($request->q ?? ''));
+        $idPilih = $request->pilih ?? null;
+
         if ($currentUser->status_keanggotaan !== 'aktif') {
             return view('peminjaman.create', [
                 'currentUser' => $currentUser,
                 'daftarBukuTersedia' => [],
+                'daftarBukuTampil' => [],
+                'bukuDipilih' => null,
+                'keyword' => $keyword,
             ]);
         }
 
@@ -93,14 +99,37 @@ class PeminjamanController extends Controller
             $sedangDipinjam[] = $p->id_buku;
         }
 
+        //semua buku yang tersedia, urut A-Z seperti kamus
         $daftarBukuTersedia = [];
-        foreach (DataBuku::all() as $b) {
+        foreach (DataBuku::orderBy('judul_buku', 'asc')->get() as $b) {
             if (!in_array($b->id_buku, $sedangDipinjam)) {
                 $daftarBukuTersedia[] = $b;
             }
         }
 
-        return view('peminjaman.create', compact('currentUser', 'daftarBukuTersedia'));
+        //buku yang dipilih (harus termasuk buku yang tersedia)
+        $bukuDipilih = null;
+        foreach ($daftarBukuTersedia as $b) {
+            if ($idPilih && $b->id_buku == $idPilih) {
+                $bukuDipilih = $b;
+            }
+        }
+
+        //saring daftar dengan kata kunci (judul / pengarang / penerbit)
+        $daftarBukuTampil = [];
+        foreach ($daftarBukuTersedia as $b) {
+            if ($keyword !== '') {
+                $cocok = stripos($b->judul_buku, $keyword) !== false
+                    || stripos($b->pengarang, $keyword) !== false
+                    || stripos($b->penerbit, $keyword) !== false;
+                if (!$cocok) {
+                    continue;
+                }
+            }
+            $daftarBukuTampil[] = $b;
+        }
+
+        return view('peminjaman.create', compact('currentUser', 'daftarBukuTersedia', 'daftarBukuTampil', 'bukuDipilih', 'keyword'));
     }
 
     public function store(Request $request) //simpan pengajuan (siswa)

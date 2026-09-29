@@ -541,7 +541,7 @@ code.inline {
     -webkit-text-fill-color: transparent;
 }
 
-/* FEATURE ICON & ANIMASI GARIS KILAU UNGU */
+/* FEATURE ICON & ANIMASI GARIS KILAU BIRU MUDA */
 .feature-icon {
     display: inline-flex;
     place-items: center;
@@ -562,7 +562,7 @@ code.inline {
     color: #ffffff;
 }
 
-/* Efek garis menyapu kilau ungu (Sweep Line) */
+/* Efek garis menyapu kilau biru muda (Sweep Line) */
 .card .feature-icon::before {
     content: '';
     position: absolute;
@@ -573,9 +573,9 @@ code.inline {
     background: linear-gradient(
         120deg, 
         transparent 0%, 
-        rgba(111, 66, 193, 0.4) 20%, 
-        rgba(111, 66, 193, 0.9) 50%, 
-        rgba(111, 66, 193, 0.4) 80%, 
+        rgba(56, 189, 248, 0.4) 20%, 
+        rgba(56, 189, 248, 0.9) 50%, 
+        rgba(56, 189, 248, 0.4) 80%, 
         transparent 100%
     );
     transform: skewX(-25deg);
@@ -900,3 +900,76 @@ code.inline {
     color: #fff !important;
 }
  
+
+/* ===================================================================
+   Halaman sambutan (welcome) -- penyesuaian tampilan HP & tablet
+   =================================================================== */
+
+/* Judul ikut mengecil di layar sempit (maks. 3rem = ukuran display-5) */
+.hero-content h1.welcome-title {
+    font-size: clamp(1.75rem, 6.5vw + 0.5rem, 3rem);
+    line-height: 1.15;
+}
+
+/* Tablet & HP: ruang hero lebih hemat, sisakan tempat untuk tombol tema di pojok */
+@media (max-width: 767.98px) {
+    .hero-section {
+        padding: 4rem 1.25rem 2.25rem !important;
+        margin-bottom: 1.25rem !important;
+        border-radius: 16px;
+    }
+
+    .hero-section-landing {
+        min-height: 80vh;
+        min-height: 80svh;
+    }
+
+    .hero-blob {
+        filter: blur(45px);
+    }
+
+    .hero-blob-1 { width: 220px; height: 220px; }
+    .hero-blob-2 { width: 200px; height: 200px; }
+    .hero-blob-3 { width: 180px; height: 180px; left: 25%; }
+}
+
+/* HP: tombol penuh selebar layar (mudah ditekan), kartu fitur 2 kolom yang ringkas */
+@media (max-width: 575.98px) {
+    .hero-theme-toggle {
+        top: 0.75rem;
+        right: 0.75rem;
+        min-height: 40px;
+        padding: 0.45rem 0.8rem;
+    }
+
+    .welcome-actions {
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .welcome-actions .btn {
+        flex: 1 1 100%;
+        justify-content: center;
+        padding-top: 0.65rem;
+        padding-bottom: 0.65rem;
+    }
+
+    .card.hero-feature-card {
+        padding: 0.85rem 0.6rem !important;
+    }
+
+    .hero-feature-card .feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .hero-feature-card h3 {
+        font-size: 0.9rem;
+    }
+
+    .hero-feature-card p {
+        font-size: 0.78rem;
+    }
+}

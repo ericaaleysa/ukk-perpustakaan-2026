@@ -27,7 +27,6 @@
             <h1 class="h3 admin-title">Riwayat Peminjaman</h1>
             <p class="admin-subtitle">Semua pengajuan dan peminjaman bukumu.</p>
         </div>
-        <a href="{{ route('peminjaman.create') }}" class="btn btn-brand rounded-pill px-3">Ajukan peminjaman</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">

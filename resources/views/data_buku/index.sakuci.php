@@ -28,14 +28,21 @@
 
         <div class="card-body pb-2">
             <form method="GET" action="{{ route('data_buku.index') }}" class="d-flex flex-wrap align-items-center gap-2">
+                <input type="text" name="q" value="{{ $keyword }}"
+                       class="form-control form-control-sm w-auto flex-grow-1" style="min-width: 220px; max-width: 360px;"
+                       placeholder="Cari judul, pengarang, atau penerbit...">
+
                 <select name="id_kategori" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                     <option value="">Semua kategori</option>
                     @foreach($daftarKategori as $kat)
                         <option value="{{ $kat->id_kategori }}" {{ ($id_kategori == $kat->id_kategori) ? 'selected' : '' }}>{{ $kat->nama_kategori }}</option>
                     @endforeach
                 </select>
-                @if($id_kategori)
-                    <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset filter</a>
+
+                <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Cari</button>
+
+                @if($id_kategori || $keyword !== '')
+                    <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
                 @endif
             </form>
         </div>
@@ -92,7 +99,7 @@
                         <td colspan="7">
                             <div class="admin-empty">
                                 <strong>Belum ada buku</strong>
-                                {{ $id_kategori ? 'Tidak ada buku di kategori ini.' : 'Tambahkan buku pertama untuk mengisi koleksi.' }}
+                                {{ ($id_kategori || $keyword !== '') ? 'Tidak ada buku yang cocok dengan pencarianmu.' : 'Tambahkan buku pertama untuk mengisi koleksi.' }}
                             </div>
                         </td>
                     </tr>

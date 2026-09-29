@@ -65,8 +65,8 @@
         </button>
 
         <div class="hero-content">
-            <h1 class="display-5 fw-extrabold mb-3">
-                Selamat Datang di<br class="d-none d-md-inline">
+            <h1 class="display-5 fw-extrabold welcome-title mb-3">
+                Selamat Datang di<br>
                 <span class="text-brand-dark">NEXUS DIGITAL LIBRARY</span>
             </h1>
 
@@ -75,7 +75,7 @@
             </p>
 
             {{-- Tombol masuk / daftar (menggantikan kolom pencarian) --}}
-            <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+            <div class="welcome-actions d-flex flex-wrap justify-content-center gap-2 mb-4 mb-md-5">
                 @if ($welcomeUser)
                     {{-- Cadangan: pengguna yang sudah login tidak perlu Masuk/Daftar lagi --}}
                     <a href="{{ route($dashboardRoute) }}" class="btn btn-brand rounded-pill px-4">Buka Dashboard</a>
@@ -97,7 +97,7 @@
             <h2 class="h6 fw-bold text-uppercase text-secondary mb-3">Kenapa Memilih NEXLIB?</h2>
 
             <div class="mx-auto" style="max-width: 960px;">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+                <div class="row row-cols-2 row-cols-lg-4 g-2 g-md-3">
                     <div class="col">
                         <div class="card hero-feature-card border-0 shadow-sm h-100 p-3">
                             <div class="feature-icon mx-auto mb-2">
