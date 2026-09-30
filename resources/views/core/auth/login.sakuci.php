@@ -80,7 +80,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali ke beranda</a>
+                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr;</a>
             </div>
         </div>
     </section>

@@ -48,9 +48,11 @@
 
 <div class="admin-page">
 
-    <div class="mb-4">
-        <h1 class="h3 admin-title">Ajukan Peminjaman</h1>
-        <p class="admin-subtitle">Cari buku di daftar, lalu pilih untuk dipinjam.</p>
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 admin-title">Ajukan Peminjaman</h1>
+            <p class="admin-subtitle">Cari buku di daftar, lalu pilih untuk dipinjam.</p>
+        </div>
     </div>
 
     @if($currentUser->status_keanggotaan !== 'aktif')
@@ -170,4 +172,4 @@
 
 </div>
 
-@endsection 
+@endsection

@@ -25,10 +25,12 @@
 <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
 
 @php
-    // Halaman sambutan (welcome) untuk pengunjung yang belum login: tanpa navbar & sidebar.
-    // Halaman lain tidak terpengaruh.
+    // Halaman hero (welcome, login, daftar) untuk pengunjung yang belum login:
+    // tanpa navbar & sidebar. Halaman lain tidak terpengaruh.
+    // Nama route *.attempt ikut disertakan supaya navbar tidak muncul
+    // saat halaman dirender ulang karena error validasi.
     $layoutUser = \App\Models\User::current();
-    $hideNavigation = !$layoutUser && is_route('home');
+    $hideNavigation = !$layoutUser && is_route('home', 'login', 'register', 'login.attempt', 'register.attempt');
     $hideChrome = ! $layoutUser && is_route('home', 'about');
 @endphp
 
