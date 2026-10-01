@@ -48,7 +48,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->name('register.attempt')->middleware('guest');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [PeminjamanController::class, 'dashboardSiswa'])->name('dashboard')->middleware('auth');
 
 Route::get('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'create'])->name('keanggotaan.create')->middleware('auth');
 Route::post('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'store'])->name('keanggotaan.store')->middleware('auth');

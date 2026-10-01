@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', config('app.name') . ' -- ' . $kategori->nama_kategori)
+@section('title', 'NEXLIB ' . '- ' . $kategori->nama_kategori)
 
 @section('content')
 

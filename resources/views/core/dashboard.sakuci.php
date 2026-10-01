@@ -142,10 +142,14 @@
                                     @endif
                                 </div>
                                 <hr class="my-2 border-secondary-subtle">
-                                <div class="d-flex justify-content-between text-secondary small">
-                                    <span>Tgl Pinjam: <strong>{{ date('d M Y', strtotime($p->tanggal_pinjam)) }}</strong></span>
-                                    <span>Wajib Kembali: <strong>{{ date('d M Y', strtotime($p->tanggal_wajib_kembali)) }}</strong></span>
-                                </div>
+                                @if($p->tanggal_pinjam)
+                                    <div class="d-flex justify-content-between text-secondary small">
+                                        <span>Tgl Pinjam: <strong>{{ date('d M Y', strtotime($p->tanggal_pinjam)) }}</strong></span>
+                                        <span>Wajib Kembali: <strong>{{ date('d M Y', strtotime($p->tanggal_wajib_kembali)) }}</strong></span>
+                                    </div>
+                                @else
+                                    <div class="text-secondary small">Masa pinjam ditentukan setelah pengajuan disetujui admin.</div>
+                                @endif
                             </div>
                         @endforeach
                     @else

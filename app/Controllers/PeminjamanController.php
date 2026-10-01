@@ -10,38 +10,49 @@ use App\Models\User;
 
 class PeminjamanController extends Controller
 {
-    public function dashboardSiswa(Request $request)
+    //lama masa pinjam (hari), dihitung sejak admin menyetujui pengajuan
+    const MASA_PINJAM_HARI = 7;
+
+    public function dashboardSiswa(Request $request) //dashboard siswa
     {
         $currentUser = User::current();
 
-        // Query buku yang sedang dipinjam atau menunggu konfirmasi
-        $bukuSedangDipinjam = Peminjaman::where('id_user', $currentUser->id)
-            ->whereIn('status', ['menunggu_konfirmasi', 'dipinjam'])
-            ->get();
-        foreach ($bukuSedangDipinjam as $p) {
-            $p->buku = DataBuku::find($p->id_buku);
+        //admin punya dashboard sendiri
+        if ($currentUser->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
-        // Query riwayat transaksi selesai / ditolak
-        $riwayatTerakhir = Peminjaman::where('id_user', $currentUser->id)
-            ->whereIn('status', ['dikembalikan', 'ditolak'])
+        //ambil semua peminjaman milik siswa ini (terbaru dulu), lalu dipisah di PHP
+        $semuaPeminjaman = Peminjaman::where('id_user', $currentUser->id)
             ->orderBy('id_peminjaman', 'desc')
-            ->take(5)
             ->get();
-        foreach ($riwayatTerakhir as $r) {
-            $r->buku = DataBuku::find($r->id_buku);
+
+        $bukuSedangDipinjam = []; //menunggu konfirmasi / sedang dipinjam
+        $riwayatTerakhir = [];    //selesai / ditolak (maks. 5 terbaru)
+        $totalDikembalikan = 0;
+        $totalDenda = 0;
+
+        foreach ($semuaPeminjaman as $p) {
+            $p->buku = DataBuku::find($p->id_buku);
+            $totalDenda += $p->denda;
+
+            if ($p->status === 'menunggu_konfirmasi' || $p->status === 'dipinjam') {
+                $bukuSedangDipinjam[] = $p;
+            } else {
+                if ($p->status === 'dikembalikan') {
+                    $totalDikembalikan++;
+                }
+                if (count($riwayatTerakhir) < 5) {
+                    $riwayatTerakhir[] = $p;
+                }
+            }
         }
 
-        // Hitung ringkasan statistik
-        $totalPinjamAktif = $bukuSedangDipinjam->count();
-        $totalDikembalikan = Peminjaman::where('id_user', $currentUser->id)->where('status', 'dikembalikan')->count();
-        $totalDenda = Peminjaman::where('id_user', $currentUser->id)->sum('denda');
-
-        return view('dashboard-siswa', [
+        return view('dashboard', [
             'user' => $currentUser,
             'bukuSedangDipinjam' => $bukuSedangDipinjam,
             'riwayatTerakhir' => $riwayatTerakhir,
-            'totalPinjamAktif' => $totalPinjamAktif,
+            'totalPinjamAktif' => count($bukuSedangDipinjam),
             'totalDikembalikan' => $totalDikembalikan,
             'totalDenda' => $totalDenda,
         ]);
@@ -57,6 +68,10 @@ class PeminjamanController extends Controller
         $daftarPeminjaman = [];
         $totalDenda = 0;
         foreach ($semuaPeminjaman as $p) {
+            //pengajuan yang belum disetujui belum punya tanggal pinjam
+            if (($tanggalDari || $tanggalSampai) && empty($p->tanggal_pinjam)) {
+                continue;
+            }
             if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
                 continue;
             }
@@ -144,14 +159,13 @@ class PeminjamanController extends Controller
             'id_buku' => 'required|integer|exists:data_buku,id_buku',
         ]);
 
-        $tanggalPinjam = date('Y-m-d');
-        $tanggalWajibKembali = date('Y-m-d', strtotime('+7 days'));
-
+        //tanggal pinjam & tanggal wajib kembali sengaja dikosongkan,
+        //baru ditentukan sistem saat admin menyetujui pengajuan (lihat approve)
         Peminjaman::create([
             'id_user' => $currentUser->id,
             'id_buku' => $validatedData['id_buku'],
-            'tanggal_pinjam' => $tanggalPinjam,
-            'tanggal_wajib_kembali' => $tanggalWajibKembali,
+            'tanggal_pinjam' => null,
+            'tanggal_wajib_kembali' => null,
             'status' => 'menunggu_konfirmasi',
             'denda' => 0,
         ]);
@@ -185,6 +199,10 @@ class PeminjamanController extends Controller
         foreach ($semuaPeminjaman as $p) {
             $cocok = true;
 
+            //pengajuan yang belum disetujui belum punya tanggal pinjam
+            if (($tanggalDari || $tanggalSampai) && empty($p->tanggal_pinjam)) {
+                $cocok = false;
+            }
             if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
                 $cocok = false;
             }
@@ -208,7 +226,21 @@ class PeminjamanController extends Controller
     public function approve(Request $request, $id_peminjaman) //setujui pengajuan (admin)
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
-        $peminjaman->update(['status' => 'dipinjam']);
+
+        //hanya pengajuan yang masih menunggu yang bisa disetujui (mencegah tanggal tertimpa)
+        if ($peminjaman->status !== 'menunggu_konfirmasi') {
+            return redirect()->route('peminjaman.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
+
+        //masa pinjam dimulai hari ini, saat admin menyetujui
+        $tanggalPinjam = date('Y-m-d');
+        $tanggalWajibKembali = date('Y-m-d', strtotime('+' . self::MASA_PINJAM_HARI . ' days'));
+
+        $peminjaman->update([
+            'status' => 'dipinjam',
+            'tanggal_pinjam' => $tanggalPinjam,
+            'tanggal_wajib_kembali' => $tanggalWajibKembali,
+        ]);
 
         return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman disetujui.');
     }

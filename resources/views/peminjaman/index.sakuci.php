@@ -77,8 +77,8 @@
                         <td class="cell-meta">{{ $no++ }}</td>
                         <td class="cell-main">{{ $p->peminjam->username ?? '-' }}</td>
                         <td>{{ $p->buku->judul_buku ?? '-' }}</td>
-                        <td class="cell-meta">{{ $p->tanggal_pinjam }}</td>
-                        <td class="cell-meta">{{ $p->tanggal_wajib_kembali }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_pinjam ?: '-' }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_wajib_kembali ?: '-' }}</td>
                         <td><span class="status-pill {{ $statusKelas[$p->status] ?? 'status-kosong' }}">{{ $statusLabel[$p->status] ?? $p->status }}</span></td>
                         <td class="{{ $p->denda > 0 ? 'cell-main' : 'cell-meta' }}">{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
                         <td class="text-end">
