@@ -30,24 +30,6 @@
                     Kelola dan pantau pengajuan pinjaman buku perpustakaan kamu di sini.
                 </p>
             </div>
-            
-            <div class="d-flex gap-2">
-                @if(($user->status_keanggotaan ?? 'non_aktif') === 'aktif')
-                    <a href="{{ route('peminjaman.create') }}" class="btn btn-brand btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-2">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                        </svg>
-                        Pinjam Buku
-                    </a>
-                @else
-                    <button class="btn btn-secondary btn-sm rounded-pill px-3" disabled title="Keanggotaan Anda Non-Aktif">
-                        Pinjam Buku
-                    </button>
-                @endif
-                <a href="{{ route('home') }}" class="btn btn-outline-brand btn-sm rounded-pill px-3">
-                    Cari Koleksi
-                </a>
-            </div>
         </div>
     </div>
 
