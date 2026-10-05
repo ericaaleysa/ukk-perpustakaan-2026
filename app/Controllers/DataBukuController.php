@@ -6,6 +6,7 @@ use Sakuci\Controller;
 use Sakuci\Http\Request;
 use App\Models\DataBuku;
 use App\Models\Kategori;
+use App\Models\Peminjaman;
 use App\Models\User;
 
 class DataBukuController extends Controller
@@ -50,10 +51,49 @@ class DataBukuController extends Controller
             });
         }
 
-        $data_buku = $query->paginate(5);
+        $data_buku = $query->paginate(10);
         $daftarKategori = Kategori::all();
 
         return view('data_buku.index', compact('data_buku', 'daftarKategori', 'id_kategori', 'keyword'));
+    }
+
+    public function stok(Request $request) //halaman stok buku (admin)
+    {
+        $keyword = trim((string) ($request->q ?? ''));
+
+        $query = DataBuku::orderBy('judul_buku', 'asc');
+        if ($keyword !== '') {
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->where('judul_buku', 'like', '%' . $keyword . '%')
+                  ->orWhere('pengarang', 'like', '%' . $keyword . '%')
+                  ->orWhere('penerbit', 'like', '%' . $keyword . '%');
+            });
+        }
+        $daftarBuku = $query->get();
+
+        $namaKategori = [];
+        foreach (Kategori::all() as $k) {
+            $namaKategori[$k->id_kategori] = $k->nama_kategori;
+        }
+
+        //hitung berapa eksemplar tiap buku yang sedang diajukan/dipinjam
+        $sedangDipinjam = [];
+        foreach (['menunggu_konfirmasi', 'dipinjam'] as $status) {
+            foreach (Peminjaman::where('status', $status)->get() as $p) {
+                $sedangDipinjam[$p->id_buku] = ($sedangDipinjam[$p->id_buku] ?? 0) + 1;
+            }
+        }
+
+        $totalStok = 0;
+        $totalHabis = 0;
+        foreach ($daftarBuku as $b) {
+            $totalStok += (int) $b->stok;
+            if ((int) $b->stok < 1) {
+                $totalHabis++;
+            }
+        }
+
+        return view('data_buku.stok', compact('daftarBuku', 'namaKategori', 'sedangDipinjam', 'totalStok', 'totalHabis', 'keyword'));
     }
 
     public function create(Request $request)
@@ -70,6 +110,7 @@ class DataBukuController extends Controller
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
+            'stok' => 'required|integer|min:0|max:9999',
         ]);
 
         //sampul diunggah sebagai file (opsional)
@@ -99,6 +140,7 @@ class DataBukuController extends Controller
             'pengarang' => 'required|string|max:255',
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
+            'stok' => 'required|integer|min:0|max:9999',
         ]);
 
         $data_buku = DataBuku::findOrFail($id_buku);
@@ -124,6 +166,7 @@ class DataBukuController extends Controller
             'pengarang' => $request->pengarang,
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
+            'stok' => $request->stok,
             'thumbnail' => $thumbnail,
         ]);
 

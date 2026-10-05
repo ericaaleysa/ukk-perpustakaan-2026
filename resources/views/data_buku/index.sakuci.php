@@ -57,6 +57,7 @@
                         <th>Kategori</th>
                         <th>Penerbit</th>
                         <th>Tahun</th>
+                        <th>Stok</th>
                         <th class="text-end">Aksi</th>
                     </tr>
                 </thead>
@@ -83,6 +84,7 @@
                         <td><span class="admin-pill">{{ $namaKategori[$d->id_kategori] ?? '-' }}</span></td>
                         <td>{{ $d->penerbit }}</td>
                         <td class="cell-meta">{{ $d->tahun_terbit }}</td>
+                        <td class="cell-meta">{{ (int) $d->stok }}</td>
                         <td class="text-end text-nowrap">
                             <a href="{{ route('data_buku.edit', [$d->id_buku]) }}" class="btn btn-sm btn-outline-brand rounded-pill px-3">Edit</a>
                             <form action="{{ route('data_buku.destroy', [$d->id_buku]) }}" method="POST" class="d-inline"

@@ -8,25 +8,26 @@ use App\Models\User;
 
 class AnggotaController extends Controller
 {
-    public function index(Request $request) //daftar seluruh siswa & status keanggotaannya (admin)
+    public function index(Request $request) //daftar seluruh pengguna & status keanggotaannya (admin)
     {
-        $daftarSiswa = User::where('role', 'siswa')->orderBy('username', 'asc')->get();
+        // Nama variabel $daftarSiswa sengaja dipertahankan agar view anggota.index tidak perlu diubah
+        $daftarSiswa = User::where('role', 'pengguna')->orderBy('username', 'asc')->get();
         return view('anggota.index', compact('daftarSiswa'));
     }
 
     public function aktifkan(Request $request, $id_user) //admin mengaktifkan kembali anggota non-aktif
     {
-        $siswa = User::findOrFail($id_user);
-        $siswa->update(['status_keanggotaan' => 'aktif']);
+        $pengguna = User::findOrFail($id_user);
+        $pengguna->update(['status_keanggotaan' => 'aktif']);
 
-        return redirect()->route('anggota.index')->with('success', 'Keanggotaan siswa berhasil diaktifkan kembali.');
+        return redirect()->route('anggota.index')->with('success', 'Keanggotaan pengguna berhasil diaktifkan kembali.');
     }
 
     public function nonaktifkan(Request $request, $id_user) //admin menonaktifkan anggota
     {
-        $siswa = User::findOrFail($id_user);
-        $siswa->update(['status_keanggotaan' => 'non_aktif']);
+        $pengguna = User::findOrFail($id_user);
+        $pengguna->update(['status_keanggotaan' => 'non_aktif']);
 
-        return redirect()->route('anggota.index')->with('success', 'Keanggotaan siswa berhasil dinonaktifkan.');
+        return redirect()->route('anggota.index')->with('success', 'Keanggotaan pengguna berhasil dinonaktifkan.');
     }
 }

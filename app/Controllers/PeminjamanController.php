@@ -105,19 +105,10 @@ class PeminjamanController extends Controller
             ]);
         }
 
-        //cari buku yang sedang dipinjam/menunggu, supaya tidak ditawarkan lagi
-        $sedangDipinjam = [];
-        foreach (Peminjaman::where('status', 'menunggu_konfirmasi')->get() as $p) {
-            $sedangDipinjam[] = $p->id_buku;
-        }
-        foreach (Peminjaman::where('status', 'dipinjam')->get() as $p) {
-            $sedangDipinjam[] = $p->id_buku;
-        }
-
-        //semua buku yang tersedia, urut A-Z seperti kamus
+        //hanya buku yang stoknya masih ada yang ditawarkan, urut A-Z seperti kamus
         $daftarBukuTersedia = [];
         foreach (DataBuku::orderBy('judul_buku', 'asc')->get() as $b) {
-            if (!in_array($b->id_buku, $sedangDipinjam)) {
+            if ((int) $b->stok > 0) {
                 $daftarBukuTersedia[] = $b;
             }
         }
@@ -161,6 +152,15 @@ class PeminjamanController extends Controller
 
         //tanggal pinjam & tanggal wajib kembali sengaja dikosongkan,
         //baru ditentukan sistem saat admin menyetujui pengajuan (lihat approve)
+        //pastikan stok buku masih ada
+        $buku = DataBuku::findOrFail($validatedData['id_buku']);
+        if ((int) $buku->stok < 1) {
+            return redirect()->route('peminjaman.create')->with('error', 'Maaf, stok buku ini sedang habis.');
+        }
+
+        $tanggalPinjam = date('Y-m-d');
+        $tanggalWajibKembali = date('Y-m-d', strtotime('+7 days'));
+
         Peminjaman::create([
             'id_user' => $currentUser->id,
             'id_buku' => $validatedData['id_buku'],
@@ -169,6 +169,9 @@ class PeminjamanController extends Controller
             'status' => 'menunggu_konfirmasi',
             'denda' => 0,
         ]);
+
+        //stok berkurang begitu buku dipinjam/diajukan
+        $this->ubahStok($validatedData['id_buku'], -1);
 
         return redirect()->route('peminjaman.riwayat')->with('success', 'Pengajuan peminjaman berhasil dikirim, mohon tunggu konfirmasi admin.');
     }
@@ -241,6 +244,7 @@ class PeminjamanController extends Controller
             'tanggal_pinjam' => $tanggalPinjam,
             'tanggal_wajib_kembali' => $tanggalWajibKembali,
         ]);
+        $peminjaman->update(['status' => 'dipinjam']);
 
         return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman disetujui.');
     }
@@ -248,6 +252,10 @@ class PeminjamanController extends Controller
     public function reject(Request $request, $id_peminjaman) //tolak pengajuan (admin)
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
+
+        if ($peminjaman->status !== 'menunggu_konfirmasi') {
+            return redirect()->route('peminjaman.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
 
         $validatedData = $request->validate([
             'catatan_admin' => 'nullable|string|max:255',
@@ -258,12 +266,19 @@ class PeminjamanController extends Controller
             'catatan_admin' => $validatedData['catatan_admin'] ?? null,
         ]);
 
+        //pengajuan ditolak: stok yang tadi dipesan dikembalikan
+        $this->ubahStok($peminjaman->id_buku, +1);
+
         return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman ditolak.');
     }
 
     public function konfirmasiKembali(Request $request, $id_peminjaman) //konfirmasi pengembalian (admin)
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
+
+        if ($peminjaman->status !== 'dipinjam') {
+            return redirect()->route('peminjaman.index')->with('error', 'Buku ini tidak sedang berstatus dipinjam.');
+        }
 
         $hariIni = date('Y-m-d');
         $denda = 0;
@@ -280,6 +295,21 @@ class PeminjamanController extends Controller
             'denda' => $denda,
         ]);
 
+        //buku sudah kembali: stok bertambah lagi
+        $this->ubahStok($peminjaman->id_buku, +1);
+
         return redirect()->route('peminjaman.index')->with('success', 'Pengembalian buku berhasil dikonfirmasi.');
+    }
+
+    /** Tambah/kurangi stok buku. $selisih: -1 saat dipinjam, +1 saat kembali/ditolak. */
+    private function ubahStok($id_buku, $selisih)
+    {
+        $buku = DataBuku::find($id_buku);
+        if (!$buku) {
+            return;
+        }
+
+        $stokBaru = max(0, (int) $buku->stok + $selisih);
+        $buku->update(['stok' => $stokBaru]);
     }
 }

@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'name'     => env('APP_NAME', 'Sakuci'),
+    'name'     => env('APP_NAME', 'NEXLIB'),
 
     // Saat true, halaman error menampilkan detail lengkap. Matikan di produksi.
     'debug'    => env('APP_DEBUG', true),
@@ -31,7 +31,7 @@ return [
     ],
 
     'middleware' => [
-        'siswa' => App\Middleware\SiswaOnly::class,
+        'pengguna' => App\Middleware\PenggunaOnly::class,
         'auth'  => App\Middleware\Authenticate::class,
         'guest' => App\Middleware\RedirectIfAuthenticated::class,
         'admin' => App\Middleware\AdminOnly::class,

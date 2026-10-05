@@ -9,7 +9,7 @@
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
         <div>
             <h1 class="h3 admin-title">Verifikasi Keanggotaan</h1>
-            <p class="admin-subtitle">Periksa pengajuan siswa, lalu setujui atau tolak.</p>
+            <p class="admin-subtitle">Periksa pengajuan pengguna, lalu setujui atau tolak.</p>
         </div>
         <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
     </div>

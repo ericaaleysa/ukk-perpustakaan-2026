@@ -8,6 +8,7 @@
     --brand: #3b7fb0;
     --brand-dark: #1567b3;
     --brand-subtle: #eaf4fb;
+    --icon-bg: var(--brand);   /* warna latar ikon kartu; juga dipakai tombol outline di kartu */
 }
 
 body {
@@ -541,7 +542,9 @@ code.inline {
     -webkit-text-fill-color: transparent;
 }
 
-/* FEATURE ICON & ANIMASI GARIS KILAU BIRU MUDA */
+/* FEATURE ICON -- dua kartu persegi bertumpuk
+   ::after  = kartu depan (warna utama)
+   ::before = kartu belakang, sedikit miring dan menyembul di kanan atas */
 .feature-icon {
     display: inline-flex;
     place-items: center;
@@ -549,52 +552,44 @@ code.inline {
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: var(--brand); /* Dikembalikan ke BIRU bawaan tema */
+    background: transparent;      /* warna ada di dua pseudo-element di bawah */
     color: #ffffff;
     flex-shrink: 0;
     position: relative;
-    overflow: hidden;
-    z-index: 1;
+    z-index: 1;                   /* membuat lapisan sendiri agar kartu belakang tidak "bocor" */
 }
 
-[data-bs-theme="dark"] .feature-icon {
-    background: #3b7fb0af;
-    color: #ffffff;
-}
-
-/* Efek garis menyapu kilau biru muda (Sweep Line) */
-.card .feature-icon::before {
+.feature-icon::before,
+.feature-icon::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: -150%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        120deg, 
-        transparent 0%, 
-        rgba(56, 189, 248, 0.4) 20%, 
-        rgba(56, 189, 248, 0.9) 50%, 
-        rgba(56, 189, 248, 0.4) 80%, 
-        transparent 100%
-    );
-    transform: skewX(-25deg);
-    transition: none;
-    z-index: 2;
+    inset: 0;
+    border-radius: inherit;
     pointer-events: none;
 }
 
-.card:hover .feature-icon::before {
-    animation: shineSweep 0.8s ease-in-out forwards;
+.feature-icon::before {
+    z-index: -2;
+    background: var(--brand-subtle);
+    border: 1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+    transform: translate(6px, -6px) rotate(8deg);
+    transition: transform .25s ease;
 }
 
-@keyframes shineSweep {
-    0% {
-        left: -150%;
-    }
-    100% {
-        left: 150%;
-    }
+.feature-icon::after {
+    z-index: -1;
+    background: var(--icon-bg);
+    box-shadow: 0 3px 8px -3px color-mix(in srgb, var(--brand-dark) 60%, transparent);
+}
+
+/* Saat kartu di-hover, kartu belakang membuka sedikit (hapus blok ini kalau tidak mau ada gerakan) */
+.card:hover .feature-icon::before {
+    transform: translate(8px, -8px) rotate(14deg);
+}
+
+[data-bs-theme="dark"] .feature-icon::before {
+    background: color-mix(in srgb, var(--brand) 30%, transparent);
+    border-color: color-mix(in srgb, var(--brand) 55%, transparent);
 }
 
 .card .feature-icon svg {
@@ -875,12 +870,29 @@ code.inline {
 }
 
 /*pokok e button nimpa login/daftar disini ya*/
+/* Tombol berwarna penuh = fitur penting. Saat di-hover diberi gradasi ungu
+   di sisi kanan, sama seperti menu sidebar yang sedang terpilih. */
 .btn-brand:hover,
 .btn-brand:focus,
 .btn-brand:active {
-    background-color: var(--brand-bright);
-    border-color: var(--brand-bright);
+    background-color: var(--brand-dark);
+    background-image: linear-gradient(
+        90deg,
+        transparent 25%,
+        color-mix(in srgb, #7c3aed 60%, transparent) 100%
+    );
+    border-color: var(--brand-dark);
     color: #fff;
+}
+
+[data-bs-theme="dark"] .btn-brand:hover,
+[data-bs-theme="dark"] .btn-brand:focus,
+[data-bs-theme="dark"] .btn-brand:active {
+    background-image: linear-gradient(
+        90deg,
+        transparent 25%,
+        color-mix(in srgb, #a855f7 55%, transparent) 100%
+    );
 }
  
 .btn-outline-brand:hover,
@@ -895,9 +907,24 @@ code.inline {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: var(--brand-bright) !important;
-    border-color: var(--brand-bright) !important;
+    background-color: var(--brand-dark) !important;
+    background-image: linear-gradient(
+        90deg,
+        transparent 25%,
+        color-mix(in srgb, #7c3aed 60%, transparent) 100%
+    );
+    border-color: var(--brand-dark) !important;
     color: #fff !important;
+}
+
+[data-bs-theme="dark"] .btn-primary:hover,
+[data-bs-theme="dark"] .btn-primary:focus,
+[data-bs-theme="dark"] .btn-primary:active {
+    background-image: linear-gradient(
+        90deg,
+        transparent 25%,
+        color-mix(in srgb, #a855f7 55%, transparent) 100%
+    );
 }
  
 
@@ -972,4 +999,244 @@ code.inline {
     .hero-feature-card p {
         font-size: 0.78rem;
     }
+}
+
+/* =====================================================================
+   Halaman peminjaman/create -- daftar pilih buku
+   ===================================================================== */
+.pick-list { max-height: 480px; overflow-y: auto; }
+.pick-letter {
+    position: sticky; top: 0; z-index: 1;
+    padding: .25rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+    color: var(--brand-dark); background: var(--brand-subtle);
+}
+.pick-item {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .6rem 1rem; color: inherit; text-decoration: none;
+    border-left: 3px solid transparent;
+}
+.pick-item:hover { color: inherit; background: color-mix(in srgb, var(--brand) 8%, transparent); }
+.pick-item.selected {
+    background: color-mix(in srgb, var(--brand) 15%, transparent);
+    border-left-color: var(--brand);
+}
+.pick-cover {
+    width: 40px; height: 56px; object-fit: cover; border-radius: 4px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bs-tertiary-bg);
+}
+.pick-preview-cover {
+    width: 96px; height: 136px; object-fit: cover; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bs-tertiary-bg); font-size: 2rem;
+}
+
+/* =====================================================================
+   Halaman cetak laporan (peminjaman/cetak) -- semua aturan diawali
+   .cetak-page supaya tidak bocor ke halaman lain.
+   ===================================================================== */
+@page cetak { size: A4 landscape; margin: 14mm 12mm; }
+
+.cetak-page {
+    page: cetak;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #000;
+    background: #f0f0f0;
+    margin: 0;
+}
+.cetak-page * { box-sizing: border-box; }
+
+/* Lembar kertas di layar */
+.cetak-page .lembar {
+    background: #fff;
+    max-width: 1100px;
+    margin: 16px auto;
+    padding: 24px 28px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .15);
+}
+
+/* Toolbar (tidak ikut tercetak) */
+.cetak-page .toolbar {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.cetak-page .toolbar form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
+.cetak-page .toolbar label { font-size: 12px; color: #444; }
+.cetak-page .toolbar input,
+.cetak-page .toolbar button,
+.cetak-page .toolbar a {
+    font-size: 12px; padding: 6px 10px; border-radius: 4px;
+    border: 1px solid #bbb; background: #fff; color: #000; text-decoration: none; cursor: pointer;
+}
+.cetak-page .toolbar .btn-print { background: #111; color: #fff; border-color: #111; font-weight: 600; }
+.cetak-page .toolbar .spacer { flex: 1; }
+.cetak-page .toolbar .hint { font-size: 11px; color: #777; }
+
+/* Kop laporan */
+.cetak-page .kop { text-align: center; padding-bottom: 10px; border-bottom: 3px double #000; margin-bottom: 14px; }
+.cetak-page .kop .instansi { font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+.cetak-page .kop h1 { font-size: 18px; margin: 4px 0 2px; letter-spacing: .03em; }
+.cetak-page .kop .periode { font-size: 12px; color: #333; }
+
+/* Ringkasan */
+.cetak-page .ringkasan { display: flex; gap: 12px; margin-bottom: 12px; }
+.cetak-page .ringkasan .kotak { border: 1px solid #333; padding: 6px 12px; min-width: 170px; }
+.cetak-page .ringkasan .label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #444; }
+.cetak-page .ringkasan .nilai { font-size: 15px; font-weight: 700; }
+
+/* Tabel */
+.cetak-page table { width: 100%; border-collapse: collapse; }
+.cetak-page th,
+.cetak-page td { border: 1px solid #333; padding: 5px 7px; text-align: left; vertical-align: top; }
+.cetak-page th { background: #e9e9e9; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+.cetak-page td.c, .cetak-page th.c { text-align: center; }
+.cetak-page td.r, .cetak-page th.r { text-align: right; white-space: nowrap; }
+.cetak-page td.nowrap { white-space: nowrap; }
+.cetak-page tfoot td { font-weight: 700; background: #f4f4f4; }
+
+.cetak-page thead { display: table-header-group; }   /* judul kolom diulang tiap halaman */
+.cetak-page tfoot { display: table-row-group; }
+.cetak-page tr { page-break-inside: avoid; break-inside: avoid; }
+
+.cetak-page .kosong { padding: 24px; text-align: center; border: 1px dashed #999; }
+
+/* Tanda tangan */
+.cetak-page .ttd-wrap { display: flex; justify-content: flex-end; margin-top: 28px; page-break-inside: avoid; break-inside: avoid; }
+.cetak-page .ttd { width: 220px; text-align: center; }
+.cetak-page .ttd .ruang { height: 64px; }
+.cetak-page .ttd .nama { border-top: 1px solid #000; padding-top: 4px; font-weight: 700; }
+
+.cetak-page .catatan-cetak { margin-top: 16px; font-size: 10px; color: #666; }
+
+/* Saat dicetak */
+@media print {
+    .cetak-page { background: #fff; }
+    .cetak-page .toolbar { display: none !important; }
+    .cetak-page .lembar { max-width: none; margin: 0; padding: 0; box-shadow: none; }
+    .cetak-page * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* =====================================================================
+   Halaman admin/users -- form ubah username
+   ===================================================================== */
+.input-username-edit { width: 180px; }
+.col-no { width: 60px; }
+.form-btn-offset { padding-top: 1.9rem; }
+@media (max-width: 767.98px) { .form-btn-offset { padding-top: 0; } }
+
+/* Ikon pensil "Edit" di samping badge "Anda" (murni CSS, tanpa JavaScript).
+   Ukurannya disamakan dengan .status-pill; teks "Edit" muncul saat di-hover. */
+.edit-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+
+.edit-toggle { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+
+.edit-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.5;
+    height: calc(.75rem * 1.5 + .4rem + 2px);   /* tinggi sama dengan .status-pill */
+    padding: .2rem .5rem;
+    border: 1px solid var(--brand);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    transition: background-color .15s ease, color .15s ease;
+}
+.edit-pill:hover { background: var(--brand-subtle); }
+.edit-pill-icon { width: .8rem; height: .8rem; flex-shrink: 0; }
+
+.edit-pill-text {
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-width .2s ease, margin-left .2s ease, opacity .2s ease;
+}
+.edit-pill:hover .edit-pill-text,
+.edit-toggle:focus-visible ~ .edit-row .edit-pill-text {
+    max-width: 3rem;
+    margin-left: .3rem;
+    opacity: 1;
+}
+
+/* Saat form edit terbuka, tombol pensil terisi penuh */
+.edit-toggle:checked ~ .edit-row .edit-pill { background: var(--brand-dark); color: #fff; }
+.edit-toggle:focus-visible ~ .edit-row .edit-pill { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* Form edit: tersembunyi sampai pensil diklik */
+.edit-form-wrap { display: none; margin-top: .5rem; }
+.edit-toggle:checked ~ .edit-form-wrap { display: block; }
+
+/* =====================================================================
+   Halaman admin/stok
+   ===================================================================== */
+.input-cari { min-width: 200px; }
+
+/* =====================================================================
+   Kolom password dengan tombol mata (login & register)
+   ===================================================================== */
+.password-field { position: relative; }
+.password-field .form-control { padding-right: 2.75rem; }
+.password-field .form-control.is-invalid { background-image: none; }   /* ikon seru bawaan Bootstrap bentrok dengan ikon mata */
+
+.password-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.75rem;
+    height: calc(1.5rem + .75rem + 2px);          /* tinggi sama dengan .form-control */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--bs-secondary-color);
+    cursor: pointer;
+    border-radius: 0 var(--bs-border-radius) var(--bs-border-radius) 0;
+    transition: color .15s ease;
+}
+.password-toggle:hover { color: var(--brand-dark); }
+.password-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.password-toggle svg { width: 1.15rem; height: 1.15rem; }
+
+/* Ikon mata tercoret hanya tampil saat password sedang terlihat */
+.password-toggle .icon-eye-off { display: none; }
+.password-field.is-shown .icon-eye { display: none; }
+.password-field.is-shown .icon-eye-off { display: block; }
+
+[data-bs-theme="dark"] .password-toggle:hover { color: var(--brand); }
+
+
+/* ===================================================================
+   Tombol outline di dalam kartu (dashboard pengguna & admin):
+   warnanya disamakan dengan latar ikon kartu (--icon-bg).
+   Kartu hero (halaman welcome) sengaja dikecualikan.
+   =================================================================== */
+.card:not(.hero-feature-card) .btn-outline-brand {
+    border-color: var(--icon-bg);
+    color: var(--icon-bg);
+}
+
+.card:not(.hero-feature-card) .btn-outline-brand:hover,
+.card:not(.hero-feature-card) .btn-outline-brand:focus,
+.card:not(.hero-feature-card) .btn-outline-brand:active {
+    background-color: var(--icon-bg);
+    border-color: var(--icon-bg);
+    color: #fff;
 }

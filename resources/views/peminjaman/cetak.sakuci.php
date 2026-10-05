@@ -2,95 +2,117 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Laporan Transaksi Peminjaman</title>
-    <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; color: #000; margin: 24px; }
-        h1 { font-size: 18px; margin: 0; text-align: center; }
-        .sub { text-align: center; margin: 4px 0 16px; color: #555; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #333; padding: 6px 8px; text-align: left; }
-        th { background: #eee; }
-        .ringkasan { margin: 12px 0; }
-        .ttd { margin-top: 40px; float: right; text-align: center; width: 200px; }
-        .toolbar { margin-bottom: 16px; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; }
-        .toolbar input, .toolbar button, .toolbar a { font-size: 12px; padding: 4px 8px; }
-        @media print { .toolbar { display: none; } body { margin: 0; } }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body>
+<body class="cetak-page">
+
+@php
+    $petugas = \App\Models\User::current();
+    $labelStatus = [
+        'menunggu_konfirmasi' => 'Menunggu Konfirmasi',
+        'dipinjam'            => 'Dipinjam',
+        'ditolak'             => 'Ditolak',
+        'dikembalikan'        => 'Dikembalikan',
+    ];
+    $no = 1;
+@endphp
 
     {{-- Toolbar (tidak ikut tercetak) --}}
     <div class="toolbar">
-        <form method="GET" action="{{ route('peminjaman.cetak') }}" style="display:inline;">
-            Dari: <input type="date" name="tanggal_dari" value="{{ $tanggalDari }}">
-            Sampai: <input type="date" name="tanggal_sampai" value="{{ $tanggalSampai }}">
+        <form method="GET" action="{{ route('peminjaman.cetak') }}">
+            <label for="tanggal_dari">Dari</label>
+            <input type="date" name="tanggal_dari" id="tanggal_dari" value="{{ $tanggalDari }}">
+            <label for="tanggal_sampai">Sampai</label>
+            <input type="date" name="tanggal_sampai" id="tanggal_sampai" value="{{ $tanggalSampai }}">
             <button type="submit">Terapkan</button>
+            @if($tanggalDari || $tanggalSampai)
+                <a href="{{ route('peminjaman.cetak') }}">Reset</a>
+            @endif
         </form>
-        <button type="button" onclick="window.print()">Cetak / Simpan PDF</button>
-        <a href="{{ route('admin.dashboard') }}">&larr; Kembali</a>
+
+        <span class="spacer"></span>
+        <span class="hint">Di jendela cetak, pilih Printer atau "Simpan sebagai PDF"</span>
+        <button type="button" class="btn-print" onclick="window.print()">🖨 Cetak</button>
+        <a href="{{ route('peminjaman.index') }}">&larr; Kembali</a>
     </div>
 
-    <h1>LAPORAN TRANSAKSI PEMINJAMAN BUKU</h1>
-    <p class="sub">
-        NEX-LIB Perpustakaan<br>
-        @if($tanggalDari || $tanggalSampai)
-            Periode: {{ $tanggalDari ?: 'awal' }} s/d {{ $tanggalSampai ?: 'sekarang' }}
+    <div class="lembar">
+
+        <div class="kop">
+            <div class="instansi">NEXUS DIGITAL LIBRARY</div>
+            <h1>LAPORAN TRANSAKSI PEMINJAMAN BUKU</h1>
+            <div class="periode">
+                @if($tanggalDari || $tanggalSampai)
+                    Periode: {{ $tanggalDari ?: 'awal' }} s/d {{ $tanggalSampai ?: 'sekarang' }}
+                @else
+                    Periode: Semua transaksi
+                @endif
+            </div>
+        </div>
+
+        <div class="ringkasan">
+            <div class="kotak">
+                <div class="label">Total transaksi</div>
+                <div class="nilai">{{ count($daftarPeminjaman) }}</div>
+            </div>
+            <div class="kotak">
+                <div class="label">Total denda</div>
+                <div class="nilai">Rp{{ number_format($totalDenda, 0, ',', '.') }}</div>
+            </div>
+        </div>
+
+        @if(count($daftarPeminjaman) === 0)
+            <div class="kosong">Tidak ada transaksi pada periode ini.</div>
         @else
-            Periode: Semua transaksi
+        <table>
+            <thead>
+                <tr>
+                    <th class="c" style="width: 36px;">No</th>
+                    <th>Peminjam</th>
+                    <th>Judul Buku</th>
+                    <th class="c">Tgl Pinjam</th>
+                    <th class="c">Wajib Kembali</th>
+                    <th class="c">Tgl Dikembalikan</th>
+                    <th>Status</th>
+                    <th class="r">Denda</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($daftarPeminjaman as $p)
+                <tr>
+                    <td class="c">{{ $no++ }}</td>
+                    <td>{{ $p->peminjam->username ?? '-' }}</td>
+                    <td>{{ $p->buku->judul_buku ?? '-' }}</td>
+                    <td class="c nowrap">{{ $p->tanggal_pinjam }}</td>
+                    <td class="c nowrap">{{ $p->tanggal_wajib_kembali }}</td>
+                    <td class="c nowrap">{{ $p->tanggal_dikembalikan ?? '-' }}</td>
+                    <td class="nowrap">{{ $labelStatus[$p->status] ?? $p->status }}</td>
+                    <td class="r">{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7" class="r">Total denda</td>
+                    <td class="r">Rp{{ number_format($totalDenda, 0, ',', '.') }}</td>
+                </tr>
+            </tfoot>
+        </table>
         @endif
-    </p>
 
-    <div class="ringkasan">
-        Total transaksi: <strong>{{ count($daftarPeminjaman) }}</strong> &nbsp;|&nbsp;
-        Total denda: <strong>Rp{{ number_format($totalDenda, 0, ',', '.') }}</strong>
-    </div>
+        <div class="ttd-wrap">
+            <div class="ttd">
+                <div>Dicetak pada {{ date('d-m-Y') }}</div>
+                <div class="ruang"></div>
+                <div class="nama">( {{ $petugas->username ?? 'Admin Perpustakaan' }} )</div>
+                <div>Admin Perpustakaan</div>
+            </div>
+        </div>
 
-    @if(count($daftarPeminjaman) === 0)
-        <p>Tidak ada transaksi pada periode ini.</p>
-    @else
-    <table>
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Peminjam</th>
-                <th>Judul Buku</th>
-                <th>Tgl Pinjam</th>
-                <th>Wajib Kembali</th>
-                <th>Tgl Dikembalikan</th>
-                <th>Status</th>
-                <th>Denda</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php
-                $no = 1;
-                $labelStatus = [
-                    'menunggu_konfirmasi' => 'Menunggu Konfirmasi',
-                    'dipinjam' => 'Dipinjam',
-                    'ditolak' => 'Ditolak',
-                    'dikembalikan' => 'Dikembalikan',
-                ];
-            @endphp
-            @foreach($daftarPeminjaman as $p)
-            <tr>
-                <td>{{ $no++ }}</td>
-                <td>{{ $p->peminjam->username ?? '-' }}</td>
-                <td>{{ $p->buku->judul_buku ?? '-' }}</td>
-                <td>{{ $p->tanggal_pinjam }}</td>
-                <td>{{ $p->tanggal_wajib_kembali }}</td>
-                <td>{{ $p->tanggal_dikembalikan ?? '-' }}</td>
-                <td>{{ $labelStatus[$p->status] ?? $p->status }}</td>
-                <td>{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    @endif
+        <div class="catatan-cetak">Dokumen ini dibuat otomatis oleh sistem NEXLIB pada {{ date('d-m-Y H:i') }}.</div>
 
-    <div class="ttd">
-        <p>Dicetak pada {{ date('d-m-Y') }}</p>
-        <br><br><br>
-        <p>( Admin Perpustakaan )</p>
     </div>
 
 </body>

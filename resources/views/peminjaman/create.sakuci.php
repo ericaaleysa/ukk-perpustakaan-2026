@@ -68,7 +68,7 @@
             <div class="card admin-panel no-hover-lift">
                 <div class="admin-empty">
                     <strong>Belum ada buku yang tersedia</strong>
-                    Semua buku sedang dipinjam. Coba lagi nanti.
+                    Semua buku sedang habis stoknya. Coba lagi nanti.
                 </div>
             </div>
         </div>
@@ -97,7 +97,8 @@
                                             <div class="fw-semibold mb-1">{{ $bukuDipilih->judul_buku }}</div>
                                             <div class="text-secondary small">{{ $bukuDipilih->pengarang }}</div>
                                             <div class="text-secondary small">{{ $bukuDipilih->penerbit }} &middot; {{ $bukuDipilih->tahun_terbit }}</div>
-                                            <a href="{{ route('peminjaman.create') }}{{ $keyword !== '' ? '?q=' . urlencode($keyword) : '' }}" class="btn btn-sm btn-link text-secondary p-0 mt-2">Ganti pilihan</a>
+                                            <span class="admin-pill mt-2 d-inline-block">Stok: {{ $bukuDipilih->stok }}</span>
+                                            <a href="{{ route('peminjaman.create') }}{{ $keyword !== '' ? '?q=' . urlencode($keyword) : '' }}" class="btn btn-sm btn-link text-secondary p-0 mt-2 d-block">Ganti pilihan</a>
                                         </div>
                                     </div>
                                 </div>

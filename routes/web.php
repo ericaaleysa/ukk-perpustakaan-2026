@@ -67,6 +67,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/users/{id_user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{id_user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/database/export', [DatabaseController::class, 'export'])->name('admin.database.export');
 
@@ -85,6 +87,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('data_buku/{id_buku}/edit', [DataBukuController::class, 'edit'])->name('data_buku.edit');
     Route::put('data_buku/{id_buku}', [DataBukuController::class, 'update'])->name('data_buku.update');
     Route::delete('data_buku/{id_buku}', [DataBukuController::class, 'destroy'])->name('data_buku.destroy');
+    Route::get('data_buku/stok', [DataBukuController::class, 'stok'])->name('stok.index');
 
     //Verifikasi Keanggotaan
     Route::get('/keanggotaan', [PengajuanKeanggotaanController::class, 'index'])->name('keanggotaan.index');
@@ -115,11 +118,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 */
 // @generated-roles:start
 
-// @role:siswa:start
-Route::group(['prefix' => 'siswa', 'middleware' => 'siswa'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('siswa.dashboard');
+// @role:pengguna:start
+Route::group(['prefix' => 'pengguna', 'middleware' => 'pengguna'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('pengguna.dashboard');
 });
-// @role:siswa:end
+// @role:pengguna:end
 // @generated-roles:end
 
 /*
@@ -138,4 +141,4 @@ Route::group(['prefix' => 'siswa', 'middleware' => 'siswa'], function () {
 | Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 |     Route::get('/dashboard', [DashboardController::class, 'index']);
 | });
-*/
+*/ 

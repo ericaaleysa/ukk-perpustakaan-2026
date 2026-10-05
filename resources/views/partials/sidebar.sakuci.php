@@ -50,7 +50,14 @@
                             Data Buku
                         </a>
                     </li>
-                </ul>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('admin.users.index') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                            Kelola User
+                        </a>
+                    </li>
             @else
                 {{-- Pengguna biasa / Publik --}}
                 <div class="sidebar-section-title">Fitur Utama</div>
@@ -193,11 +200,5 @@
                 </div>
             @endif
         </div>
-    </div>
-
-    {{-- Footer Sidebar --}}
-    <div class="p-3 border-top text-center flex-shrink-0">
-        <div class="fw-semibold small">NEXUS DIGITAL LIBRARY</div>
-        <div class="text-secondary" style="font-size: 0.7rem;">Akselerasi Literasi, Memicu Energi Vokasi</div>
     </div>
 </div>

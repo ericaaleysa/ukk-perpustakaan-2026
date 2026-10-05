@@ -4,27 +4,24 @@
 
 @section('content')
 
-    <section class="mb-4">
-        <a href="{{ route('home') }}" class="text-decoration-none small">&larr; Kembali</a>
-        <h1 class="h3 fw-bold mt-2 mb-1">Tentang <span class="text-brand-dark">NEXLIB</span></h1>
-        <p class="text-secondary mb-0">Akselerasi Literasi, Memicu Energi Vokasi</p>
-    </section>
+<div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="h6 mb-0">
+                <span class="badge rounded-pill badge-ukk px-3 py-2">NEXLIB PROJECT '26</span>
+            </h2>
+        </div>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+    </div>
 
     {{-- Apa itu NEXLIB --}}
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-            <h2 class="h5 fw-semibold mb-2">Apa itu NEXLIB?</h2>
+            <h1 class="h3 fw-bold mt-2 mb-1">Apa itu <span class="text-brand-dark">NEXLIB</span> ?</h1>
             <p class="text-secondary mb-0">
                 Nexus Digital Library adalah pengembangan sistem Peminjaman Buku perpustakaan digital berbasis verifikasi Keanggotaan.<br> 
                 Siswa wajib mendaftar akun, mengajukan keanggotaan, dan diverifikasi petugas hingga berstatus anggota aktif sebelum dapat mengajukan peminjaman buku. 
                 Pengajuan peminjaman kemudian dikonfirmasi petugas, dan pengembalian buku dicatat lengkap dengan denda bila terlambat.
-            </p><br>
-
-            <h2 class="h6 fw-semibold mb-2 mt-3">Tujuan Pembuatan</h2>
-            <p class="text-secondary mb-0">
-                Web ini dibuat untuk memenuhi tugas besar akhir berupa Uji Kompetensi Keahlian (UKK), 
-                sebagai penerapan kompetensi yang telah dipelajari selama tiga tahun belajar di jurusan Rekayasa Perangkat Lunak (RPL) SMK Sangkuriang 1 Cimahi.
-            </p><br>
+            </p>
         </div>
     </div>
 
@@ -83,7 +80,7 @@
     {{-- Cara meminjam --}}
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
-            <h2 class="h5 fw-semibold mb-3">Cara meminjam buku</h2>
+            <h2 class="h5 fw-semibold mb-3">Cara Meminjam Buku</h2>
 
             <ul class="list-unstyled d-grid gap-3 mb-0">
                 <li class="d-flex gap-3">

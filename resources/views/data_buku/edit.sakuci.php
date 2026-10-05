@@ -50,6 +50,14 @@
                     <input type="text" name="tahun_terbit" id="tahun_terbit" class="form-control" inputmode="numeric" maxlength="4" value="{{ $data_buku->tahun_terbit }}" required>
                 </div>
 
+                <div class="mb-3">
+                    <label for="stok" class="form-label admin-label">Stok</label>
+                    <input type="number" name="stok" id="stok" min="0" max="9999"
+                            value="{{ old('stok') !== null && old('stok') !== ''
+                            ? old('stok') : (int) $data_buku->stok }}" required>
+                    @error('stok') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
                 <div class="mb-4">
                     <label for="thumbnail" class="form-label admin-label">Sampul buku <span class="admin-hint">(opsional)</span></label>
                     @if($data_buku->thumbnail)

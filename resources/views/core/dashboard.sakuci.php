@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'NEX-LIB - Siswa')
+@section('title', 'NEX-LIB - Pengguna')
 
 @section('content')
 
@@ -19,12 +19,12 @@
                         </span>
                     @else
                         <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-1">
-                            ● Anggota Non-Aktif
+                            ● Belum Mengajukan Keanggotaan
                         </span>
                     @endif
                 </div>
                 <h1 class="h3 fw-bold mb-2">
-                    Selamat Datang, <span class="text-brand-dark">{{ $user->username }} </span>! 👋
+                    Selamat Datang, <span class="text-brand-dark">{{ $user->username }} </span>👋
                 </h1>
                 <p class="text-secondary mb-0 small">
                     Kelola dan pantau pengajuan pinjaman buku perpustakaan kamu di sini.
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    {{-- Ringkasan Statistik Siswa --}}
+    {{-- Ringkasan Statistik Pengguna --}}
     <div class="row row-cols-1 row-cols-sm-3 g-3 mb-4">
         {{-- Total Aktif Dipinjam / Menunggu --}}
         <div class="col">

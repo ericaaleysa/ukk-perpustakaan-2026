@@ -9,7 +9,7 @@ use App\Models\User;
 
 class PengajuanKeanggotaanController extends Controller
 {
-    public function create(Request $request) //form pengajuan (siswa)
+    public function create(Request $request) //form pengajuan (pengguna)
     {
         $currentUser = User::current();
 
@@ -22,7 +22,7 @@ class PengajuanKeanggotaanController extends Controller
         return view('keanggotaan.create', compact('currentUser', 'pengajuanTerakhir'));
     }
 
-    public function store(Request $request) //simpan pengajuan (siswa)
+    public function store(Request $request) //simpan pengajuan (pengguna)
     {
         $currentUser = User::current();
 
@@ -73,7 +73,7 @@ class PengajuanKeanggotaanController extends Controller
         $pemohon = User::findOrFail($pengajuan->id_user);
         $pemohon->update(['status_keanggotaan' => 'aktif']);
 
-        return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan disetujui, siswa sekarang berstatus Anggota.');
+        return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan disetujui, pengguna sekarang berstatus Anggota.');
     }
 
     public function reject(Request $request, $id_pengajuan) //tolak (admin)

@@ -17,8 +17,8 @@
     <div class="card admin-panel no-hover-lift">
         @if(count($daftarSiswa) === 0)
             <div class="admin-empty">
-                <strong>Belum ada akun siswa</strong>
-                Akun siswa akan muncul di sini setelah mereka mendaftar.
+                <strong>Belum ada akun pengguna</strong>
+                Akun pengguna akan muncul di sini setelah mereka mendaftar.
             </div>
         @else
         <div class="table-responsive">
