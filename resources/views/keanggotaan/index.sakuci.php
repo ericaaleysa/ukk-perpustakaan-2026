@@ -11,7 +11,7 @@
             <h1 class="h3 admin-title">Verifikasi Keanggotaan</h1>
             <p class="admin-subtitle">Periksa pengajuan pengguna, lalu setujui atau tolak.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">
@@ -50,9 +50,9 @@
                                 <form action="{{ route('keanggotaan.approve', [$p->id_pengajuan]) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Setujui</button>
+                                    <button type="submit" class="btn btn-sm btn-brand px-3">Setujui</button>
                                 </form>
-                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_pengajuan }}">Tolak</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_pengajuan }}">Tolak</button>
                             </div>
                             <div class="collapse mt-2" id="tolak{{ $p->id_pengajuan }}">
                                 <form action="{{ route('keanggotaan.reject', [$p->id_pengajuan]) }}" method="POST">

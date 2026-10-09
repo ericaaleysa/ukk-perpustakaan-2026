@@ -78,9 +78,9 @@
             <div class="welcome-actions d-flex flex-wrap justify-content-center gap-2 mb-4 mb-md-5">
                 @if ($welcomeUser)
                     {{-- Cadangan: pengguna yang sudah login tidak perlu Masuk/Daftar lagi --}}
-                    <a href="{{ route($dashboardRoute) }}" class="btn btn-brand rounded-pill px-4">Buka Dashboard</a>
+                    <a href="{{ route($dashboardRoute) }}" class="btn btn-brand px-4">Buka Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-brand rounded-pill px-4 d-inline-flex align-items-center gap-2">
+                    <a href="{{ route('login') }}" class="btn btn-brand px-4 d-inline-flex align-items-center gap-2">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="8" cy="5" r="3" fill="currentColor" stroke="none"/>
                             <path d="M2.5 14c0-3.6 2.9-5.8 5.5-5.8s5.5 2.2 5.5 5.8"/>
@@ -88,7 +88,7 @@
                         Masuk
                     </a>
                     @if ($canRegister)
-                        <a href="{{ route('register') }}" class="btn btn-outline-brand rounded-pill px-4">Daftar</a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-brand px-4">Daftar</a>
                     @endif
                 @endif
             </div>

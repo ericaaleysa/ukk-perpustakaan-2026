@@ -11,7 +11,7 @@
             <h1 class="h3 admin-title">Kelola Anggota</h1>
             <p class="admin-subtitle">Atur status keaktifan anggota perpustakaan.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">
@@ -54,13 +54,13 @@
                                       onsubmit="return confirm('Nonaktifkan anggota ini?')">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Nonaktifkan</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary px-3">Nonaktifkan</button>
                                 </form>
                             @elseif($s->status_keanggotaan === 'non_aktif')
                                 <form action="{{ route('anggota.aktifkan', [$s->id]) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PUT')
-                                    <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Aktifkan kembali</button>
+                                    <button type="submit" class="btn btn-sm btn-brand px-3">Aktifkan kembali</button>
                                 </form>
                             @else
                                 <span class="cell-meta">-</span>

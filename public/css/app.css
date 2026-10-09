@@ -687,25 +687,38 @@ code.inline {
 .admin-title    { font-weight: 800; letter-spacing: -0.01em; margin-bottom: .15rem; }
 .admin-subtitle { font-weight: 300; color: var(--bs-secondary-color); margin-bottom: 0; }
 
-/* Panel putih berisi tabel / form, dengan aksen biru di atas */
+/* Panel berisi tabel / form: garis tipis 1px (sama seperti navbar & footer)
+   dan bayangan abu-abu lembut, tanpa garis tebal berwarna. */
+.admin-page {
+    --panel-shadow: 0 1px 2px rgba(15, 23, 42, .05), 0 10px 30px -14px rgba(15, 23, 42, .18);
+}
+[data-bs-theme="dark"] .admin-page {
+    --panel-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px -12px rgba(0, 0, 0, .65);
+}
 .admin-panel {
-    border: 0;
-    border-top: 3px solid var(--brand);
-    box-shadow: var(--bs-box-shadow-sm);
+    border: 1px solid var(--bs-border-color);
+    border-radius: .75rem;
+    box-shadow: var(--panel-shadow);
+}
+/* .no-hover-lift mengganti bayangan saat hover; untuk panel tetap pakai bayangan di atas */
+.card.admin-panel.no-hover-lift:hover {
+    box-shadow: var(--panel-shadow) !important;
 }
 
-/* Tabel */
+/* Tabel: tanpa latar berwarna, hanya garis tipis antar baris */
 .admin-table {
     --bs-table-bg: transparent;
-    --bs-table-hover-bg: color-mix(in srgb, var(--brand) 8%, transparent);
+    --bs-table-border-color: var(--bs-border-color);
+    --bs-table-hover-bg: color-mix(in srgb, var(--bs-emphasis-color) 4%, transparent);
     margin-bottom: 0;
 }
+.admin-table > :not(:first-child) { border-top: 0; }
 .admin-table thead th {
     font-weight: 600;
-    font-size: .8rem;
-    color: var(--brand-dark);
-    background-color: var(--brand-subtle);
-    border-bottom: 2px solid var(--brand);
+    font-size: .78rem;
+    color: var(--bs-secondary-color);
+    background-color: transparent;
+    border-bottom: 1px solid var(--bs-border-color);
     padding: .75rem 1rem;
     white-space: nowrap;
 }
@@ -713,14 +726,11 @@ code.inline {
     font-weight: 400;
     padding: .75rem 1rem;
     vertical-align: middle;
+    border-bottom: 1px solid var(--bs-border-color);
 }
+.admin-table tbody tr:last-child td { border-bottom: 0; }
 .admin-table .cell-main { font-weight: 600; }
 .admin-table .cell-meta { font-weight: 300; font-size: .85rem; color: var(--bs-secondary-color); }
-
-[data-bs-theme="dark"] .admin-table thead th {
-    background-color: transparent;
-    color: var(--brand);
-}
 
 /* Sampul buku */
 .admin-cover {
@@ -728,35 +738,32 @@ code.inline {
     height: 60px;
     object-fit: cover;
     border-radius: 6px;
-    box-shadow: var(--bs-box-shadow-sm);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .08);
 }
 .admin-cover-empty {
     width: 44px;
     height: 60px;
     border-radius: 6px;
-    border: 1px dashed var(--brand);
-    background: var(--brand-subtle);
-    color: var(--brand);
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-secondary-bg);
+    color: var(--bs-secondary-color);
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
-[data-bs-theme="dark"] .admin-cover-empty { background: transparent; }
 
 /* Label kategori */
 .admin-pill {
     display: inline-block;
     font-size: .75rem;
     font-weight: 600;
-    color: var(--brand-dark);
-    background: var(--brand-subtle);
-    padding: .2rem .7rem;
+    color: var(--bs-secondary-color);
+    background: transparent;
+    border: 1px solid var(--bs-border-color);
+    padding: .15rem .65rem;
     border-radius: 999px;
     white-space: nowrap;
-}
-[data-bs-theme="dark"] .admin-pill {
-    color: var(--brand);
-    background: color-mix(in srgb, var(--brand) 20%, transparent);
 }
 
 /* Form */
@@ -785,7 +792,7 @@ code.inline {
     margin-bottom: .15rem;
 }
 
-/* Label status */
+/* Label status: satu keluarga abu-abu, dibedakan lewat bentuk garis & ketebalan */
 .status-pill {
     display: inline-block;
     font-size: .75rem;
@@ -795,30 +802,31 @@ code.inline {
     border: 1px solid transparent;
     white-space: nowrap;
 }
-.status-aktif    { background: var(--brand-dark); color: #fff; }                 /* dipinjam, aktif: terisi penuh */
-.status-menunggu { background: var(--brand-subtle); color: var(--brand-dark); border: 1px dashed var(--brand); } /* menunggu: garis putus-putus */
-.status-selesai  { color: var(--brand-dark); border-color: var(--brand); }       /* dikembalikan: hanya garis */
-.status-nonaktif { background: var(--bs-secondary-bg); color: var(--bs-secondary-color); } /* ditolak, non-aktif: abu-abu */
+.status-aktif    {                                                              /* dipinjam, aktif: terisi lembut, teks tegas */
+    background: color-mix(in srgb, var(--bs-emphasis-color) 9%, transparent);
+    color: var(--bs-emphasis-color);
+    border-color: color-mix(in srgb, var(--bs-emphasis-color) 22%, transparent);
+}
+.status-menunggu { color: var(--bs-secondary-color); border: 1px dashed var(--bs-secondary-color); } /* menunggu: garis putus-putus */
+.status-selesai  { color: var(--bs-body-color); border-color: var(--bs-border-color); }              /* dikembalikan: hanya garis tipis */
+.status-nonaktif { background: var(--bs-secondary-bg); color: var(--bs-secondary-color); }           /* ditolak, non-aktif: pudar */
 .status-kosong   { font-weight: 400; color: var(--bs-secondary-color); border-color: var(--bs-border-color); }
- 
-[data-bs-theme="dark"] .status-menunggu { background: color-mix(in srgb, var(--brand) 20%, transparent); color: var(--brand); }
-[data-bs-theme="dark"] .status-selesai  { color: var(--brand); }
- 
-/* Kotak pemberitahuan (pengganti alert warna-warni) */
+
+/* Kotak pemberitahuan: garis tipis + bayangan lembut, sama seperti panel */
 .notice {
-    border-left: 4px solid var(--brand);
-    background: var(--brand-subtle);
+    border: 1px solid var(--bs-border-color);
+    background: var(--bs-body-bg);
+    box-shadow: var(--panel-shadow);
     color: var(--bs-body-color);
-    border-radius: 6px;
+    border-radius: .75rem;
     padding: 1rem 1.25rem;
     font-weight: 400;
 }
 .notice strong { font-weight: 600; }
 .notice a { font-weight: 600; color: var(--brand-dark); }
-.notice-muted { border-left-color: var(--bs-border-color); background: var(--bs-secondary-bg); }
-[data-bs-theme="dark"] .notice { background: color-mix(in srgb, var(--brand) 15%, transparent); }
+.notice-muted { background: var(--bs-secondary-bg); box-shadow: none; }
 [data-bs-theme="dark"] .notice a { color: var(--brand); }
-[data-bs-theme="dark"] .notice-muted { background: var(--bs-secondary-bg); }
+
 
 
 /* ===================================================================
@@ -1149,7 +1157,7 @@ code.inline {
     height: calc(.75rem * 1.5 + .4rem + 2px);   /* tinggi sama dengan .status-pill */
     padding: .2rem .5rem;
     border: 1px solid var(--brand);
-    border-radius: 999px;
+    border-radius: .375rem;
     color: var(--brand-dark);
     background: transparent;
     cursor: pointer;
@@ -1240,3 +1248,188 @@ code.inline {
     border-color: var(--icon-bg);
     color: #fff;
 }
+/* =========================================================
+   Panel "Buku Yang Sedang Dipinjam" (cover / list)
+   Tempel di AKHIR app.css (sudah termasuk di app.css hasil ini)
+   ========================================================= */
+
+html { scroll-behavior: smooth; }
+#panelDipinjam { scroll-margin-top: 80px; }
+.min-w-0 { min-width: 0; }
+
+/* ganti tampilan */
+.dipinjam-wrap[data-view="grid"] .view-list { display: none; }
+.dipinjam-wrap[data-view="list"] .view-grid { display: none; }
+
+.view-toggle .btn.active {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+/* placeholder kalau buku tidak punya cover */
+.book-cover-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: .6rem;
+    text-align: center;
+    font-size: .7rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #fff;
+    background: linear-gradient(160deg, var(--brand-bright), var(--brand-dark));
+    overflow: hidden;
+}
+.book-cover-fallback span {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* warna status (dipakai di cover maupun list) */
+.st-tunggu { color: #e0a800; }
+.st-telat  { color: var(--bs-danger); }
+.st-segera { color: #fd7e14; }
+.st-aman   { color: var(--bs-success); }
+
+/* ---------- Tampilan cover: satu baris, geser ke samping ---------- */
+.book-scroller { position: relative; }
+
+.book-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: .5rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+}
+
+.book-card {
+    flex: 0 0 130px;
+    width: 130px;
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+.book-cover {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: .5rem;
+    overflow: hidden;
+    background: var(--bs-tertiary-bg);
+    transition: transform .2s ease;
+}
+.book-card:hover .book-cover { transform: translateY(-3px); }
+.book-cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-title {
+    margin-top: .55rem;
+    font-size: .8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.book-meta {
+    font-size: .75rem;
+    color: var(--bs-secondary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.book-status {
+    margin-top: .1rem;
+    font-size: .75rem;
+    font-weight: 600;
+}
+.book-status::before { content: "\25CF\00a0"; font-size: .6rem; vertical-align: middle; }
+
+/* tombol panah geser */
+.book-nav {
+    display: none;
+    position: absolute;
+    top: 30%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: .375rem;
+    background: rgba(0, 0, 0, .65);
+    color: #fff;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+}
+.book-nav:hover { background: rgba(0, 0, 0, .85); }
+.book-nav-prev { left: 4px; }
+.book-nav-next { right: 4px; }
+
+/* ---------- Tampilan list: cover kiri, rincian kanan ---------- */
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    column-gap: 2rem;
+}
+
+.book-row {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.book-row-thumb {
+    position: relative;
+    flex: 0 0 80px;
+    width: 80px;
+    aspect-ratio: 3 / 4;
+    align-self: flex-start;
+    border-radius: .4rem;
+    overflow: hidden;
+    background: var(--bs-tertiary-bg);
+}
+.book-row-thumb .book-cover-fallback { font-size: .55rem; padding: .3rem; }
+.book-row-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-row-body { flex: 1; min-width: 0; }
+.book-row-title {
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+.book-row-sub {
+    font-size: .75rem;
+    color: var(--bs-secondary-color);
+    margin-bottom: .35rem;
+}
+.book-line {
+    display: flex;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .15rem 0;
+    font-size: .85rem;
+    font-weight: 600;
+}
+.book-line .time {
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--bs-secondary-color);
+    white-space: nowrap;
+}
+.book-line.st-telat .time { color: var(--bs-danger); }

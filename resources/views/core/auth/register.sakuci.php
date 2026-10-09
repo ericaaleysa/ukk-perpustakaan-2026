@@ -106,7 +106,7 @@
                             <input type="hidden" name="role" value="{{ $roles[0]->name }}">
                         @endif
 
-                        <button class="btn btn-brand rounded-pill w-100 py-2 fw-semibold mt-2" type="submit">Daftar</button>
+                        <button class="btn btn-brand w-100 py-2 fw-semibold mt-2" type="submit">Daftar</button>
                     </form>
 
                     <p class="text-secondary small text-center mt-3 mb-0">Sudah punya akun? <a href="{{ route('login') }}" class="fw-semibold">Masuk di sini</a></p>
@@ -114,7 +114,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr;</a>
+                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary px-3">&larr;</a>
             </div>
         </div>
     </section>

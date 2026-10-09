@@ -4,11 +4,13 @@
 
 @section('content')
 
-    <section class="mb-4">
-        <a href="{{ route('home') }}" class="text-decoration-none small">&larr; Kembali ke Beranda</a>
-        <h1 class="h3 fw-bold mt-2 mb-0">{{ $kategori->nama_kategori }}</h1>
-        <p class="text-secondary mb-0">{{ count($data_buku) }} buku tersedia pada kategori ini.</p>
-    </section>
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mt-2 mb-0">{{ $kategori->nama_kategori }}</h1>
+            <p class="text-secondary mb-0">{{ count($data_buku) }} buku tersedia pada kategori ini.</p>
+        </div>
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+    </div>
 
     @if(count($data_buku) === 0)
         <div class="text-center text-secondary py-5">

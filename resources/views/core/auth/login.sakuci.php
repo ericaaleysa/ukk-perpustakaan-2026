@@ -83,7 +83,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-brand rounded-pill w-100 py-2 fw-semibold" type="submit">Masuk</button>
+                        <button class="btn btn-brand w-100 py-2 fw-semibold" type="submit">Masuk</button>
                     </form>
 
                     @if ($canRegister)
@@ -93,7 +93,7 @@
             </div>
 
             <div class="mt-4">
-                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr;</a>
+                <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary px-3">&larr;</a>
             </div>
         </div>
     </section>

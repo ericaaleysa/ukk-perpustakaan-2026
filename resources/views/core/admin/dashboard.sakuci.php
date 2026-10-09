@@ -20,7 +20,7 @@
             </div>
 
             <div class="flex-shrink-0">
-                <a href="{{ route('stok.index') }}" class="btn btn-brand rounded-pill px-4 d-inline-flex align-items-center gap-2">
+                <a href="{{ route('stok.index') }}" class="btn btn-brand px-4 d-inline-flex align-items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
                     </svg>
@@ -46,7 +46,7 @@
                     </div>
                     <h3 class="h6 fw-semibold mb-1">Peminjaman</h3>
                     <p class="text-secondary small mb-3">Pantau dan kelola riwayat peminjaman serta pengembalian buku.</p>
-                    <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-outline-brand rounded-pill mt-auto">Kelola Peminjaman</a>
+                    <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-outline-brand mt-auto">Kelola Peminjaman</a>
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                     </div>
                     <h3 class="h6 fw-semibold mb-1">Anggota</h3>
                     <p class="text-secondary small mb-3">Lihat dan atur status keaktifan anggota perpustakaan.</p>
-                    <a href="{{ route('anggota.index') }}" class="btn btn-sm btn-outline-brand rounded-pill mt-auto">Kelola Anggota</a>
+                    <a href="{{ route('anggota.index') }}" class="btn btn-sm btn-outline-brand mt-auto">Kelola Anggota</a>
                 </div>
             </div>
 
@@ -80,7 +80,7 @@
                     </div>
                     <h3 class="h6 fw-semibold mb-1">Backup Database</h3>
                     <p class="text-secondary small mb-3">Unduh cadangan basis data (.sql) untuk mengamankan data sistem.</p>
-                    <a href="{{ route('admin.database.export') }}" class="btn btn-sm btn-brand rounded-pill mt-auto d-inline-flex align-items-center justify-content-center gap-1">
+                    <a href="{{ route('admin.database.export') }}" class="btn btn-sm btn-brand mt-auto d-inline-flex align-items-center justify-content-center gap-1">
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                             <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
@@ -102,7 +102,7 @@
                     </div>
                     <h3 class="h6 fw-semibold mb-1">Cetak Transaksi Peminjaman</h3>
                     <p class="text-secondary small mb-3">Unduh laporan transaksi peminjaman buku untuk keperluan administrasi.</p>
-                    <a href="{{ route('peminjaman.cetak') }}" target="_blank" class="btn btn-sm btn-brand rounded-pill mt-auto">Cetak Laporan</a>
+                    <a href="{{ route('peminjaman.cetak') }}" target="_blank" class="btn btn-sm btn-brand mt-auto">Cetak Laporan</a>
                 </div>
             </div>
         </div>

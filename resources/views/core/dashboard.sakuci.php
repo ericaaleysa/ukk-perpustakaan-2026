@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- Banner Selamat Datang & Status Keanggotaan --}}
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card border-0 shadow-sm no-hover-lift mb-4">
         <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-3">
@@ -27,20 +27,62 @@
                     Selamat Datang, <span class="text-brand-dark">{{ $user->username }} </span>👋
                 </h1>
                 <p class="text-secondary mb-0 small">
-                    Kelola dan pantau pengajuan pinjaman buku perpustakaan kamu di sini.
+                    {{ ($user->status_keanggotaan ?? 'non_aktif') === 'aktif' ? 
+                        'Pantau aktivitas peminjaman buku dan buku favoritmu di sini.' : 
+                        'Kamu belum mengajukan keanggotaan. Silakan ajukan keanggotaan agar dapat meminjam buku.'
+                    }}
                 </p>
+            </div>
+
+            {{-- Sisi kanan: tombol ajukan keanggotaan (pindahan dari sidebar) --}}
+            <div class="d-grid gap-2">
+                <a href="{{ route('keanggotaan.create') }}" class="btn btn-brand px-4 d-inline-flex align-items-center justify-content-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2 1c-2.67 0-5.5 1.34-5.5 3v1h8.256A4.5 4.5 0 0 1 10 10.5c0-.827.224-1.6.614-2.264A8.99 8.99 0 0 0 8 9z"/>
+                        <path fill-rule="evenodd" d="M13.5 7a.5.5 0 0 1 .5.5V9h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V10h-1.5a.5.5 0 0 1 0-1H13V7.5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                    Ajukan Keanggotaan
+                </a>
+
+                {{-- Tombol sekunder: buka sidebar lalu lompat ke Kategori Buku --}}
+                <button type="button" id="btnCariKoleksi" class="btn btn-outline-secondary px-4 d-inline-flex align-items-center justify-content-center gap-2"
+                        aria-controls="sidebarUtama">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                    Cari Koleksi
+                </button>
             </div>
         </div>
     </div>
 
-    {{-- Ringkasan Statistik Pengguna --}}
+    {{-- Tiga kartu pintasan (semuanya bisa diklik) --}}
     <div class="row row-cols-1 row-cols-sm-3 g-3 mb-4">
-        {{-- Total Aktif Dipinjam / Menunggu --}}
+
+        {{-- Kartu 1: Buku Favorit --}}
         <div class="col">
-            <div class="card border-0 shadow-sm p-3 h-100">
+            <a href="{{ route('favorit.index') }}" class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                 <div class="d-flex align-items-center gap-3">
                     <div class="feature-icon">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
+                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-5 text-brand-dark">Buku Favorit</div>
+                        <div class="text-secondary small">Koleksi buku yang kamu sukai</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{-- Kartu 2: Buku yang dipinjam (klik untuk lompat ke daftar di bawah) --}}
+        <div class="col">
+            <a href="#panelDipinjam"
+               class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon">
+                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                             <path d="M8 1.884c-1.545-.887-3.837-1.113-5.487-.573C1.923.42 1.5.904 1.5 1.5v10.5c0 .548.44.98.955.86 1.469-.34 3.618-.146 5.045.567V1.884zm1 11.543c1.427-.713 3.576-.907 5.045-.567.516.12.955-.312.955-.86V1.5c0-.596-.423-1.08-1.013-1.19C12.337.77 10.045.996 8.5 1.884v11.543z"/>
                         </svg>
                     </div>
@@ -48,142 +90,237 @@
                         <div class="fw-bold fs-5 text-brand-dark">
                             {{ isset($totalPinjamAktif) ? $totalPinjamAktif : 0 }} Buku
                         </div>
-                        <div class="text-secondary small">Sedang Dipinjam / Menunggu</div>
+                        <div class="text-secondary small">Sedang Dipinjam</div>
+                        @if(($jumlahPeringatan ?? 0) > 0)
+                            <div class="text-danger small fw-semibold">&#9888; {{ $jumlahPeringatan }} perlu perhatian</div>
+                        @endif
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
-        {{-- Total Selesai Dipinjam --}}
+        {{-- Kartu 3: Ajukan Peminjaman (pindahan dari sidebar) --}}
         <div class="col">
-            <div class="card border-0 shadow-sm p-3 h-100">
+            <a href="{{ route('peminjaman.create') }}" class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                 <div class="d-flex align-items-center gap-3">
                     <div class="feature-icon">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                         </svg>
                     </div>
                     <div>
-                        <div class="fw-bold fs-5 text-brand-dark">
-                            {{ isset($totalDikembalikan) ? $totalDikembalikan : 0 }} Buku
-                        </div>
-                        <div class="text-secondary small">Selesai Dikembalikan</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Total Denda --}}
-        <div class="col">
-            <div class="card border-0 shadow-sm p-3 h-100">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="feature-icon">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
-                            <path d="M8 3.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8.5 7.71V4a.5.5 0 0 0-.5-.5z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="fw-bold fs-5 text-brand-dark">
-                            Rp {{ number_format($totalDenda ?? 0, 0, ',', '.') }}
-                        </div>
-                        <div class="text-secondary small">Total Denda Terpilih</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        {{-- Kolom Kiri: Buku Yang Sedang Dipinjam / Menunggu --}}
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-                    <h2 class="h6 fw-bold mb-0 text-brand-dark d-flex align-items-center gap-2">
-                        <span>📚</span> Buku Yang Sedang Dipinjam
-                    </h2>
-                    <a href="{{ route('peminjaman.riwayat') }}" class="small text-decoration-none text-brand-dark fw-semibold">Lihat Semua</a>
-                </div>
-                
-                <div class="card-body p-4">
-                    @if(isset($bukuSedangDipinjam) && count($bukuSedangDipinjam) > 0)
-                        @foreach($bukuSedangDipinjam as $p)
-                            <div class="p-3 border rounded-3 bg-body-tertiary mb-3">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h3 class="h6 fw-bold mb-1">{{ $p->buku->judul_buku ?? 'Judul Buku' }}</h3>
-                                        <p class="text-secondary small mb-0">
-                                            {{ $p->buku->pengarang ?? '-' }} &middot; {{ $p->buku->penerbit ?? '-' }}
-                                        </p>
-                                    </div>
-                                    @if($p->status === 'menunggu_konfirmasi')
-                                        <span class="badge bg-warning text-dark rounded-pill small">Menunggu Admin</span>
-                                    @elseif($p->status === 'dipinjam')
-                                        <span class="badge bg-primary rounded-pill small">Sedang Dipinjam</span>
-                                    @endif
-                                </div>
-                                <hr class="my-2 border-secondary-subtle">
-                                @if($p->tanggal_pinjam)
-                                    <div class="d-flex justify-content-between text-secondary small">
-                                        <span>Tgl Pinjam: <strong>{{ date('d M Y', strtotime($p->tanggal_pinjam)) }}</strong></span>
-                                        <span>Wajib Kembali: <strong>{{ date('d M Y', strtotime($p->tanggal_wajib_kembali)) }}</strong></span>
-                                    </div>
-                                @else
-                                    <div class="text-secondary small">Masa pinjam ditentukan setelah pengajuan disetujui admin.</div>
-                                @endif
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="text-center py-4 text-secondary">
-                            <p class="mb-2">Belum ada buku yang sedang dipinjam.</p>
+                        <div class="fw-bold fs-5 text-brand-dark">Ajukan Peminjaman</div>
+                        <div class="text-secondary small">
                             @if(($user->status_keanggotaan ?? 'non_aktif') === 'aktif')
-                                <a href="{{ route('peminjaman.create') }}" class="btn btn-sm btn-outline-brand rounded-pill">Mulai Pinjam Buku</a>
+                                Pilih buku yang ingin dipinjam
+                            @else
+                                Perlu keanggotaan aktif
                             @endif
                         </div>
-                    @endif
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        {{-- Kolom Kanan: Riwayat Terakhir --}}
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-                    <h2 class="h6 fw-bold mb-0 text-brand-dark d-flex align-items-center gap-2">
-                        <span>🕒</span> Riwayat Terakhir
-                    </h2>
-                </div>
-
-                <div class="card-body p-4">
-                    @if(isset($riwayatTerakhir) && count($riwayatTerakhir) > 0)
-                        <ul class="list-group list-group-flush small">
-                            @foreach($riwayatTerakhir as $r)
-                                <li class="list-group-item bg-transparent px-0 py-2 d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="fw-semibold">{{ $r->buku->judul_buku ?? 'Buku' }}</div>
-                                        <div class="text-secondary opacity-75" style="font-size: 12px;">
-                                            @if($r->status === 'dikembalikan')
-                                                Selesai: {{ date('d M Y', strtotime($r->tanggal_dikembalikan)) }}
-                                            @elseif($r->status === 'ditolak')
-                                                Ditolak: {{ $r->catatan_admin ?? 'Tidak disetujui' }}
-                                            @endif
-                                        </div>
-                                    </div>
-                                    @if($r->status === 'dikembalikan')
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Dikembalikan</span>
-                                    @elseif($r->status === 'ditolak')
-                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">Ditolak</span>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <p class="text-secondary small text-center my-3">Belum ada riwayat transaksi peminjaman.</p>
-                    @endif
-                </div>
-            </div>
+            </a>
         </div>
     </div>
+
+    {{-- Panel Buku Yang Sedang Dipinjam: selebar halaman, bisa ganti tampilan list / cover --}}
+    <div class="card border-0 shadow-sm no-hover-lift" id="panelDipinjam">
+        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h2 class="h6 fw-bold mb-0 text-brand-dark d-flex align-items-center gap-2">
+                Buku Yang Sedang Dipinjam
+                <span class="badge rounded-pill text-bg-secondary">{{ count($bukuSedangDipinjam ?? []) }}</span>
+            </h2>
+            <div class="d-flex align-items-center gap-3">
+                {{-- Pengganti tampilan --}}
+                <div class="btn-group btn-group-sm view-toggle" role="group" aria-label="Pilih tampilan">
+                    <button type="button" class="btn btn-outline-secondary active" data-view-btn="grid" title="Tampilan cover">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/></svg>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-view-btn="list" title="Tampilan daftar">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
+                    </button>
+                </div>
+                <a href="{{ route('peminjaman.riwayat') }}" class="btn-smal btn-outline-brand fw-semibold">Lihat Semua</a>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            @if(isset($bukuSedangDipinjam) && count($bukuSedangDipinjam) > 0)
+
+                <div class="dipinjam-wrap" id="dipinjamWrap" data-view="grid">
+
+                    {{-- ============ TAMPILAN COVER: baris cover yang bisa digeser ke samping ============ --}}
+                    <div class="view-grid book-scroller">
+                        <div class="book-track" id="bookTrack">
+                            @foreach($bukuSedangDipinjam as $p)
+                                <div class="book-card">
+                                    <div class="book-cover">
+                                        <div class="book-cover-fallback"><span>{{ $p->buku->judul_buku ?? 'Buku' }}</span></div>
+                                        @if(!empty($p->buku->thumbnail))
+                                            <img src="{{ $p->buku->thumbnail }}" alt="Cover {{ $p->buku->judul_buku ?? '' }}" loading="lazy" onerror="this.remove()">
+                                        @endif
+                                    </div>
+                                    <div class="book-title" title="{{ $p->buku->judul_buku ?? '' }}">{{ $p->buku->judul_buku ?? 'Judul Buku' }}</div>
+                                    <div class="book-meta">
+                                        @if($p->tanggal_pinjam)
+                                            Kembali {{ date('d M Y', strtotime($p->tanggal_wajib_kembali)) }}
+                                        @else
+                                            Belum disetujui
+                                        @endif
+                                    </div>
+                                    @if($p->status === 'menunggu_konfirmasi')
+                                        <div class="book-status st-tunggu">Menunggu Admin</div>
+                                    @elseif(($p->peringatan ?? '') === 'telat')
+                                        <div class="book-status st-telat">Telat {{ $p->telat_hari }} hari</div>
+                                    @elseif(($p->peringatan ?? '') === 'segera')
+                                        <div class="book-status st-segera">{{ $p->sisa_hari == 0 ? 'Jatuh tempo hari ini' : $p->sisa_hari . ' hari lagi' }}</div>
+                                    @else
+                                        <div class="book-status st-aman">{{ isset($p->sisa_hari) ? $p->sisa_hari . ' hari lagi' : 'Dipinjam' }}</div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        <button type="button" class="book-nav book-nav-prev" id="bookPrev" aria-label="Geser ke kiri">&lsaquo;</button>
+                        <button type="button" class="book-nav book-nav-next" id="bookNext" aria-label="Geser ke kanan">&rsaquo;</button>
+                    </div>
+
+                    {{-- ============ TAMPILAN LIST: cover di kiri, rincian di kanan ============ --}}
+                    <div class="view-list book-list">
+                        @foreach($bukuSedangDipinjam as $p)
+                            <div class="book-row">
+                                <div class="book-row-thumb">
+                                    <div class="book-cover-fallback"><span>{{ $p->buku->judul_buku ?? 'Buku' }}</span></div>
+                                    @if(!empty($p->buku->thumbnail))
+                                        <img src="{{ $p->buku->thumbnail }}" alt="" loading="lazy" onerror="this.remove()">
+                                    @endif
+                                </div>
+                                <div class="book-row-body">
+                                    <div class="book-row-title">{{ $p->buku->judul_buku ?? 'Judul Buku' }}</div>
+                                    <div class="book-row-sub">{{ $p->buku->pengarang ?? '-' }} &middot; {{ $p->buku->penerbit ?? '-' }}</div>
+
+                                    @if($p->tanggal_pinjam)
+                                        <div class="book-line"><span>Tgl pinjam</span><span class="time">{{ date('d M Y', strtotime($p->tanggal_pinjam)) }}</span></div>
+                                        <div class="book-line"><span>Wajib kembali</span><span class="time">{{ date('d M Y', strtotime($p->tanggal_wajib_kembali)) }}</span></div>
+                                    @else
+                                        <div class="book-line"><span>Masa pinjam ditentukan setelah disetujui admin</span></div>
+                                    @endif
+
+                                    @if($p->status === 'menunggu_konfirmasi')
+                                        <div class="book-line st-tunggu"><span>Menunggu Admin</span></div>
+                                    @elseif(($p->peringatan ?? '') === 'telat')
+                                        <div class="book-line st-telat"><span>Telat {{ $p->telat_hari }} hari</span><span class="time">Denda Rp {{ number_format($p->denda_berjalan, 0, ',', '.') }}</span></div>
+                                    @elseif(($p->peringatan ?? '') === 'segera')
+                                        <div class="book-line st-segera"><span>{{ $p->sisa_hari == 0 ? 'Jatuh tempo hari ini' : $p->sisa_hari . ' hari lagi' }}</span></div>
+                                    @else
+                                        <div class="book-line st-aman"><span>{{ isset($p->sisa_hari) ? $p->sisa_hari . ' hari lagi' : 'Sedang dipinjam' }}</span></div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                </div>
+
+            @else
+                <div class="text-center py-5 text-secondary">
+                    <p class="mb-2">Belum ada buku yang sedang dipinjam.</p>
+                    @if(($user->status_keanggotaan ?? 'non_aktif') === 'aktif')
+                        <a href="{{ route('peminjaman.create') }}" class="btn btn-sm btn-outline-secondary">Mulai Pinjam Buku</a>
+                    @endif
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <script>
+        // "Cari Koleksi": buka sidebar, lalu buka daftar Kategori Buku dan gulir ke sana
+        (function () {
+            var tombol = document.getElementById('btnCariKoleksi');
+            if (!tombol) return;
+
+            tombol.addEventListener('click', function () {
+                var sidebar = document.getElementById('sidebarUtama');
+                if (!sidebar) return;
+                var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(sidebar);
+
+                function bukaKategori() {
+                    var daftar = document.getElementById('sidebarKategoriList');
+                    if (!daftar) return;
+                    bootstrap.Collapse.getOrCreateInstance(daftar, { toggle: false }).show();
+                    var pemicu = document.querySelector('[data-bs-target="#sidebarKategoriList"]');
+                    if (pemicu) {
+                        pemicu.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        pemicu.focus({ preventScroll: true });
+                    }
+                }
+
+                if (sidebar.classList.contains('show')) {
+                    bukaKategori();
+                } else {
+                    sidebar.addEventListener('shown.bs.offcanvas', bukaKategori, { once: true });
+                    offcanvas.show();
+                }
+            });
+        })();
+    </script>
+
+    <script>
+        // Panah geser untuk baris cover
+        (function () {
+            var track = document.getElementById('bookTrack');
+            if (!track) return;
+            var prev = document.getElementById('bookPrev');
+            var next = document.getElementById('bookNext');
+
+            function perbarui() {
+                var bisaGeser = track.scrollWidth > track.clientWidth + 2;
+                prev.style.display = bisaGeser && track.scrollLeft > 4 ? 'block' : 'none';
+                next.style.display = bisaGeser && track.scrollLeft + track.clientWidth < track.scrollWidth - 4 ? 'block' : 'none';
+            }
+            function geser(arah) {
+                track.scrollBy({ left: arah * track.clientWidth * 0.8, behavior: 'smooth' });
+            }
+
+            prev.addEventListener('click', function () { geser(-1); });
+            next.addEventListener('click', function () { geser(1); });
+            track.addEventListener('scroll', perbarui);
+            window.addEventListener('resize', perbarui);
+            perbarui();
+
+            // hitung ulang saat pindah ke tampilan cover
+            document.querySelectorAll('[data-view-btn]').forEach(function (b) {
+                b.addEventListener('click', function () { setTimeout(perbarui, 50); });
+            });
+        })();
+    </script>
+
+    <script>
+        // Simpan pilihan tampilan (cover / list) di browser supaya diingat saat halaman dibuka lagi
+        (function () {
+            var wrap = document.getElementById('dipinjamWrap');
+            if (!wrap) return;
+            var tombol = document.querySelectorAll('[data-view-btn]');
+
+            function pakai(mode) {
+                wrap.setAttribute('data-view', mode);
+                tombol.forEach(function (b) {
+                    b.classList.toggle('active', b.getAttribute('data-view-btn') === mode);
+                });
+            }
+
+            var tersimpan = null;
+            try { tersimpan = localStorage.getItem('nexlib_view_dipinjam'); } catch (e) {}
+            pakai(tersimpan === 'list' ? 'list' : 'grid');
+
+            tombol.forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var mode = b.getAttribute('data-view-btn');
+                    pakai(mode);
+                    try { localStorage.setItem('nexlib_view_dipinjam', mode); } catch (e) {}
+                });
+            });
+        })();
+    </script>
 
 @endsection

@@ -19,15 +19,25 @@
 
 <style>
     .pick-list { max-height: 480px; overflow-y: auto; }
+    /* Card kiri menempel di bawah navbar (bukan menimpanya) saat halaman di-scroll di layar besar */
+    @media (min-width: 992px) {
+        .pick-sticky {
+            position: sticky;
+            top: calc(var(--navbar-height, 57px) + 1rem);
+            z-index: 1;
+        }
+    }
     .pick-letter {
         position: sticky; top: 0; z-index: 1;
         padding: .25rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
-        color: var(--brand-dark); background: var(--brand-subtle);
+        color: var(--bs-secondary-color); background: var(--bs-secondary-bg);
+        border-top: 1px solid var(--bs-border-color); border-bottom: 1px solid var(--bs-border-color);
     }
     .pick-item {
         display: flex; align-items: center; gap: .75rem;
         padding: .6rem 1rem; color: inherit; text-decoration: none;
         border-left: 3px solid transparent;
+        scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
     }
     .pick-item:hover { color: inherit; background: color-mix(in srgb, var(--brand) 8%, transparent); }
     .pick-item.selected {
@@ -68,7 +78,7 @@
             <div class="card admin-panel no-hover-lift">
                 <div class="admin-empty">
                     <strong>Belum ada buku yang tersedia</strong>
-                    Semua buku sedang habis stoknya. Coba lagi nanti.
+                    Semua buku sedang dipinjam. Coba lagi nanti.
                 </div>
             </div>
         </div>
@@ -77,7 +87,7 @@
 
             {{-- Kiri: buku yang dipilih + tombol ajukan --}}
             <div class="col-12 col-lg-5">
-                <div class="card admin-panel no-hover-lift sticky-lg-top" style="top: 1rem;">
+                <div class="card admin-panel no-hover-lift pick-sticky">
                     <div class="card-body p-4">
                         <form action="{{ route('peminjaman.store') }}" method="POST">
                             @csrf
@@ -97,8 +107,7 @@
                                             <div class="fw-semibold mb-1">{{ $bukuDipilih->judul_buku }}</div>
                                             <div class="text-secondary small">{{ $bukuDipilih->pengarang }}</div>
                                             <div class="text-secondary small">{{ $bukuDipilih->penerbit }} &middot; {{ $bukuDipilih->tahun_terbit }}</div>
-                                            <span class="admin-pill mt-2 d-inline-block">Stok: {{ $bukuDipilih->stok }}</span>
-                                            <a href="{{ route('peminjaman.create') }}{{ $keyword !== '' ? '?q=' . urlencode($keyword) : '' }}" class="btn btn-sm btn-link text-secondary p-0 mt-2 d-block">Ganti pilihan</a>
+                                            <a href="{{ route('peminjaman.create') }}{{ $keyword !== '' ? '?q=' . urlencode($keyword) : '' }}" class="btn btn-sm btn-link text-secondary p-0 mt-2">Ganti pilihan</a>
                                         </div>
                                     </div>
                                 </div>
@@ -111,8 +120,8 @@
 
                             <p class="admin-hint mb-4">Masa pinjam 7 hari sejak pengajuan disetujui admin.</p>
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-brand rounded-pill px-4" {{ $bukuDipilih ? '' : 'disabled' }}>Ajukan peminjaman</button>
-                                <a href="{{ route('peminjaman.riwayat') }}" class="btn btn-outline-secondary rounded-pill px-4">Lihat riwayat</a>
+                                <button type="submit" class="btn btn-brand px-4" {{ $bukuDipilih ? '' : 'disabled' }}>Ajukan peminjaman</button>
+                                <a href="{{ route('peminjaman.riwayat') }}" class="btn btn-outline-secondary px-4">Lihat riwayat</a>
                             </div>
                         </form>
                     </div>
@@ -133,9 +142,9 @@
                             <input type="text" name="q" value="{{ $keyword }}"
                                    class="form-control form-control-sm w-auto flex-grow-1" style="min-width: 200px;"
                                    placeholder="Cari judul, pengarang, atau penerbit...">
-                            <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Cari</button>
+                            <button type="submit" class="btn btn-sm btn-brand px-3">Cari</button>
                             @if($keyword !== '')
-                                <a href="{{ route('peminjaman.create') }}{{ $idDipilih ? '?pilih=' . $idDipilih : '' }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
+                                <a href="{{ route('peminjaman.create') }}{{ $idDipilih ? '?pilih=' . $idDipilih : '' }}" class="btn btn-sm btn-outline-secondary px-3">Reset</a>
                             @endif
                         </form>
                     </div>

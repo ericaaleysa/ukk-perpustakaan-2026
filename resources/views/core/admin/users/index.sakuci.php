@@ -17,7 +17,7 @@
             <h1 class="h3 admin-title">Kelola User</h1>
             <p class="admin-subtitle">Tambah akun baru, ubah username akunmu, atau hapus akun yang tidak dipakai.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     {{-- Form tambah user --}}
@@ -48,7 +48,7 @@
                     <div class="admin-hint mt-1">Butuh role lain? <a href="{{ route('admin.roles.index') }}">Kelola Role di sini</a>.</div>
                 </div>
                 <div class="col-12 col-md-3 text-md-end form-btn-offset">
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Tambah user</button>
+                    <button type="submit" class="btn btn-brand px-4">Tambah user</button>
                 </div>
             </form>
         </div>
@@ -66,9 +66,9 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <span class="form-label admin-label mb-0 me-1">Urutkan</span>
                 <a href="{{ route('admin.users.index') }}?urut=role"
-                   class="btn btn-sm rounded-pill px-3 {{ $urut === 'role' ? 'btn-brand' : 'btn-outline-secondary' }}">Role &amp; nama</a>
+                   class="btn btn-sm px-3 {{ $urut === 'role' ? 'btn-brand' : 'btn-outline-secondary' }}">Role &amp; nama</a>
                 <a href="{{ route('admin.users.index') }}?urut=terbaru"
-                   class="btn btn-sm rounded-pill px-3 {{ $urut === 'terbaru' ? 'btn-brand' : 'btn-outline-secondary' }}">Akun terbaru</a>
+                   class="btn btn-sm px-3 {{ $urut === 'terbaru' ? 'btn-brand' : 'btn-outline-secondary' }}">Akun terbaru</a>
                 <span class="text-secondary small ms-auto">{{ count($users) }} akun</span>
             </div>
         </div>
@@ -115,7 +115,7 @@
                                                    maxlength="50" required aria-label="Username baru">
                                             @error('new_username') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                         </div>
-                                        <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Simpan</button>
+                                        <button type="submit" class="btn btn-sm btn-brand px-3">Simpan</button>
                                     </form>
                                 </div>
                             @else
@@ -133,7 +133,7 @@
                                       onsubmit="return confirm('Hapus akun {{ $item->username }}? Riwayat peminjaman dan pengajuan keanggotaannya juga ikut terhapus.')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Hapus</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary px-3">Hapus</button>
                                 </form>
                             @endif
                         </td>

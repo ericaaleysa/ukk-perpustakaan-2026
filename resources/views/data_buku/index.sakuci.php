@@ -112,7 +112,7 @@
 
         <div class="card-footer bg-transparent d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div>{!! $data_buku->links() !!}</div>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
         </div>
     </div>
 

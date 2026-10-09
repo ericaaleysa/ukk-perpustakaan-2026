@@ -57,7 +57,7 @@
                             <input type="text" name="kelas" id="kelas" class="form-control" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Ajukan keanggotaan</button>
+                    <button type="submit" class="btn btn-brand px-4">Ajukan keanggotaan</button>
                 </form>
             </div>
         </div>

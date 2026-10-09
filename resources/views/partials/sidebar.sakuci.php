@@ -111,39 +111,12 @@
                     </li>
 
                     <li class="nav-item">
-                        <button class="nav-link w-100 text-start d-flex align-items-center justify-content-between" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#sidebarPeminjamanList"
-                                aria-expanded="false" aria-controls="sidebarPeminjamanList">
-                            <span class="d-flex align-items-center gap-2">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
-                                    <path fill-rule="evenodd" d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
-                                    <path d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7h-1.017A5.002 5.002 0 0 0 8 3zm-3.917 6A5.002 5.002 0 0 0 8 13c1.552 0 2.94-.707 3.857-1.818a.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9h1.017z"/>
-                                </svg>
-                                Peminjaman Buku
-                            </span>
-                            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
-                                <path d="M4 6l4 4 4-4H4z"/>
-                            </svg>
-                        </button>
-                        <div class="collapse {{ is_route('peminjaman.create') || is_route('peminjaman.riwayat') ? 'show' : '' }}" id="sidebarPeminjamanList">
-                            <ul class="nav flex-column ms-3 mt-1">
-                                <li class="nav-item">
-                                    <a class="nav-link py-1 {{ is_route('peminjaman.create') ? 'active' : '' }}" href="{{ route('peminjaman.create') }}">Ajukan Peminjaman</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link py-1 {{ is_route('peminjaman.riwayat') ? 'active' : '' }}" href="{{ route('peminjaman.riwayat') }}">Cek Riwayat</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('keanggotaan.create') ? 'active' : '' }}" href="{{ route('keanggotaan.create') }}">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('peminjaman.riwayat') ? 'active' : '' }}" href="{{ route('peminjaman.riwayat') }}">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
-                                <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2 1c-2.67 0-5.5 1.34-5.5 3v1h8.256A4.5 4.5 0 0 1 10 10.5c0-.827.224-1.6.614-2.264A8.99 8.99 0 0 0 8 9z"/>
-                                <path fill-rule="evenodd" d="M13.5 7a.5.5 0 0 1 .5.5V9h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V10h-1.5a.5.5 0 0 1 0-1H13V7.5a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                                <path d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7h-1.017A5.002 5.002 0 0 0 8 3zm-3.917 6A5.002 5.002 0 0 0 8 13c1.552 0 2.94-.707 3.857-1.818a.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9h1.017z"/>
                             </svg>
-                            Ajukan Keanggotaan
+                            Riwayat Peminjaman
                         </a>
                     </li>
                 </ul>
@@ -181,7 +154,7 @@
                     }
                 @endphp
                 <div class="d-grid gap-2">
-                    <a class="btn btn-sm btn-brand rounded-pill px-3 d-flex align-items-center justify-content-center gap-2" href="{{ route('login') }}">
+                    <a class="btn btn-sm btn-brand px-3 d-flex align-items-center justify-content-center gap-2" href="{{ route('login') }}">
                         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="8" cy="5" r="3" fill="currentColor" stroke="none"/>
                             <path d="M2.5 14c0-3.6 2.9-5.8 5.5-5.8s5.5 2.2 5.5 5.8"/>
@@ -189,7 +162,7 @@
                         Masuk
                     </a>
                     @if ($canRegister)
-                        <a class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-center" href="{{ route('register') }}">
+                        <a class="btn btn-sm btn-outline-secondary px-3 text-center" href="{{ route('register') }}">
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="8" cy="5" r="3" fill="currentColor" stroke="none"/>
                                 <path d="M2.5 14c0-3.6 2.9-5.8 5.5-5.8s5.5 2.2 5.5 5.8"/>
