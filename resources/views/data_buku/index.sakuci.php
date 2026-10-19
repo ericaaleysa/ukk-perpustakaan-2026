@@ -21,7 +21,7 @@
             <h1 class="h3 admin-title">Data Buku</h1>
             <p class="admin-subtitle">Kelola koleksi buku perpustakaan.</p>
         </div>
-        <a href="{{ route('data_buku.create') }}" class="btn btn-brand rounded-pill px-3">Tambah buku</a>
+        <a href="{{ route('data_buku.create') }}" class="btn btn-brand px-3">Tambah buku</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">
@@ -39,16 +39,16 @@
                     @endforeach
                 </select>
 
-                <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Cari</button>
+                <button type="submit" class="btn btn-sm btn-brand px-3">Cari</button>
 
                 @if($id_kategori || $keyword !== '')
-                    <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
+                    <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary px-3">Reset</a>
                 @endif
             </form>
         </div>
 
         <div class="table-responsive">
-            <table class="table admin-table table-hover align-middle">
+            <table class="table admin-table align-middle">
                 <thead>
                     <tr>
                         <th style="width: 60px;">No</th>
@@ -81,24 +81,26 @@
                             <div class="cell-main">{{ $d->judul_buku }}</div>
                             <div class="cell-meta">{{ $d->pengarang }}</div>
                         </td>
-                        <td><span class="admin-pill">{{ $namaKategori[$d->id_kategori] ?? '-' }}</span></td>
+                        <td class="cell-meta">{{ $namaKategori[$d->id_kategori] ?? '-' }}</td>
                         <td>{{ $d->penerbit }}</td>
                         <td class="cell-meta">{{ $d->tahun_terbit }}</td>
                         <td class="cell-meta">{{ (int) $d->stok }}</td>
                         <td class="text-end text-nowrap">
-                            <a href="{{ route('data_buku.edit', [$d->id_buku]) }}" class="btn btn-sm btn-outline-brand rounded-pill px-3">Edit</a>
+                            <a href="{{ route('data_buku.edit', [$d->id_buku]) }}" class="btn btn-sm btn-outline-brand btn-icon" title="Edit" aria-label="Edit {{ $d->judul_buku }}">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
+                            </a>
                             <form action="{{ route('data_buku.destroy', [$d->id_buku]) }}" method="POST" class="d-inline"
                                   onsubmit="return confirm('Hapus buku ini?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Hapus</button>
+                                <button type="submit" class="btn btn-sm btn-outline-secondary px-3">Hapus</button>
                             </form>
                         </td>
                     </tr>
                     @endforeach
                     @if($kosong)
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="admin-empty">
                                 <strong>Belum ada buku</strong>
                                 {{ ($id_kategori || $keyword !== '') ? 'Tidak ada buku yang cocok dengan pencarianmu.' : 'Tambahkan buku pertama untuk mengisi koleksi.' }}

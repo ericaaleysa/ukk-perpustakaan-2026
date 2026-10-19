@@ -54,7 +54,8 @@
                     <label for="stok" class="form-label admin-label">Stok</label>
                     <input type="number" name="stok" id="stok" min="0" max="9999"
                             value="{{ old('stok') !== null && old('stok') !== ''
-                            ? old('stok') : (int) $data_buku->stok }}" required>
+                            ? old('stok') : (int) $data_buku->stok }}"
+                            class="form-control {{ errors()->has('stok') ? 'is-invalid' : '' }}" required>
                     @error('stok') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
@@ -77,8 +78,8 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Simpan perubahan</button>
-                    <a href="{{ route('data_buku.index') }}" class="btn btn-outline-secondary rounded-pill px-4">Batal</a>
+                    <button type="submit" class="btn btn-brand px-4">Simpan perubahan</button>
+                    <a href="{{ route('data_buku.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
                 </div>
             </form>
         </div>

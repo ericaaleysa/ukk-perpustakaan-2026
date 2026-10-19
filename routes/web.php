@@ -71,6 +71,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::get('/database/export', [DatabaseController::class, 'export'])->name('admin.database.export');
 

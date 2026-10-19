@@ -1433,3 +1433,74 @@ html { scroll-behavior: smooth; }
     white-space: nowrap;
 }
 .book-line.st-telat .time { color: var(--bs-danger); }
+
+
+/* ===================================================================
+   Tabel & panel admin versi MINIMALIS (tempel di AKHIR app.css)
+   =================================================================== */
+
+/* panel: tanpa bayangan, sudut persegi seperti tombol */
+.admin-page .admin-panel { box-shadow: none; border-radius: .375rem; }
+.card.admin-panel.no-hover-lift:hover { box-shadow: none !important; }
+
+/* tabel: header kecil huruf kapital, hanya garis tipis antar baris, tanpa efek hover */
+.admin-table { --bs-table-hover-bg: transparent; }
+.admin-table thead th {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .6rem 1rem;
+}
+.admin-table tbody td {
+    padding: .7rem 1rem;
+    border-bottom-color: color-mix(in srgb, var(--bs-border-color) 55%, transparent);
+}
+
+/* sampul kecil tanpa bayangan */
+.admin-cover       { border-radius: 4px; box-shadow: none; }
+.admin-cover-empty { border-radius: 4px; }
+
+/* label kategori jadi teks biasa, tanpa bingkai */
+.admin-pill {
+    border: 0;
+    padding: 0;
+    border-radius: 0;
+    font-weight: 400;
+    font-size: .85rem;
+}
+
+/* tombol ikon (pensil): kotak, tingginya sama dengan btn-sm */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 31px;
+    height: 31px;
+    padding: 0;
+}
+
+
+/* ===================================================================
+   Kelola User: badge role & tombol pensil (tempel di AKHIR app.css)
+   =================================================================== */
+
+/* badge: persegi, ukuran seragam */
+.badge-role {
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .4em .75em;
+    border-radius: .375rem;
+}
+.badge-role-admin { background-color: var(--brand); color: #fff; }          /* admin: warna brand */
+.badge-role-user  { background-color: var(--bs-secondary); color: #fff; }   /* pengguna: abu-abu */
+.badge-anda       { background: transparent; color: var(--bs-secondary-color); border: 1px solid var(--bs-border-color); }
+
+/* tombol pensil: hanya ikon, kotak, ukuran sama dengan .btn-icon */
+.edit-pill {
+    width: 31px;
+    height: 31px;
+    padding: 0;
+    justify-content: center;
+}
+.edit-pill-icon { width: .9rem; height: .9rem; }

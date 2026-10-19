@@ -27,19 +27,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('keanggotaan.index') ? 'active' : '' }}" href="{{ route('keanggotaan.index') }}">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
-                                <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .146.021l6 2A.5.5 0 0 1 14.5 2.5v4.243c0 4.248-2.937 7.634-6.234 8.716a.5.5 0 0 1-.532 0C4.437 14.377 1.5 10.991 1.5 6.743V2.5a.5.5 0 0 1 .354-.479l6-2A.5.5 0 0 1 8 0zM10.03 5.22a.75.75 0 0 1 0 1.06L7.53 8.78a.75.75 0 0 1-1.06 0L5.22 7.53a.75.75 0 1 1 1.06-1.06L7 7.19l2.97-2.97a.75.75 0 0 1 1.06 0z"/>
-                            </svg>
-                            Verifikasi Keanggotaan
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-2 {{ is_route('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
                                 <path d="M2 2.5A1.5 1.5 0 0 1 3.5 1h4.086a1.5 1.5 0 0 1 1.06.44l5.914 5.914a1.5 1.5 0 0 1 0 2.12l-4.086 4.086a1.5 1.5 0 0 1-2.12 0L2.44 7.646A1.5 1.5 0 0 1 2 6.586V2.5zM5 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                             </svg>
-                            Katalog Buku
+                            Kategori Buku
                         </a>
                     </li>
                     <li class="nav-item">

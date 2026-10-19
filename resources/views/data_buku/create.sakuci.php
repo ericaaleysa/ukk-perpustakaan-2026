@@ -63,8 +63,8 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Simpan buku</button>
-                    <a href="{{ route('data_buku.index') }}" class="btn btn-outline-secondary rounded-pill px-4">Batal</a>
+                    <button type="submit" class="btn btn-brand px-4">Simpan buku</button>
+                    <a href="{{ route('data_buku.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
                 </div>
             </form>
         </div>

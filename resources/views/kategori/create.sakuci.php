@@ -20,8 +20,8 @@
                     <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" required autofocus>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Simpan kategori</button>
-                    <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary rounded-pill px-4">Batal</a>
+                    <button type="submit" class="btn btn-brand px-4">Simpan kategori</button>
+                    <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
                 </div>
             </form>
         </div>

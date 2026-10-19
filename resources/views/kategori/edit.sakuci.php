@@ -21,8 +21,8 @@
                     <input type="text" name="nama_kategori" id="nama_kategori" class="form-control" value="{{ $kategori->nama_kategori }}" required>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-brand rounded-pill px-4">Simpan perubahan</button>
-                    <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary rounded-pill px-4">Batal</a>
+                    <button type="submit" class="btn btn-brand px-4">Simpan perubahan</button>
+                    <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary px-4">Batal</a>
                 </div>
             </form>
         </div>
