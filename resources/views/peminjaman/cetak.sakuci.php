@@ -16,6 +16,12 @@
         'ditolak'             => 'Ditolak',
         'dikembalikan'        => 'Dikembalikan',
     ];
+    $labelKondisi = [
+        'baik' => 'Baik',
+        'rusak_ringan' => 'Rusak ringan',
+        'rusak_berat' => 'Rusak berat',
+        'hilang' => 'Hilang',
+    ];
     $no = 1;
 @endphp
 
@@ -35,7 +41,7 @@
         <span class="spacer"></span>
         <span class="hint">Di jendela cetak, pilih Printer atau "Simpan sebagai PDF"</span>
         <button type="button" class="btn-print" onclick="window.print()">🖨 Cetak</button>
-        <a href="{{ route('peminjaman.index') }}">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}">&larr; Kembali</a>
     </div>
 
     <div class="lembar">
@@ -61,6 +67,14 @@
                 <div class="label">Total denda</div>
                 <div class="nilai">Rp{{ number_format($totalDenda, 0, ',', '.') }}</div>
             </div>
+            <div class="kotak">
+                <div class="label">Denda keterlambatan</div>
+                <div class="nilai">Rp{{ number_format($totalDendaTelat, 0, ',', '.') }}</div>
+            </div>
+            <div class="kotak">
+                <div class="label">Denda kerusakan / kehilangan</div>
+                <div class="nilai">Rp{{ number_format($totalDendaKondisi, 0, ',', '.') }}</div>
+            </div>
         </div>
 
         @if(count($daftarPeminjaman) === 0)
@@ -75,6 +89,7 @@
                     <th class="c">Tgl Pinjam</th>
                     <th class="c">Wajib Kembali</th>
                     <th class="c">Tgl Dikembalikan</th>
+                    <th>Kondisi</th>
                     <th>Status</th>
                     <th class="r">Denda</th>
                 </tr>
@@ -88,6 +103,7 @@
                     <td class="c nowrap">{{ $p->tanggal_pinjam }}</td>
                     <td class="c nowrap">{{ $p->tanggal_wajib_kembali }}</td>
                     <td class="c nowrap">{{ $p->tanggal_dikembalikan ?? '-' }}</td>
+                    <td class="nowrap">{{ !empty($p->kondisi_kembali) ? ($labelKondisi[$p->kondisi_kembali] ?? $p->kondisi_kembali) : '-' }}</td>
                     <td class="nowrap">{{ $labelStatus[$p->status] ?? $p->status }}</td>
                     <td class="r">{{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}</td>
                 </tr>
@@ -95,7 +111,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="7" class="r">Total denda</td>
+                    <td colspan="8" class="r">Total denda</td>
                     <td class="r">Rp{{ number_format($totalDenda, 0, ',', '.') }}</td>
                 </tr>
             </tfoot>

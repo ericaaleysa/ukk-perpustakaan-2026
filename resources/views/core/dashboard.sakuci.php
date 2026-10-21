@@ -9,16 +9,16 @@
         <div class="card-body p-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <div>
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="badge rounded-pill badge-ukk px-3 py-1">
+                    <span class="badge badge-ukk px-3 py-1">
                         {{ ucfirst($user->role) }}
                     </span>
                     {{-- Validasi Status Keanggotaan dari User Model --}}
                     @if(($user->status_keanggotaan ?? 'non_aktif') === 'aktif')
-                        <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-1">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">
                             ● Anggota Aktif
                         </span>
                     @else
-                        <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-1">
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1">
                             ● Belum Mengajukan Keanggotaan
                         </span>
                     @endif
@@ -124,12 +124,16 @@
         </div>
     </div>
 
+    <style>
+        #panelDipinjam { scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem); }
+    </style>
+
     {{-- Panel Buku Yang Sedang Dipinjam: selebar halaman, bisa ganti tampilan list / cover --}}
     <div class="card border-0 shadow-sm no-hover-lift" id="panelDipinjam">
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex flex-wrap justify-content-between align-items-center gap-2">
             <h2 class="h6 fw-bold mb-0 text-brand-dark d-flex align-items-center gap-2">
                 Buku Yang Sedang Dipinjam
-                <span class="badge rounded-pill text-bg-secondary">{{ count($bukuSedangDipinjam ?? []) }}</span>
+                <span class="badge text-bg-secondary">{{ count($bukuSedangDipinjam ?? []) }}</span>
             </h2>
             <div class="d-flex align-items-center gap-3">
                 {{-- Pengganti tampilan --}}
@@ -141,7 +145,7 @@
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
                     </button>
                 </div>
-                <a href="{{ route('peminjaman.riwayat') }}" class="btn-smal btn-outline-brand fw-semibold">Lihat Semua</a>
+                <a href="{{ route('peminjaman.riwayat') }}" class="btn btn-sm btn-outline-brand px-3">Lihat Semua</a>
             </div>
         </div>
 
@@ -155,7 +159,15 @@
                         <div class="book-track" id="bookTrack">
                             @foreach($bukuSedangDipinjam as $p)
                                 <div class="book-card">
-                                    <div class="book-cover">
+                                    <div class="book-cover js-buku-detail" role="button" tabindex="0"
+                                         data-judul="{{ $p->buku->judul_buku ?? '' }}"
+                                         data-sinopsis="{{ $p->buku->sinopsis ?? '' }}"
+                                         data-penulis="{{ $p->buku->pengarang ?? '' }}"
+                                         data-penerbit="{{ $p->buku->penerbit ?? '' }}"
+                                         data-tahun="{{ $p->buku->tahun_terbit ?? '' }}"
+                                         data-halaman="{{ $p->buku->jumlah_halaman ?? '' }}"
+                                         data-stok="{{ $p->buku->stok ?? '' }}"
+                                         data-cover="{{ $p->buku->thumbnail ?? '' }}">
                                         <div class="book-cover-fallback"><span>{{ $p->buku->judul_buku ?? 'Buku' }}</span></div>
                                         @if(!empty($p->buku->thumbnail))
                                             <img src="{{ $p->buku->thumbnail }}" alt="Cover {{ $p->buku->judul_buku ?? '' }}" loading="lazy" onerror="this.remove()">
@@ -189,7 +201,15 @@
                     <div class="view-list book-list">
                         @foreach($bukuSedangDipinjam as $p)
                             <div class="book-row">
-                                <div class="book-row-thumb">
+                                <div class="book-row-thumb js-buku-detail" role="button" tabindex="0"
+                                     data-judul="{{ $p->buku->judul_buku ?? '' }}"
+                                     data-sinopsis="{{ $p->buku->sinopsis ?? '' }}"
+                                     data-penulis="{{ $p->buku->pengarang ?? '' }}"
+                                     data-penerbit="{{ $p->buku->penerbit ?? '' }}"
+                                     data-tahun="{{ $p->buku->tahun_terbit ?? '' }}"
+                                     data-halaman="{{ $p->buku->jumlah_halaman ?? '' }}"
+                                     data-stok="{{ $p->buku->stok ?? '' }}"
+                                     data-cover="{{ $p->buku->thumbnail ?? '' }}">
                                     <div class="book-cover-fallback"><span>{{ $p->buku->judul_buku ?? 'Buku' }}</span></div>
                                     @if(!empty($p->buku->thumbnail))
                                         <img src="{{ $p->buku->thumbnail }}" alt="" loading="lazy" onerror="this.remove()">
@@ -322,5 +342,7 @@
             });
         })();
     </script>
+
+@include('partials.modal_buku')
 
 @endsection

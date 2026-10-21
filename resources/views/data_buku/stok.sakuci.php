@@ -13,7 +13,7 @@
             <h1 class="h3 admin-title">Stok Buku</h1>
             <p class="admin-subtitle">Stok berkurang saat buku dipinjam, dan bertambah lagi setelah pengembalian dikonfirmasi.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     {{-- Ringkasan --}}
@@ -45,9 +45,9 @@
                 <input type="text" name="q" value="{{ $keyword }}"
                        class="form-control form-control-sm w-auto flex-grow-1 input-cari"
                        placeholder="Cari judul, pengarang, atau penerbit...">
-                <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Cari</button>
+                <button type="submit" class="btn btn-sm btn-brand px-3">Cari</button>
                 @if($keyword !== '')
-                    <a href="{{ route('stok.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
+                    <a href="{{ route('stok.index') }}" class="btn btn-sm btn-outline-secondary px-3">Reset</a>
                 @endif
             </form>
         </div>
@@ -87,7 +87,7 @@
                             @endif
                         </td>
                         <td class="text-end">
-                            <a href="{{ route('data_buku.edit', [$b->id_buku]) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Ubah stok</a>
+                            <a href="{{ route('data_buku.edit', [$b->id_buku]) }}" class="btn btn-sm btn-outline-secondary px-3">Ubah stok</a>
                         </td>
                     </tr>
                     @endforeach

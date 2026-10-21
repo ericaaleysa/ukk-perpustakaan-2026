@@ -379,10 +379,15 @@ code.inline {
     background: var(--bs-body-bg);
 }
 
-[data-bs-theme="dark"] .bg-brand-subtle,
-[data-bs-theme="dark"] .step-number {
+[data-bs-theme="dark"] .bg-brand-subtle {
     background-color: #bc0cc266 !important;
     color: #db3cfb;
+}
+
+/* Nomor langkah tetap biru di mode gelap */
+[data-bs-theme="dark"] .step-number {
+    background-color: #3b7fb066 !important;
+    color: #8cc4f0;
 }
 
 [data-bs-theme="dark"] .badge-brand {
@@ -797,8 +802,9 @@ code.inline {
     display: inline-block;
     font-size: .75rem;
     font-weight: 600;
-    padding: .2rem .7rem;
-    border-radius: 999px;
+    line-height: 1;
+    padding: calc(.4em - 1px) calc(.75em - 1px);   /* sama dengan .badge-role (garis 1px sudah dihitung) */
+    border-radius: .375rem;                        /* kotak, seperti badge di Kelola User */
     border: 1px solid transparent;
     white-space: nowrap;
 }
@@ -1013,15 +1019,25 @@ code.inline {
    Halaman peminjaman/create -- daftar pilih buku
    ===================================================================== */
 .pick-list { max-height: 480px; overflow-y: auto; }
+/* Card kiri menempel di bawah navbar (bukan menimpanya) saat halaman di-scroll di layar besar */
+@media (min-width: 992px) {
+    .pick-sticky {
+        position: sticky;
+        top: calc(var(--navbar-height, 57px) + 1rem);
+        z-index: 1;
+    }
+}
 .pick-letter {
     position: sticky; top: 0; z-index: 1;
     padding: .25rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
-    color: var(--brand-dark); background: var(--brand-subtle);
+    color: var(--bs-secondary-color); background: var(--bs-secondary-bg);
+    border-top: 1px solid var(--bs-border-color); border-bottom: 1px solid var(--bs-border-color);
 }
 .pick-item {
     display: flex; align-items: center; gap: .75rem;
     padding: .6rem 1rem; color: inherit; text-decoration: none;
     border-left: 3px solid transparent;
+    scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
 }
 .pick-item:hover { color: inherit; background: color-mix(in srgb, var(--brand) 8%, transparent); }
 .pick-item.selected {
@@ -1038,6 +1054,37 @@ code.inline {
     display: flex; align-items: center; justify-content: center;
     background: var(--bs-tertiary-bg); font-size: 2rem;
 }
+
+/* =====================================================================
+   Halaman data_buku/create & edit -- sampul + pratinjau
+   ===================================================================== */
+/* Kotak pratinjau sampul: perbandingan 2:3 seperti sampul buku */
+.sampul-frame {
+    width: 100%; max-width: 260px; margin: 0 auto; aspect-ratio: 2 / 3;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    border: 1px solid var(--bs-border-color); border-radius: .5rem;
+    background: var(--bs-secondary-bg);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .08), 0 8px 18px -10px rgba(15, 23, 42, .25);
+}
+.sampul-frame img { width: 100%; height: 100%; object-fit: cover; }
+.sampul-kosong { text-align: center; color: var(--bs-secondary-color); font-size: .85rem; }
+.sampul-kosong .ikon { display: block; font-size: 2.5rem; margin-bottom: .25rem; }
+/* Kartu sampul menempel di bawah navbar saat form di-scroll (layar besar) */
+@media (min-width: 992px) {
+    .sampul-sticky { position: sticky; top: calc(var(--navbar-height, 57px) + 1rem); z-index: 1; }
+}
+
+/* =====================================================================
+   Halaman peminjaman/riwayat -- rak cover
+   ===================================================================== */
+.riwayat-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem 1.25rem;
+}
+.riwayat-grid .book-meta { white-space: normal; }
+.riwayat-denda { font-size: .75rem; font-weight: 600; color: #dc3545; margin-top: .15rem; }
+.riwayat-catatan { font-size: .72rem; color: var(--bs-secondary-color, #8b929a); margin-top: .15rem; }
 
 /* =====================================================================
    Halaman cetak laporan (peminjaman/cetak) -- semua aturan diawali

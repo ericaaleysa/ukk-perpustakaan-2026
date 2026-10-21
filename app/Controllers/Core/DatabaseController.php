@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Core;
 
+use App\Models\LogAktivitas;
 use Sakuci\Controller;
 use Sakuci\Database\Connection;
 use Sakuci\Http\Response;
@@ -14,6 +15,8 @@ class DatabaseController extends Controller
         $sql = Connection::driver() === 'mysql' ? $this->dumpMysql() : $this->dumpSqlite();
 
         $filename = 'sakuci-' . date('Y-m-d_His') . '.sql';
+
+        LogAktivitas::catat('sistem', 'Mengunduh backup database (' . $filename . ')');
 
         return Response::make($sql)
             ->header('Content-Type', 'application/sql; charset=UTF-8')

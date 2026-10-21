@@ -4,6 +4,7 @@ namespace App\Controllers\Core;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\LogAktivitas;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
 
@@ -65,6 +66,8 @@ class UserController extends Controller
             'role'     => $data['role'],
         ]);
 
+        LogAktivitas::catat('user', 'Menambahkan user "' . $data['username'] . '" dengan role ' . $data['role']);
+
         return back()->with('success', 'User "' . $data['username'] . '" berhasil ditambahkan.');
     }
 
@@ -85,7 +88,10 @@ class UserController extends Controller
         }
  
         $username = $user->username;
+        $roleUser = $user->role;
         $user->delete();
+
+        LogAktivitas::catat('user', 'Menghapus akun "' . $username . '" (role ' . $roleUser . ')');
  
         return redirect()->route('admin.users.index')->with('success', 'Akun "' . $username . '" berhasil dihapus.');
     }
@@ -114,10 +120,12 @@ class UserController extends Controller
                 ->withInput();
         }
  
+        $lama = $user->username;
         $user->update(['username' => $baru]);
+
+        LogAktivitas::catat('user', 'Mengubah username dari "' . $lama . '" menjadi "' . $baru . '"');
  
         return redirect()->route('admin.users.index')->with('success', 'Username berhasil diubah menjadi "' . $baru . '".');
     }
  
 }
-

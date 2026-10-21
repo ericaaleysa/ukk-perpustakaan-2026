@@ -6,6 +6,7 @@ use Sakuci\Controller;
 use Sakuci\Http\Request;
 use App\Models\PengajuanKeanggotaan;
 use App\Models\User;
+use App\Models\LogAktivitas;
 
 class PengajuanKeanggotaanController extends Controller
 {
@@ -43,6 +44,8 @@ class PengajuanKeanggotaanController extends Controller
 
         $currentUser->update(['status_keanggotaan' => 'menunggu_verifikasi']);
 
+        LogAktivitas::catat('keanggotaan', 'Mengajukan keanggotaan perpustakaan atas nama ' . $validatedData['nama_lengkap'] . ' (kelas ' . $validatedData['kelas'] . ')');
+
         return redirect()->route('keanggotaan.create')->with('success', 'Pengajuan keanggotaan berhasil dikirim, mohon tunggu verifikasi admin.');
     }
 
@@ -73,6 +76,8 @@ class PengajuanKeanggotaanController extends Controller
         $pemohon = User::findOrFail($pengajuan->id_user);
         $pemohon->update(['status_keanggotaan' => 'aktif']);
 
+        LogAktivitas::catat('keanggotaan', 'Menyetujui pengajuan keanggotaan ' . $pemohon->username);
+
         return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan disetujui, pengguna sekarang berstatus Anggota.');
     }
 
@@ -94,6 +99,9 @@ class PengajuanKeanggotaanController extends Controller
 
         $pemohon = User::findOrFail($pengajuan->id_user);
         $pemohon->update(['status_keanggotaan' => 'non_anggota']);
+
+        $alasan = $validatedData['catatan_admin'] ?? null;
+        LogAktivitas::catat('keanggotaan', 'Menolak pengajuan keanggotaan ' . $pemohon->username . ($alasan ? ' (alasan: ' . $alasan . ')' : ''));
 
         return redirect()->route('keanggotaan.index')->with('success', 'Pengajuan ditolak.');
     }

@@ -9,7 +9,7 @@
             <h1 class="h3 fw-bold mt-2 mb-0">{{ $kategori->nama_kategori }}</h1>
             <p class="text-secondary mb-0">{{ count($data_buku) }} buku tersedia pada kategori ini.</p>
         </div>
-        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     @if(count($data_buku) === 0)
@@ -21,13 +21,25 @@
             @foreach($data_buku as $d)
             <div class="col">
                 <div class="card border-0 shadow-sm h-100">
-                    @if($d->thumbnail)
-                        <img src="{{ $d->thumbnail }}" class="card-img-top" alt="{{ $d->judul_buku }}" style="height: 220px; object-fit: cover;">
-                    @else
-                        <div class="d-flex align-items-center justify-content-center bg-body-secondary" style="height: 220px;">
-                            <span style="font-size: 3rem;">📚</span>
-                        </div>
-                    @endif
+                    {{-- Cover: klik untuk membuka popup detail buku --}}
+                    <div class="js-buku-detail" role="button" tabindex="0"
+                         data-judul="{{ $d->judul_buku }}"
+                         data-sinopsis="{{ $d->sinopsis ?? '' }}"
+                         data-penulis="{{ $d->pengarang }}"
+                         data-penerbit="{{ $d->penerbit }}"
+                         data-tahun="{{ $d->tahun_terbit }}"
+                         data-halaman="{{ $d->jumlah_halaman ?? '' }}"
+                         data-stok="{{ $d->stok ?? '' }}"
+                         data-cover="{{ $d->thumbnail ?? '' }}"
+                         data-genre="{{ $d->genre ?? '' }}">
+                        @if($d->thumbnail)
+                            <img src="{{ $d->thumbnail }}" class="card-img-top" alt="{{ $d->judul_buku }}" style="height: 220px; object-fit: cover;">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center bg-body-secondary" style="height: 220px;">
+                                <span style="font-size: 3rem;">📚</span>
+                            </div>
+                        @endif
+                    </div>
                     <div class="card-body">
                         <h3 class="h6 fw-semibold mb-1">{{ $d->judul_buku }}</h3>
                         <p class="text-secondary small mb-1">{{ $d->pengarang }}</p>
@@ -38,5 +50,7 @@
             @endforeach
         </div>
     @endif
+
+    @include('partials.modal_buku')
 
 @endsection

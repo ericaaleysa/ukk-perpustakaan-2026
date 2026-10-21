@@ -37,6 +37,83 @@
         </div>
     </div>
 
+    {{-- Pintasan fitur admin (kartu klik, gaya sama seperti dashboard siswa) --}}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+        <div class="col">
+            <a href="{{ route('kategori.index') }}" class="text-decoration-none d-block h-100">
+                <div class="card border-0 shadow-sm p-3 h-100">
+                    <div class="d-flex align-items-center gap-4 mt-1">
+                        <div class="feature-icon flex-shrink-0">
+                            <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <path d="M2 2.5A1.5 1.5 0 0 1 3.5 1h4.086a1.5 1.5 0 0 1 1.06.44l5.914 5.914a1.5 1.5 0 0 1 0 2.12l-4.086 4.086a1.5 1.5 0 0 1-2.12 0L2.44 7.646A1.5 1.5 0 0 1 2 6.586V2.5zM5 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="fw-bold fs-6">Kategori Buku</div>
+                            <div class="text-secondary small mb-2">Kelompokkan bacaan</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ route('data_buku.index') }}" class="text-decoration-none d-block h-100">
+                <div class="card border-0 shadow-sm p-3 h-100">
+                    <div class="d-flex align-items-center gap-4 mt-1">
+                        <div class="feature-icon flex-shrink-0">
+                            <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <path d="M8 1.884c-1.545-.887-3.837-1.113-5.487-.573C1.923.42 1.5.904 1.5 1.5v10.5c0 .548.44.98.955.86 1.469-.34 3.618-.146 5.045.567V1.884zm1 11.543c1.427-.713 3.576-.907 5.045-.567.516.12.955-.312.955-.86V1.5c0-.596-.423-1.08-1.013-1.19C12.337.77 10.045.996 8.5 1.884v11.543z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="fw-bold fs-6">Data Buku</div>
+                            <div class="text-secondary small mb-2">Kelola koleksi &amp; sampul</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ route('admin.users.index') }}" class="text-decoration-none d-block h-100">
+                <div class="card border-0 shadow-sm p-3 h-100">
+                    <div class="d-flex align-items-center gap-4 mt-1">
+                        <div class="feature-icon flex-shrink-0">
+                            <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="fw-bold fs-6">Kelola User</div>
+                            <div class="text-secondary small mb-2">Kelola Akun, Hak akses</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
+            <a href="{{ route('log.index') }}" class="text-decoration-none d-block h-100">
+                <div class="card border-0 shadow-sm p-3 h-100">
+                    <div class="d-flex align-items-center gap-4 mt-1">
+                        <div class="feature-icon flex-shrink-0">
+                            <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <rect x="2" y="3" width="2" height="2" rx="0.5"/>
+                                <rect x="5.5" y="3.5" width="8.5" height="1" rx="0.5"/>
+                                <rect x="2" y="7" width="2" height="2" rx="0.5"/>
+                                <rect x="5.5" y="7.5" width="8.5" height="1" rx="0.5"/>
+                                <rect x="2" y="11" width="2" height="2" rx="0.5"/>
+                                <rect x="5.5" y="11.5" width="8.5" height="1" rx="0.5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="fw-bold fs-6">Log Aktivitas</div>
+                            <div class="text-secondary small">Rekam jejak sistem</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     {{-- Fitur & Navigasi Utama Admin --}}
     <section class="mb-4">
 
@@ -73,7 +150,23 @@
                 </div>
             </div>
 
-            {{-- Kartu 3: Download / Backup Database --}}
+            {{-- Kartu 3: Cetak Transaksi Peminjaman --}}
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100 p-3">
+                    <div class="feature-icon mb-3">
+                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5V4H4V1.5z"/>
+                            <path d="M2 5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-2h8v2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H2z"/>
+                            <path d="M5 11h6v4.5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5V11z"/>
+                        </svg>
+                    </div>
+                    <h3 class="h6 fw-semibold mb-1">Cetak Transaksi Peminjaman</h3>
+                    <p class="text-secondary small mb-3">Unduh laporan transaksi peminjaman buku untuk keperluan administrasi.</p>
+                    <a href="{{ route('peminjaman.cetak') }}" target="_blank" class="btn btn-sm btn-brand mt-auto">Cetak Laporan</a>
+                </div>
+            </div>
+
+            {{-- Kartu 4: Download / Backup Database --}}
             <div class="col">
                 <div class="card border-0 shadow-sm h-100 p-3">
                     <div class="feature-icon mb-3">
@@ -94,22 +187,6 @@
                         </svg>
                         Download DB
                     </a>
-                </div>
-            </div>
-
-            {{-- Kartu 4: Cetak Transaksi Peminjaman --}}
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100 p-3">
-                    <div class="feature-icon mb-3">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4 1.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5V4H4V1.5z"/>
-                            <path d="M2 5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-2h8v2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H2z"/>
-                            <path d="M5 11h6v4.5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5V11z"/>
-                        </svg>
-                    </div>
-                    <h3 class="h6 fw-semibold mb-1">Cetak Transaksi Peminjaman</h3>
-                    <p class="text-secondary small mb-3">Unduh laporan transaksi peminjaman buku untuk keperluan administrasi.</p>
-                    <a href="{{ route('peminjaman.cetak') }}" target="_blank" class="btn btn-sm btn-brand mt-auto">Cetak Laporan</a>
                 </div>
             </div>
         </div>

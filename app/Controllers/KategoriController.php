@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
 use App\Models\Kategori;
+use App\Models\LogAktivitas;
 
 class KategoriController extends Controller
 {
@@ -31,6 +32,8 @@ class KategoriController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
+        LogAktivitas::catat('kategori', 'Menambahkan kategori "' . $request->nama_kategori . '"');
+
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -47,9 +50,12 @@ class KategoriController extends Controller
         ]);
 
         $kategori = Kategori::findOrFail($id_kategori);
+        $namaLama = $kategori->nama_kategori;
         $kategori->update([
             'nama_kategori' => $request->nama_kategori,
         ]);
+
+        LogAktivitas::catat('kategori', 'Mengubah nama kategori "' . $namaLama . '" menjadi "' . $request->nama_kategori . '"');
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui.');
     }
@@ -57,7 +63,10 @@ class KategoriController extends Controller
     public function destroy(Request $request, $id_kategori) //bagian hapus
     {
         $kategori = Kategori::findOrFail($id_kategori);
+        $nama = $kategori->nama_kategori;
         $kategori->delete();
+
+        LogAktivitas::catat('kategori', 'Menghapus kategori "' . $nama . '"');
 
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
     } 

@@ -12,5 +12,5 @@ class DataBuku extends Model
     protected array $fillable = ['judul_buku', 'pengarang',
                                  'penerbit', 'tahun_terbit',
                                  'id_kategori', 'thumbnail',
-                                 'stok',];
+                                 'stok', 'sinopsis', 'genre',];
 }

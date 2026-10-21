@@ -11,7 +11,7 @@
             <h1 class="h3 admin-title">Buku Favorit</h1>
             <p class="admin-subtitle">Koleksi buku yang kamu sukai.</p>
         </div>
-        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">

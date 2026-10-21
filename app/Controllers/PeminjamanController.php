@@ -7,92 +7,26 @@ use Sakuci\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\DataBuku;
 use App\Models\User;
+use App\Models\LogAktivitas;
 
 class PeminjamanController extends Controller
 {
-    //lama masa pinjam (hari), dihitung sejak admin menyetujui pengajuan
-    const MASA_PINJAM_HARI = 7;
-
-    //denda per hari keterlambatan (Rp) dan batas peringatan "segera jatuh tempo" (hari)
-    const DENDA_PER_HARI = 1000;
-    const BATAS_PERINGATAN_HARI = 2;
-
-    public function dashboardSiswa(Request $request) //dashboard siswa
-    {
-        $currentUser = User::current();
-
-        //admin punya dashboard sendiri
-        if ($currentUser->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-
-        //ambil semua peminjaman milik siswa ini (terbaru dulu), lalu dipisah di PHP
-        $semuaPeminjaman = Peminjaman::where('id_user', $currentUser->id)
-            ->orderBy('id_peminjaman', 'desc')
-            ->get();
-
-        $hariIni = strtotime(date('Y-m-d'));
-
-        $bukuSedangDipinjam = []; //menunggu konfirmasi / sedang dipinjam
-        $riwayatTerakhir = [];    //selesai / ditolak (maks. 5 terbaru)
-        $totalDikembalikan = 0;
-        $totalDenda = 0;          //denda yang sudah tercatat (saat buku dikembalikan)
-        $dendaBerjalan = 0;       //denda buku yang terlambat dan belum dikembalikan
-        $jumlahPeringatan = 0;    //buku terlambat / segera jatuh tempo
-
-        foreach ($semuaPeminjaman as $p) {
-            $p->buku = DataBuku::find($p->id_buku);
-            $totalDenda += $p->denda;
-
-            if ($p->status === 'menunggu_konfirmasi' || $p->status === 'dipinjam') {
-                //hitung sisa waktu / keterlambatan untuk peringatan
-                $p->peringatan = 'tidak_ada';
-                $p->sisa_hari = null;
-                $p->telat_hari = 0;
-                $p->denda_berjalan = 0;
-
-                if ($p->status === 'dipinjam' && $p->tanggal_wajib_kembali) {
-                    $selisih = (int) round((strtotime($p->tanggal_wajib_kembali) - $hariIni) / 86400);
-
-                    if ($selisih < 0) {
-                        $p->peringatan = 'telat';
-                        $p->telat_hari = -$selisih;
-                        $p->denda_berjalan = $p->telat_hari * self::DENDA_PER_HARI;
-                        $dendaBerjalan += $p->denda_berjalan;
-                        $jumlahPeringatan++;
-                    } elseif ($selisih <= self::BATAS_PERINGATAN_HARI) {
-                        $p->peringatan = 'segera';
-                        $p->sisa_hari = $selisih;
-                        $jumlahPeringatan++;
-                    } else {
-                        $p->peringatan = 'aman';
-                        $p->sisa_hari = $selisih;
-                    }
-                }
-
-                $bukuSedangDipinjam[] = $p;
-            } else {
-                if ($p->status === 'dikembalikan') {
-                    $totalDikembalikan++;
-                }
-                if (count($riwayatTerakhir) < 5) {
-                    $riwayatTerakhir[] = $p;
-                }
-            }
-        }
-
-        return view('core.dashboard', [
-            'user' => $currentUser,
-            'bukuSedangDipinjam' => $bukuSedangDipinjam,
-            'riwayatTerakhir' => $riwayatTerakhir,
-            'totalPinjamAktif' => count($bukuSedangDipinjam),
-            'totalDikembalikan' => $totalDikembalikan,
-            'totalDenda' => $totalDenda,
-            'dendaBerjalan' => $dendaBerjalan,
-            'jumlahPeringatan' => $jumlahPeringatan,
-            'dendaPerHari' => self::DENDA_PER_HARI,
-        ]);
-    }
+    //tarif denda (ubah angkanya di sini)
+    private const DENDA_TELAT_PER_HARI = 1000;
+    private const DENDA_KONDISI = [
+        'baik' => 0,
+        'rusak_ringan' => 5000,
+        'rusak_berat' => 25000,
+        'hilang' => 50000,
+    ];
+    private const LABEL_KONDISI = [
+        'baik' => 'Baik',
+        'rusak_ringan' => 'Rusak ringan',
+        'rusak_berat' => 'Rusak berat',
+        'hilang' => 'Hilang',
+    ];
+    //kondisi yang membuat buku TIDAK masuk stok lagi
+    private const KONDISI_TIDAK_KEMBALI_KE_STOK = ['rusak_berat', 'hilang'];
 
     public function cetak(Request $request) //cetak laporan transaksi peminjaman (admin)
     {
@@ -103,11 +37,9 @@ class PeminjamanController extends Controller
 
         $daftarPeminjaman = [];
         $totalDenda = 0;
+        $totalDendaTelat = 0;
+        $totalDendaKondisi = 0;
         foreach ($semuaPeminjaman as $p) {
-            //pengajuan yang belum disetujui belum punya tanggal pinjam
-            if (($tanggalDari || $tanggalSampai) && empty($p->tanggal_pinjam)) {
-                continue;
-            }
             if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
                 continue;
             }
@@ -118,10 +50,17 @@ class PeminjamanController extends Controller
             $p->peminjam = User::find($p->id_user);
             $p->buku = DataBuku::find($p->id_buku);
             $totalDenda += $p->denda;
+            $totalDendaTelat += (int) ($p->denda_telat ?? 0);
+            $totalDendaKondisi += (int) ($p->denda_kondisi ?? 0);
             $daftarPeminjaman[] = $p;
         }
 
-        return view('peminjaman.cetak', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai', 'totalDenda'));
+        $periode = ($tanggalDari || $tanggalSampai)
+            ? ' periode ' . ($tanggalDari ?: 'awal') . ' s/d ' . ($tanggalSampai ?: 'sekarang')
+            : '';
+        LogAktivitas::catat('sistem', 'Mencetak laporan transaksi peminjaman' . $periode);
+
+        return view('peminjaman.cetak', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai', 'totalDenda', 'totalDendaTelat', 'totalDendaKondisi'));
     }
 
     public function create(Request $request) //form ajukan peminjaman (siswa)
@@ -141,19 +80,10 @@ class PeminjamanController extends Controller
             ]);
         }
 
-        //cari buku yang sedang dipinjam/menunggu, supaya tidak ditawarkan lagi
-        $sedangDipinjam = [];
-        foreach (Peminjaman::where('status', 'menunggu_konfirmasi')->get() as $p) {
-            $sedangDipinjam[] = $p->id_buku;
-        }
-        foreach (Peminjaman::where('status', 'dipinjam')->get() as $p) {
-            $sedangDipinjam[] = $p->id_buku;
-        }
-
-        //semua buku yang tersedia, urut A-Z seperti kamus
+        //hanya buku yang stoknya masih ada yang ditawarkan, urut A-Z seperti kamus
         $daftarBukuTersedia = [];
         foreach (DataBuku::orderBy('judul_buku', 'asc')->get() as $b) {
-            if (!in_array($b->id_buku, $sedangDipinjam)) {
+            if ((int) $b->stok > 0) {
                 $daftarBukuTersedia[] = $b;
             }
         }
@@ -195,16 +125,28 @@ class PeminjamanController extends Controller
             'id_buku' => 'required|integer|exists:data_buku,id_buku',
         ]);
 
-        //tanggal pinjam & tanggal wajib kembali sengaja dikosongkan,
-        //baru ditentukan sistem saat admin menyetujui pengajuan (lihat approve)
+        //pastikan stok buku masih ada
+        $buku = DataBuku::findOrFail($validatedData['id_buku']);
+        if ((int) $buku->stok < 1) {
+            return redirect()->route('peminjaman.create')->with('error', 'Maaf, stok buku ini sedang habis.');
+        }
+
+        $tanggalPinjam = date('Y-m-d');
+        $tanggalWajibKembali = date('Y-m-d', strtotime('+7 days'));
+
         Peminjaman::create([
             'id_user' => $currentUser->id,
             'id_buku' => $validatedData['id_buku'],
-            'tanggal_pinjam' => null,
-            'tanggal_wajib_kembali' => null,
+            'tanggal_pinjam' => $tanggalPinjam,
+            'tanggal_wajib_kembali' => $tanggalWajibKembali,
             'status' => 'menunggu_konfirmasi',
             'denda' => 0,
         ]);
+
+        //stok berkurang begitu buku dipinjam/diajukan
+        $this->ubahStok($validatedData['id_buku'], -1);
+
+        LogAktivitas::catat('peminjaman', 'Mengajukan peminjaman buku "' . $buku->judul_buku . '"');
 
         return redirect()->route('peminjaman.riwayat')->with('success', 'Pengajuan peminjaman berhasil dikirim, mohon tunggu konfirmasi admin.');
     }
@@ -235,10 +177,6 @@ class PeminjamanController extends Controller
         foreach ($semuaPeminjaman as $p) {
             $cocok = true;
 
-            //pengajuan yang belum disetujui belum punya tanggal pinjam
-            if (($tanggalDari || $tanggalSampai) && empty($p->tanggal_pinjam)) {
-                $cocok = false;
-            }
             if ($tanggalDari && $p->tanggal_pinjam < $tanggalDari) {
                 $cocok = false;
             }
@@ -256,27 +194,23 @@ class PeminjamanController extends Controller
             $p->buku = DataBuku::find($p->id_buku);
         }
 
-        return view('peminjaman.index', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai'));
+        $dendaKondisiDefault = self::DENDA_KONDISI;
+
+        return view('peminjaman.index', compact('daftarPeminjaman', 'tanggalDari', 'tanggalSampai', 'dendaKondisiDefault'));
     }
 
     public function approve(Request $request, $id_peminjaman) //setujui pengajuan (admin)
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
 
-        //hanya pengajuan yang masih menunggu yang bisa disetujui (mencegah tanggal tertimpa)
         if ($peminjaman->status !== 'menunggu_konfirmasi') {
             return redirect()->route('peminjaman.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
         }
 
-        //masa pinjam dimulai hari ini, saat admin menyetujui
-        $tanggalPinjam = date('Y-m-d');
-        $tanggalWajibKembali = date('Y-m-d', strtotime('+' . self::MASA_PINJAM_HARI . ' days'));
+        $peminjaman->update(['status' => 'dipinjam']);
 
-        $peminjaman->update([
-            'status' => 'dipinjam',
-            'tanggal_pinjam' => $tanggalPinjam,
-            'tanggal_wajib_kembali' => $tanggalWajibKembali,
-        ]);
+        [$peminjam, $judul] = $this->infoPeminjaman($peminjaman);
+        LogAktivitas::catat('peminjaman', 'Menyetujui peminjaman buku "' . $judul . '" oleh ' . $peminjam);
 
         return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman disetujui.');
     }
@@ -284,6 +218,10 @@ class PeminjamanController extends Controller
     public function reject(Request $request, $id_peminjaman) //tolak pengajuan (admin)
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
+
+        if ($peminjaman->status !== 'menunggu_konfirmasi') {
+            return redirect()->route('peminjaman.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
 
         $validatedData = $request->validate([
             'catatan_admin' => 'nullable|string|max:255',
@@ -294,6 +232,13 @@ class PeminjamanController extends Controller
             'catatan_admin' => $validatedData['catatan_admin'] ?? null,
         ]);
 
+        //pengajuan ditolak: stok yang tadi dipesan dikembalikan
+        $this->ubahStok($peminjaman->id_buku, +1);
+
+        [$peminjam, $judul] = $this->infoPeminjaman($peminjaman);
+        $alasan = $validatedData['catatan_admin'] ?? null;
+        LogAktivitas::catat('peminjaman', 'Menolak peminjaman buku "' . $judul . '" oleh ' . $peminjam . ($alasan ? ' (alasan: ' . $alasan . ')' : ''));
+
         return redirect()->route('peminjaman.index')->with('success', 'Pengajuan peminjaman ditolak.');
     }
 
@@ -301,21 +246,145 @@ class PeminjamanController extends Controller
     {
         $peminjaman = Peminjaman::findOrFail($id_peminjaman);
 
-        $hariIni = date('Y-m-d');
-        $denda = 0;
-
-        //hitung denda kalau lewat tanggal wajib kembali (Rp1.000 per hari telat, sesuaikan kalau perlu)
-        $telatHari = (strtotime($hariIni) - strtotime($peminjaman->tanggal_wajib_kembali)) / 86400;
-        if ($telatHari > 0) {
-            $denda = $telatHari * self::DENDA_PER_HARI;
+        if ($peminjaman->status !== 'dipinjam') {
+            return redirect()->route('peminjaman.index')->with('error', 'Buku ini tidak sedang berstatus dipinjam.');
         }
+
+        $validatedData = $request->validate([
+            'catatan_kondisi' => 'nullable|string|max:255',
+        ]);
+
+        //kondisi buku saat kembali (dicek manual terhadap daftar kondisi yang diizinkan)
+        $kondisi = (string) ($request->kondisi_kembali ?? 'baik');
+        if (!array_key_exists($kondisi, self::DENDA_KONDISI)) {
+            return redirect()->route('peminjaman.index')->with('error', 'Kondisi buku tidak valid.');
+        }
+
+        //denda kondisi: pakai isian admin kalau ada, kalau kosong pakai tarif bawaan
+        $inputDenda = trim((string) ($request->denda_kondisi ?? ''));
+        if ($kondisi === 'baik') {
+            $dendaKondisi = 0;
+        } elseif ($inputDenda === '') {
+            $dendaKondisi = self::DENDA_KONDISI[$kondisi];
+        } elseif (ctype_digit($inputDenda) && (int) $inputDenda <= 10000000) {
+            $dendaKondisi = (int) $inputDenda;
+        } else {
+            return redirect()->route('peminjaman.index')->with('error', 'Nominal denda kondisi harus berupa angka bulat (maksimal Rp10.000.000).');
+        }
+
+        $hariIni = date('Y-m-d');
+
+        //denda telat Rp1.000 per hari (lihat konstanta di atas). Buku hilang tidak dikenai denda telat,
+        //karena yang ditagih adalah penggantiannya.
+        $dendaTelat = 0;
+        if ($kondisi !== 'hilang' && $peminjaman->tanggal_wajib_kembali) {
+            $telatHari = (int) round((strtotime($hariIni) - strtotime($peminjaman->tanggal_wajib_kembali)) / 86400);
+            if ($telatHari > 0) {
+                $dendaTelat = $telatHari * self::DENDA_TELAT_PER_HARI;
+            }
+        }
+
+        $denda = $dendaTelat + $dendaKondisi;
 
         $peminjaman->update([
             'tanggal_dikembalikan' => $hariIni,
             'status' => 'dikembalikan',
+            'kondisi_kembali' => $kondisi,
             'denda' => $denda,
+            'denda_telat' => $dendaTelat,
+            'denda_kondisi' => $dendaKondisi,
+            'catatan_kondisi' => $validatedData['catatan_kondisi'] ?? null,
+            'status_denda' => $denda > 0 ? 'belum_lunas' : 'tidak_ada',
+            'tanggal_bayar_denda' => null,
+            'catatan_bayar' => null,
         ]);
 
-        return redirect()->route('peminjaman.index')->with('success', 'Pengembalian buku berhasil dikonfirmasi.');
+        //stok bertambah lagi hanya kalau buku masih layak dipinjam (baik / rusak ringan)
+        if (!in_array($kondisi, self::KONDISI_TIDAK_KEMBALI_KE_STOK, true)) {
+            $this->ubahStok($peminjaman->id_buku, +1);
+        }
+
+        [$peminjam, $judul] = $this->infoPeminjaman($peminjaman);
+        if ($kondisi === 'hilang') {
+            LogAktivitas::catat('peminjaman', 'Mencatat buku "' . $judul . '" dari ' . $peminjam . ' sebagai HILANG');
+        } else {
+            LogAktivitas::catat('peminjaman', 'Mengonfirmasi pengembalian buku "' . $judul . '" dari ' . $peminjam . ' (kondisi: ' . self::LABEL_KONDISI[$kondisi] . ')');
+        }
+
+        //catatan denda ke log dibuat saat admin mencatat pembayarannya (lihat bayarDenda),
+        //jadi denda yang baru dikenakan sengaja belum dicatat di sini
+
+        $pesan = $kondisi === 'hilang'
+            ? 'Buku dicatat hilang. Stok tidak ditambahkan.'
+            : 'Pengembalian buku berhasil dikonfirmasi.';
+
+        if ($denda > 0) {
+            $pesan .= ' Denda Rp' . number_format($denda, 0, ',', '.') . ' belum dibayar, catat pembayarannya setelah siswa membayar.';
+        }
+
+        return redirect()->route('peminjaman.index')->with('success', $pesan);
+    }
+
+    public function bayarDenda(Request $request, $id_peminjaman) //catat pembayaran denda (admin)
+    {
+        $peminjaman = Peminjaman::findOrFail($id_peminjaman);
+
+        if ($peminjaman->status !== 'dikembalikan' || (int) $peminjaman->denda < 1) {
+            return redirect()->route('peminjaman.index')->with('error', 'Transaksi ini tidak memiliki denda yang perlu dibayar.');
+        }
+
+        if (($peminjaman->status_denda ?? '') === 'lunas') {
+            return redirect()->route('peminjaman.index')->with('error', 'Denda ini sudah tercatat lunas sebelumnya.');
+        }
+
+        $validatedData = $request->validate([
+            'catatan_bayar' => 'nullable|string|max:255',
+        ]);
+
+        $peminjaman->update([
+            'status_denda' => 'lunas',
+            'tanggal_bayar_denda' => date('Y-m-d'),
+            'catatan_bayar' => $validatedData['catatan_bayar'] ?? null,
+        ]);
+
+        [$peminjam, $judul] = $this->infoPeminjaman($peminjaman);
+        $denda = (int) $peminjaman->denda;
+
+        $rincian = [];
+        if ((int) $peminjaman->denda_telat > 0) {
+            $rincian[] = 'telat Rp' . number_format((int) $peminjaman->denda_telat, 0, ',', '.');
+        }
+        if ((int) $peminjaman->denda_kondisi > 0) {
+            $rincian[] = (($peminjaman->kondisi_kembali ?? '') === 'hilang' ? 'penggantian' : 'kerusakan') . ' Rp' . number_format((int) $peminjaman->denda_kondisi, 0, ',', '.');
+        }
+        $keterangan = count($rincian) > 0 ? ' (' . implode(', ', $rincian) . ')' : '';
+
+        LogAktivitas::catat('denda', 'Denda Rp' . number_format($denda, 0, ',', '.') . $keterangan . ' dari ' . $peminjam . ' atas buku "' . $judul . '" dilunasi');
+
+        return redirect()->route('peminjaman.index')->with('success', 'Pembayaran denda Rp' . number_format($denda, 0, ',', '.') . ' berhasil dicatat.');
+    }
+
+    /** Tambah/kurangi stok buku. $selisih: -1 saat dipinjam, +1 saat kembali/ditolak. */
+    private function ubahStok($id_buku, $selisih)
+    {
+        $buku = DataBuku::find($id_buku);
+        if (!$buku) {
+            return;
+        }
+
+        $stokBaru = max(0, (int) $buku->stok + $selisih);
+        $buku->update(['stok' => $stokBaru]);
+    }
+
+    /** Ambil nama peminjam & judul buku dari satu transaksi (untuk kalimat log). */
+    private function infoPeminjaman($peminjaman)
+    {
+        $user = User::find($peminjaman->id_user);
+        $buku = DataBuku::find($peminjaman->id_buku);
+
+        return [
+            $user ? $user->username : 'user #' . $peminjaman->id_user,
+            $buku ? $buku->judul_buku : 'buku #' . $peminjaman->id_buku,
+        ];
     }
 }

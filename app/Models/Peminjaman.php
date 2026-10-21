@@ -16,7 +16,14 @@ class Peminjaman extends Model
         'tanggal_wajib_kembali',
         'tanggal_dikembalikan',
         'status',
+        'kondisi_kembali',
         'denda',
+        'denda_telat',
+        'denda_kondisi',
+        'status_denda',
+        'tanggal_bayar_denda',
+        'catatan_bayar',
         'catatan_admin',
+        'catatan_kondisi',
     ];
 }

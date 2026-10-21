@@ -8,6 +8,7 @@ use App\Models\DataBuku;
 use App\Models\Kategori;
 use App\Models\Peminjaman;
 use App\Models\User;
+use App\Models\LogAktivitas;
 
 class DataBukuController extends Controller
 {
@@ -99,7 +100,8 @@ class DataBukuController extends Controller
     public function create(Request $request)
     {
         $daftarKategori = Kategori::all();
-        return view('data_buku.create', compact('daftarKategori'));
+        $idKategoriFiksi = $this->idKategoriFiksi();
+        return view('data_buku.create', compact('daftarKategori', 'idKategoriFiksi'));
     }
 
     public function store(Request $request)
@@ -111,6 +113,8 @@ class DataBukuController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
             'stok' => 'required|integer|min:0|max:9999',
+            'sinopsis' => 'nullable|string|max:2000',
+            'genre' => 'nullable|string|max:100',
         ]);
 
         //sampul diunggah sebagai file (opsional)
@@ -119,8 +123,12 @@ class DataBukuController extends Controller
             return redirect()->route('data_buku.create')->with('error', $error);
         }
         $validatedData['thumbnail'] = $thumbnail;
+        $validatedData['sinopsis'] = trim((string) ($validatedData['sinopsis'] ?? ''));
+        $validatedData['genre'] = $this->genreUntukKategori($validatedData['id_kategori'], $validatedData['genre'] ?? '');
 
         DataBuku::create($validatedData);
+
+        LogAktivitas::catat('buku', 'Menambahkan buku "' . $validatedData['judul_buku'] . '" (stok ' . $validatedData['stok'] . ')');
 
         return redirect()->route('data_buku.index')->with('success', 'Buku berhasil ditambahkan.');
     }
@@ -129,7 +137,8 @@ class DataBukuController extends Controller
     {
         $data_buku = DataBuku::findOrFail($id_buku);
         $daftarKategori = Kategori::all();
-        return view('data_buku.edit', compact('data_buku', 'daftarKategori'));
+        $idKategoriFiksi = $this->idKategoriFiksi();
+        return view('data_buku.edit', compact('data_buku', 'daftarKategori', 'idKategoriFiksi'));
     }
 
     public function update(Request $request, $id_buku) //bagian update
@@ -141,9 +150,12 @@ class DataBukuController extends Controller
             'penerbit' => 'required|string|max:255',
             'tahun_terbit' => 'required|integer|digits:4',
             'stok' => 'required|integer|min:0|max:9999',
+            'sinopsis' => 'nullable|string|max:2000',
+            'genre' => 'nullable|string|max:100',
         ]);
 
         $data_buku = DataBuku::findOrFail($id_buku);
+        $stokLama = (int) $data_buku->stok;
 
         [$thumbnailBaru, $error] = $this->uploadThumbnail();
         if ($error) {
@@ -160,6 +172,16 @@ class DataBukuController extends Controller
             $thumbnail = null;
         }
 
+        //sinopsis & genre: isi lama dipertahankan, kecuali kolomnya memang diubah di form
+        $sinopsis = $data_buku->sinopsis;
+        if ((string) ($request->sinopsis_diubah ?? '') === '1') {
+            $sinopsis = trim((string) ($request->sinopsis ?? ''));
+        }
+        $genre = $data_buku->genre;
+        if ((string) ($request->genre_diubah ?? '') === '1') {
+            $genre = trim((string) ($request->genre ?? ''));
+        }
+
         $data_buku->update([
             'id_kategori' => $request->id_kategori,
             'judul_buku' => $request->judul_buku,
@@ -167,8 +189,15 @@ class DataBukuController extends Controller
             'penerbit' => $request->penerbit,
             'tahun_terbit' => $request->tahun_terbit,
             'stok' => $request->stok,
+            'sinopsis' => $sinopsis,
+            'genre' => $this->genreUntukKategori($request->id_kategori, $genre),
             'thumbnail' => $thumbnail,
         ]);
+
+        $catatanStok = ((int) $request->stok !== $stokLama)
+            ? ' (stok ' . $stokLama . ' menjadi ' . (int) $request->stok . ')'
+            : '';
+        LogAktivitas::catat('buku', 'Mengubah data buku "' . $request->judul_buku . '"' . $catatanStok);
 
         return redirect()->route('data_buku.index')->with('success', 'Data Buku berhasil diperbarui.');
     }
@@ -176,10 +205,35 @@ class DataBukuController extends Controller
     public function destroy(Request $request, $id_buku) //bagian hapus
     {
         $data_buku = DataBuku::findOrFail($id_buku);
+        $judul = $data_buku->judul_buku;
         $this->hapusThumbnailLokal($data_buku->thumbnail);
         $data_buku->delete();
 
+        LogAktivitas::catat('buku', 'Menghapus buku "' . $judul . '"');
+
         return redirect()->route('data_buku.index')->with('success', 'Buku berhasil dihapus.');
+    }
+
+    /** ID kategori "Karya Fiksi" (dicari lewat nama, jadi tidak bergantung pada nomor ID). */
+    private function idKategoriFiksi()
+    {
+        foreach (Kategori::all() as $k) {
+            if (strtolower(trim($k->nama_kategori)) === 'karya fiksi') {
+                return (int) $k->id_kategori;
+            }
+        }
+        return null;
+    }
+
+    /** Genre hanya disimpan untuk kategori Karya Fiksi; untuk kategori lain selalu dikosongkan. */
+    private function genreUntukKategori($id_kategori, $genre)
+    {
+        $idFiksi = $this->idKategoriFiksi();
+        $genre = trim((string) $genre);
+        if ($idFiksi === null || (int) $id_kategori !== $idFiksi || $genre === '') {
+            return null;
+        }
+        return $genre;
     }
 
     /**

@@ -17,45 +17,6 @@
     $idDipilih = $bukuDipilih ? $bukuDipilih->id_buku : '';
 @endphp
 
-<style>
-    .pick-list { max-height: 480px; overflow-y: auto; }
-    /* Card kiri menempel di bawah navbar (bukan menimpanya) saat halaman di-scroll di layar besar */
-    @media (min-width: 992px) {
-        .pick-sticky {
-            position: sticky;
-            top: calc(var(--navbar-height, 57px) + 1rem);
-            z-index: 1;
-        }
-    }
-    .pick-letter {
-        position: sticky; top: 0; z-index: 1;
-        padding: .25rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
-        color: var(--bs-secondary-color); background: var(--bs-secondary-bg);
-        border-top: 1px solid var(--bs-border-color); border-bottom: 1px solid var(--bs-border-color);
-    }
-    .pick-item {
-        display: flex; align-items: center; gap: .75rem;
-        padding: .6rem 1rem; color: inherit; text-decoration: none;
-        border-left: 3px solid transparent;
-        scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
-    }
-    .pick-item:hover { color: inherit; background: color-mix(in srgb, var(--brand) 8%, transparent); }
-    .pick-item.selected {
-        background: color-mix(in srgb, var(--brand) 15%, transparent);
-        border-left-color: var(--brand);
-    }
-    .pick-cover {
-        width: 40px; height: 56px; object-fit: cover; border-radius: 4px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        background: var(--bs-tertiary-bg);
-    }
-    .pick-preview-cover {
-        width: 96px; height: 136px; object-fit: cover; border-radius: 8px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        background: var(--bs-tertiary-bg); font-size: 2rem;
-    }
-</style>
-
 <div class="admin-page">
 
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">

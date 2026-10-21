@@ -11,6 +11,7 @@ use App\Controllers\DataBukuController;
 use App\Controllers\PengajuanKeanggotaanController;
 use App\Controllers\AnggotaController;
 use App\Controllers\PeminjamanController;
+use App\Controllers\LogAktivitasController;
 use Sakuci\Route;
 
 /*
@@ -48,7 +49,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->name('register.attempt')->middleware('guest');
 
-Route::get('/dashboard', [PeminjamanController::class, 'dashboardSiswa'])->name('dashboard')->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
 Route::get('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'create'])->name('keanggotaan.create')->middleware('auth');
 Route::post('/keanggotaan/ajukan', [PengajuanKeanggotaanController::class, 'store'])->name('keanggotaan.store')->middleware('auth');
@@ -108,8 +109,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::put('/peminjaman/{id_peminjaman}/setujui', [PeminjamanController::class, 'approve'])->name('peminjaman.setujui');
     Route::put('/peminjaman/{id_peminjaman}/tolak', [PeminjamanController::class, 'reject'])->name('peminjaman.tolak');
     Route::put('/peminjaman/{id_peminjaman}/kembali', [PeminjamanController::class, 'konfirmasiKembali'])->name('peminjaman.kembali');
+    Route::put('/peminjaman/{id_peminjaman}/bayar-denda', [PeminjamanController::class, 'bayarDenda'])->name('peminjaman.bayar_denda');
     Route::get('/peminjaman/cetak', [PeminjamanController::class, 'cetak'])->name('peminjaman.cetak');
 
+    //Log Aktivitas
+    Route::get('/log_aktivitas', [LogAktivitasController::class, 'index'])->name('log.index');
 });
 
 /*

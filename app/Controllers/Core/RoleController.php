@@ -4,6 +4,7 @@ namespace App\Controllers\Core;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\LogAktivitas;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
 
@@ -49,6 +50,8 @@ class RoleController extends Controller
         $this->ensureMiddlewareFor($name);
         $this->ensureRouteFor($name);
 
+        LogAktivitas::catat('role', 'Menambahkan role "' . $name . '"' . ($request->boolean('can_register') ? ' (boleh daftar mandiri)' : ''));
+
         return back()->with('success', 'Role "' . $name . '" berhasil ditambahkan. Middleware & route-nya otomatis dibuat: ->middleware(\'' . $name . '\') atau buka /' . $name . '.');
     }
 
@@ -84,6 +87,12 @@ class RoleController extends Controller
             $this->ensureRouteFor($newName);
         }
 
+        if ($newName !== $oldName) {
+            LogAktivitas::catat('role', 'Mengubah nama role "' . $oldName . '" menjadi "' . $newName . '"');
+        } else {
+            LogAktivitas::catat('role', 'Mengubah pengaturan role "' . $newName . '"');
+        }
+
         return back()->with('success', 'Role "' . $oldName . '" berhasil diperbarui.');
     }
 
@@ -98,6 +107,8 @@ class RoleController extends Controller
         $name = $role->name;
         User::where('role', $name)->delete();
         $role->delete();
+
+        LogAktivitas::catat('role', 'Menghapus role "' . $name . '"' . ($pemakai > 0 ? ' beserta ' . $pemakai . ' user pemiliknya' : ''));
 
         $this->removeRouteFor($name);
         $this->removeMiddlewareFor($name);

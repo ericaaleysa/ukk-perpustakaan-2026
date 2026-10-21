@@ -5,16 +5,16 @@
 @section('content')
 
 <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-        <div>
-            <h2 class="h6 mb-0">
-                <span class="badge rounded-pill badge-ukk px-3 py-2">NEXLIB PROJECT '26</span>
-            </h2>
-        </div>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">&larr; Kembali</a>
+    <div>
+        <h2 class="h6 mb-0">
+            <span class="badge badge-ukk px-3 py-2">NEXLIB PROJECT '26</span>
+        </h2>
     </div>
+    <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
+</div>
 
     {{-- Apa itu NEXLIB --}}
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card border-0 shadow-sm no-hover-lift mb-4">
         <div class="card-body p-4">
             <h1 class="h3 fw-bold mt-2 mb-1">Apa itu <span class="text-brand-dark">NEXLIB</span> ?</h1>
             <p class="text-secondary mb-0">
@@ -29,7 +29,7 @@
     <h2 class="h5 fw-semibold mb-3">Fitur utama</h2>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 p-3">
+            <div class="card border-0 shadow-sm no-hover-lift h-100 p-3">
                 <div class="feature-icon mb-3">
                     <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M8 1.884c-1.545-.887-3.837-1.113-5.487-.573C1.923.42 1.5.904 1.5 1.5v10.5c0 .548.44.98.955.86 1.469-.34 3.618-.146 5.045.567V1.884zm1 11.543c1.427-.713 3.576-.907 5.045-.567.516.12.955-.312.955-.86V1.5c0-.596-.423-1.08-1.013-1.19C12.337.77 10.045.996 8.5 1.884v11.543z"/>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 p-3">
+            <div class="card border-0 shadow-sm no-hover-lift h-100 p-3">
                 <div class="feature-icon mb-3">
                     <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M8 0a.5.5 0 0 1 .146.021l6 2A.5.5 0 0 1 14.5 2.5v4.243c0 4.248-2.937 7.634-6.234 8.716a.5.5 0 0 1-.532 0C4.437 14.377 1.5 10.991 1.5 6.743V2.5a.5.5 0 0 1 .354-.479l6-2A.5.5 0 0 1 8 0z"/>
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 p-3">
+            <div class="card border-0 shadow-sm no-hover-lift h-100 p-3">
                 <div class="feature-icon mb-3">
                     <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M8 3.5a.5.5 0 0 1 .5.5v4.09l2.79 1.613a.5.5 0 1 1-.5.866l-3-1.732A.5.5 0 0 1 7.5 8V4a.5.5 0 0 1 .5-.5z"/>
@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="card border-0 shadow-sm h-100 p-3">
+            <div class="card border-0 shadow-sm no-hover-lift h-100 p-3">
                 <div class="feature-icon mb-3">
                     <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                         <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
@@ -78,34 +78,34 @@
     </div>
 
     {{-- Cara meminjam --}}
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm no-hover-lift">
         <div class="card-body p-4">
             <h2 class="h5 fw-semibold mb-3">Cara Meminjam Buku</h2>
 
             <ul class="list-unstyled d-grid gap-3 mb-0">
                 <li class="d-flex gap-3">
-                    <span class="step-number">1</span>
+                    <span class="step-number rounded">1</span>
                     <div>
                         <div class="fw-medium">Daftar dan masuk</div>
                         <div class="text-secondary small">Buat akun, lalu masuk ke NEXLIB.</div>
                     </div>
                 </li>
                 <li class="d-flex gap-3">
-                    <span class="step-number">2</span>
+                    <span class="step-number rounded">2</span>
                     <div>
                         <div class="fw-medium">Ajukan keanggotaan</div>
                         <div class="text-secondary small">Isi data diri, lalu tunggu verifikasi dari petugas.</div>
                     </div>
                 </li>
                 <li class="d-flex gap-3">
-                    <span class="step-number">3</span>
+                    <span class="step-number rounded">3</span>
                     <div>
                         <div class="fw-medium">Ajukan peminjaman</div>
                         <div class="text-secondary small">Setelah menjadi anggota aktif, pilih buku yang tersedia dan ajukan peminjaman.</div>
                     </div>
                 </li>
                 <li class="d-flex gap-3">
-                    <span class="step-number">4</span>
+                    <span class="step-number rounded">4</span>
                     <div>
                         <div class="fw-medium">Kembalikan buku</div>
                         <div class="text-secondary small">Serahkan buku ke perpustakaan, petugas akan mengonfirmasi pengembaliannya.</div>

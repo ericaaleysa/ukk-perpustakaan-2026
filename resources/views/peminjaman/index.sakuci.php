@@ -1,185 +1,194 @@
 @extends('layouts.app')
 
-@section('title', 'Ajukan Peminjaman')
+@section('title', 'Kelola Transaksi Peminjaman')
 
 @section('content')
 
 @php
-    // Kelompokkan buku per huruf awal (urutan A-Z seperti kamus), tanpa kategori
-    $kelompokHuruf = [];
-    foreach ($daftarBukuTampil as $b) {
-        $huruf = strtoupper(substr(trim($b->judul_buku), 0, 1));
-        if (!preg_match('/[A-Z]/', $huruf)) {
-            $huruf = '#';
-        }
-        $kelompokHuruf[$huruf][] = $b;
-    }
-    $idDipilih = $bukuDipilih ? $bukuDipilih->id_buku : '';
+    $statusKelas = [
+        'menunggu_konfirmasi' => 'status-menunggu',
+        'dipinjam' => 'status-aktif',
+        'dikembalikan' => 'status-selesai',
+        'ditolak' => 'status-nonaktif',
+    ];
+    $statusLabel = [
+        'menunggu_konfirmasi' => 'Menunggu konfirmasi',
+        'dipinjam' => 'Dipinjam',
+        'dikembalikan' => 'Dikembalikan',
+        'ditolak' => 'Ditolak',
+    ];
+    $labelKondisi = [
+        'baik' => 'Baik',
+        'rusak_ringan' => 'Rusak ringan',
+        'rusak_berat' => 'Rusak berat',
+        'hilang' => 'Hilang',
+    ];
+    $no = 1;
 @endphp
-
-<style>
-    .pick-list { max-height: 480px; overflow-y: auto; }
-    /* Card kiri menempel di bawah navbar (bukan menimpanya) saat halaman di-scroll di layar besar */
-    @media (min-width: 992px) {
-        .pick-sticky {
-            position: sticky;
-            top: calc(var(--navbar-height, 57px) + 1rem);
-            z-index: 1;
-        }
-    }
-    .pick-letter {
-        position: sticky; top: 0; z-index: 1;
-        padding: .25rem 1rem; font-size: .75rem; font-weight: 700; letter-spacing: .08em;
-        color: var(--bs-secondary-color); background: var(--bs-secondary-bg);
-        border-top: 1px solid var(--bs-border-color); border-bottom: 1px solid var(--bs-border-color);
-    }
-    .pick-item {
-        display: flex; align-items: center; gap: .75rem;
-        padding: .6rem 1rem; color: inherit; text-decoration: none;
-        border-left: 3px solid transparent;
-        scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
-    }
-    .pick-item:hover { color: inherit; background: color-mix(in srgb, var(--brand) 8%, transparent); }
-    .pick-item.selected {
-        background: color-mix(in srgb, var(--brand) 15%, transparent);
-        border-left-color: var(--brand);
-    }
-    .pick-cover {
-        width: 40px; height: 56px; object-fit: cover; border-radius: 4px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        background: var(--bs-tertiary-bg);
-    }
-    .pick-preview-cover {
-        width: 96px; height: 136px; object-fit: cover; border-radius: 8px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        background: var(--bs-tertiary-bg); font-size: 2rem;
-    }
-</style>
 
 <div class="admin-page">
 
     <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
         <div>
-            <h1 class="h3 admin-title">Ajukan Peminjaman</h1>
-            <p class="admin-subtitle">Cari buku di daftar, lalu pilih untuk dipinjam.</p>
+            <h1 class="h3 admin-title">Transaksi Peminjaman</h1>
+            <p class="admin-subtitle">Setujui pengajuan dan konfirmasi pengembalian buku.</p>
         </div>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
-    @if($currentUser->status_keanggotaan !== 'aktif')
-        <div style="max-width: 640px;">
-            <div class="notice">
-                <strong>Kamu belum menjadi anggota aktif.</strong>
-                Jadi anggota aktif dulu untuk bisa meminjam buku.
-                <a href="{{ route('keanggotaan.create') }}">Ajukan keanggotaan</a>
-            </div>
-        </div>
-    @elseif(count($daftarBukuTersedia) === 0)
-        <div style="max-width: 640px;">
-            <div class="card admin-panel no-hover-lift">
-                <div class="admin-empty">
-                    <strong>Belum ada buku yang tersedia</strong>
-                    Semua buku sedang dipinjam. Coba lagi nanti.
+    <div class="card admin-panel no-hover-lift">
+
+        <div class="card-body pb-2">
+            <form method="GET" action="{{ route('peminjaman.index') }}" class="row g-2 align-items-end">
+                <div class="col-auto">
+                    <label class="form-label admin-label small mb-1">Dari tanggal pinjam</label>
+                    <input type="date" name="tanggal_dari" class="form-control form-control-sm" value="{{ $tanggalDari }}">
                 </div>
-            </div>
+                <div class="col-auto">
+                    <label class="form-label admin-label small mb-1">Sampai tanggal pinjam</label>
+                    <input type="date" name="tanggal_sampai" class="form-control form-control-sm" value="{{ $tanggalSampai }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-brand px-3">Terapkan</button>
+                    @if($tanggalDari || $tanggalSampai)
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-outline-secondary px-3">Reset</a>
+                    @endif
+                </div>
+            </form>
         </div>
-    @else
-        <div class="row g-4 align-items-start">
 
-            {{-- Kiri: buku yang dipilih + tombol ajukan --}}
-            <div class="col-12 col-lg-5">
-                <div class="card admin-panel no-hover-lift pick-sticky">
-                    <div class="card-body p-4">
-                        <form action="{{ route('peminjaman.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id_buku" value="{{ $idDipilih }}">
-
-                            <label class="form-label admin-label">Buku yang dipilih</label>
-
-                            @if($bukuDipilih)
-                                <div class="border rounded-3 p-3 mb-2">
-                                    <div class="d-flex gap-3">
-                                        @if($bukuDipilih->thumbnail)
-                                            <img src="{{ $bukuDipilih->thumbnail }}" alt="Sampul {{ $bukuDipilih->judul_buku }}" class="pick-preview-cover">
-                                        @else
-                                            <div class="pick-preview-cover">📚</div>
-                                        @endif
-                                        <div>
-                                            <div class="fw-semibold mb-1">{{ $bukuDipilih->judul_buku }}</div>
-                                            <div class="text-secondary small">{{ $bukuDipilih->pengarang }}</div>
-                                            <div class="text-secondary small">{{ $bukuDipilih->penerbit }} &middot; {{ $bukuDipilih->tahun_terbit }}</div>
-                                            <a href="{{ route('peminjaman.create') }}{{ $keyword !== '' ? '?q=' . urlencode($keyword) : '' }}" class="btn btn-sm btn-link text-secondary p-0 mt-2">Ganti pilihan</a>
+        @if(count($daftarPeminjaman) === 0)
+            <div class="admin-empty">
+                <strong>Tidak ada transaksi</strong>
+                Belum ada peminjaman yang cocok dengan filter ini.
+            </div>
+        @else
+        <div class="table-responsive">
+            <table class="table admin-table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No</th>
+                        <th>Peminjam</th>
+                        <th>Judul buku</th>
+                        <th>Tanggal pinjam</th>
+                        <th>Wajib kembali</th>
+                        <th>Status</th>
+                        <th>Denda</th>
+                        <th class="text-end" style="width: 290px; min-width: 290px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($daftarPeminjaman as $p)
+                    <tr>
+                        <td class="cell-meta">{{ $no++ }}</td>
+                        <td class="cell-main">{{ $p->peminjam->username ?? '-' }}</td>
+                        <td>{{ $p->buku->judul_buku ?? '-' }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_pinjam ?: '-' }}</td>
+                        <td class="cell-meta">{{ $p->tanggal_wajib_kembali ?: '-' }}</td>
+                        <td>
+                            @if($p->status === 'dikembalikan' && ($p->kondisi_kembali ?? '') === 'hilang')
+                                <span class="status-pill status-nonaktif">Hilang</span>
+                            @else
+                                <span class="status-pill {{ $statusKelas[$p->status] ?? 'status-kosong' }}">{{ $statusLabel[$p->status] ?? $p->status }}</span>
+                            @endif
+                            @if($p->status === 'dikembalikan' && !empty($p->kondisi_kembali) && !in_array($p->kondisi_kembali, ['baik', 'hilang']))
+                                <div class="cell-meta mt-1">Kondisi: {{ $labelKondisi[$p->kondisi_kembali] ?? $p->kondisi_kembali }}</div>
+                            @endif
+                            @if(!empty($p->catatan_kondisi))
+                                <div class="cell-meta mt-1">{{ $p->catatan_kondisi }}</div>
+                            @endif
+                        </td>
+                        <td class="{{ $p->denda > 0 ? 'cell-main' : 'cell-meta' }}">
+                            {{ $p->denda > 0 ? 'Rp' . number_format($p->denda, 0, ',', '.') : '-' }}
+                            @if(($p->denda_telat ?? 0) > 0 && ($p->denda_kondisi ?? 0) > 0)
+                                <div class="cell-meta">Telat Rp{{ number_format($p->denda_telat, 0, ',', '.') }} &middot; Kondisi Rp{{ number_format($p->denda_kondisi, 0, ',', '.') }}</div>
+                            @endif
+                            @if($p->denda > 0 && $p->status === 'dikembalikan')
+                                @if(($p->status_denda ?? '') === 'lunas')
+                                    <div class="mt-1"><span class="status-pill status-selesai">Lunas</span></div>
+                                    @if(!empty($p->tanggal_bayar_denda))
+                                        <div class="cell-meta">{{ date('d M Y', strtotime($p->tanggal_bayar_denda)) }}</div>
+                                    @endif
+                                    @if(!empty($p->catatan_bayar))
+                                        <div class="cell-meta">{{ $p->catatan_bayar }}</div>
+                                    @endif
+                                @else
+                                    <div class="mt-1"><span class="status-pill status-menunggu">Belum dibayar</span></div>
+                                @endif
+                            @endif
+                        </td>
+                        <td class="text-end">
+                            @if($p->status === 'menunggu_konfirmasi')
+                                <div class="text-nowrap">
+                                    <form action="{{ route('peminjaman.setujui', [$p->id_peminjaman]) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-sm btn-brand px-3">Setujui</button>
+                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-toggle="collapse" data-bs-target="#tolak{{ $p->id_peminjaman }}">Tolak</button>
+                                </div>
+                                <div class="collapse mt-2" id="tolak{{ $p->id_peminjaman }}">
+                                    <form action="{{ route('peminjaman.tolak', [$p->id_peminjaman]) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" name="catatan_admin" class="form-control" placeholder="Alasan (opsional)">
+                                            <button type="submit" class="btn btn-outline-secondary">Kirim</button>
                                         </div>
-                                    </div>
+                                    </form>
+                                </div>
+                            @elseif($p->status === 'dipinjam')
+                                <button type="button" class="btn btn-sm btn-outline-brand px-3" data-bs-toggle="collapse" data-bs-target="#kembali{{ $p->id_peminjaman }}">Konfirmasi kembali</button>
+                                <div class="collapse mt-2" id="kembali{{ $p->id_peminjaman }}">
+                                    <form action="{{ route('peminjaman.kembali', [$p->id_peminjaman]) }}" method="POST" class="text-start" style="width: 100%;">
+                                        @csrf
+                                        @method('PUT')
+                                        <label class="form-label admin-label small mb-1">Kondisi buku</label>
+                                        <select name="kondisi_kembali" class="form-select form-select-sm mb-2" onchange="isiDendaKondisi(this)">
+                                            @foreach($labelKondisi as $kode => $label)
+                                                <option value="{{ $kode }}" data-denda="{{ $dendaKondisiDefault[$kode] ?? 0 }}">{{ $label }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label class="form-label admin-label small mb-1">Denda kondisi (Rp)</label>
+                                        <input type="number" name="denda_kondisi" min="0" step="1000" value="0" class="form-control form-control-sm mb-1">
+                                        <div class="admin-hint small mb-2">Denda telat dihitung otomatis. Nominal di atas boleh diubah (misalnya sesuai harga buku yang hilang).</div>
+                                        <input type="text" name="catatan_kondisi" maxlength="255" class="form-control form-control-sm mb-2" placeholder="Catatan kondisi (opsional)">
+                                        <button type="submit" class="btn btn-sm btn-brand w-100">Konfirmasi pengembalian</button>
+                                    </form>
+                                </div>
+                            @elseif($p->status === 'dikembalikan' && $p->denda > 0 && ($p->status_denda ?? '') !== 'lunas')
+                                <button type="button" class="btn btn-sm btn-outline-brand px-3" data-bs-toggle="collapse" data-bs-target="#bayar{{ $p->id_peminjaman }}">Catat pembayaran</button>
+                                <div class="collapse mt-2" id="bayar{{ $p->id_peminjaman }}">
+                                    <form action="{{ route('peminjaman.bayar_denda', [$p->id_peminjaman]) }}" method="POST" class="text-start" style="width: 100%;"
+                                          onsubmit="return confirm('Tandai denda Rp{{ number_format($p->denda, 0, ',', '.') }} sebagai sudah dibayar?')">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="admin-hint small mb-2">Denda yang harus dibayar: <strong>Rp{{ number_format($p->denda, 0, ',', '.') }}</strong></div>
+                                        <input type="text" name="catatan_bayar" maxlength="255" class="form-control form-control-sm mb-2" placeholder="Catatan (opsional), mis. dibayar tunai">
+                                        <button type="submit" class="btn btn-sm btn-brand w-100">Tandai sudah dibayar</button>
+                                    </form>
                                 </div>
                             @else
-                                <div class="border rounded-3 text-center text-secondary py-5 px-3 mb-2">
-                                    <div style="font-size: 2rem;">📚</div>
-                                    <div class="small">Belum ada buku dipilih.<br>Pilih dari daftar buku di sebelah kanan.</div>
-                                </div>
+                                <span class="cell-meta">-</span>
                             @endif
-
-                            <p class="admin-hint mb-4">Masa pinjam 7 hari sejak pengajuan disetujui admin.</p>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-brand rounded-pill px-4" {{ $bukuDipilih ? '' : 'disabled' }}>Ajukan peminjaman</button>
-                                <a href="{{ route('peminjaman.riwayat') }}" class="btn btn-outline-secondary rounded-pill px-4">Lihat riwayat</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Kanan: daftar semua buku A-Z + pencarian --}}
-            <div class="col-12 col-lg-7">
-                <div class="card admin-panel no-hover-lift">
-                    <div class="card-body pb-2">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="form-label admin-label mb-0">Pilih buku</span>
-                            <span class="text-secondary small">{{ count($daftarBukuTampil) }} buku</span>
-                        </div>
-
-                        <form method="GET" action="{{ route('peminjaman.create') }}" class="d-flex flex-wrap align-items-center gap-2">
-                            <input type="hidden" name="pilih" value="{{ $idDipilih }}">
-                            <input type="text" name="q" value="{{ $keyword }}"
-                                   class="form-control form-control-sm w-auto flex-grow-1" style="min-width: 200px;"
-                                   placeholder="Cari judul, pengarang, atau penerbit...">
-                            <button type="submit" class="btn btn-sm btn-brand rounded-pill px-3">Cari</button>
-                            @if($keyword !== '')
-                                <a href="{{ route('peminjaman.create') }}{{ $idDipilih ? '?pilih=' . $idDipilih : '' }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Reset</a>
-                            @endif
-                        </form>
-                    </div>
-
-                    <div class="pick-list mt-2">
-                        @forelse($kelompokHuruf as $huruf => $daftar)
-                            <div class="pick-letter">{{ $huruf }}</div>
-                            @foreach($daftar as $b)
-                                <a id="buku-{{ $b->id_buku }}"
-                                   href="{{ route('peminjaman.create') }}?{{ http_build_query(['pilih' => $b->id_buku, 'q' => $keyword]) }}#buku-{{ $b->id_buku }}"
-                                   class="pick-item {{ $idDipilih == $b->id_buku ? 'selected' : '' }}">
-                                    @if($b->thumbnail)
-                                        <img src="{{ $b->thumbnail }}" alt="" class="pick-cover">
-                                    @else
-                                        <span class="pick-cover">📚</span>
-                                    @endif
-                                    <span>
-                                        <span class="d-block fw-semibold">{{ $b->judul_buku }}</span>
-                                        <span class="d-block text-secondary small">{{ $b->pengarang }} &middot; {{ $b->penerbit }}</span>
-                                    </span>
-                                </a>
-                            @endforeach
-                        @empty
-                            <div class="admin-empty">
-                                <strong>Buku tidak ditemukan</strong>
-                                Coba kata kunci lain.
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-    @endif
+        @endif
+    </div>
 
 </div>
+
+<script>
+    // Isi otomatis nominal denda sesuai kondisi yang dipilih (tetap bisa diubah admin)
+    function isiDendaKondisi(select) {
+        var form = select.closest('form');
+        var input = form.querySelector('[name="denda_kondisi"]');
+        input.value = select.options[select.selectedIndex].getAttribute('data-denda');
+    }
+</script>
 
 @endsection

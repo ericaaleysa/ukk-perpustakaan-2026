@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
 use App\Models\User;
+use App\Models\LogAktivitas;
 
 class AnggotaController extends Controller
 {
@@ -20,6 +21,8 @@ class AnggotaController extends Controller
         $pengguna = User::findOrFail($id_user);
         $pengguna->update(['status_keanggotaan' => 'aktif']);
 
+        LogAktivitas::catat('anggota', 'Mengaktifkan kembali keanggotaan ' . $pengguna->username);
+
         return redirect()->route('anggota.index')->with('success', 'Keanggotaan pengguna berhasil diaktifkan kembali.');
     }
 
@@ -27,6 +30,8 @@ class AnggotaController extends Controller
     {
         $pengguna = User::findOrFail($id_user);
         $pengguna->update(['status_keanggotaan' => 'non_aktif']);
+
+        LogAktivitas::catat('anggota', 'Menonaktifkan keanggotaan ' . $pengguna->username);
 
         return redirect()->route('anggota.index')->with('success', 'Keanggotaan pengguna berhasil dinonaktifkan.');
     }

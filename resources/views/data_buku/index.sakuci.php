@@ -21,12 +21,13 @@
             <h1 class="h3 admin-title">Data Buku</h1>
             <p class="admin-subtitle">Kelola koleksi buku perpustakaan.</p>
         </div>
-        <a href="{{ route('data_buku.create') }}" class="btn btn-brand px-3">Tambah buku</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     <div class="card admin-panel no-hover-lift">
 
         <div class="card-body pb-2">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
             <form method="GET" action="{{ route('data_buku.index') }}" class="d-flex flex-wrap align-items-center gap-2">
                 <input type="text" name="q" value="{{ $keyword }}"
                        class="form-control form-control-sm w-auto flex-grow-1" style="min-width: 220px; max-width: 360px;"
@@ -45,6 +46,9 @@
                     <a href="{{ route('data_buku.index') }}" class="btn btn-sm btn-outline-secondary px-3">Reset</a>
                 @endif
             </form>
+
+            <a href="{{ route('data_buku.create') }}" class="btn btn-sm btn-brand px-3">Tambah buku</a>
+          </div>
         </div>
 
         <div class="table-responsive">
@@ -112,10 +116,12 @@
             </table>
         </div>
 
-        <div class="card-footer bg-transparent d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <div>{!! $data_buku->links() !!}</div>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
+        @php $tautan = trim((string) $data_buku->links()); @endphp
+        @if($tautan !== '')
+        <div class="card-footer bg-transparent">
+            {!! $tautan !!}
         </div>
+        @endif
     </div>
 
 </div>

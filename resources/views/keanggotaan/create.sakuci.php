@@ -6,9 +6,12 @@
 
 <div class="admin-page">
 
-    <div class="mb-4">
-        <h1 class="h3 admin-title">Pengajuan Keanggotaan</h1>
-        <p class="admin-subtitle">Jadi anggota aktif untuk mulai meminjam buku perpustakaan.</p>
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 admin-title">Pengajuan Keanggotaan</h1>
+            <p class="admin-subtitle">Jadi anggota aktif untuk mulai meminjam buku perpustakaan.</p>
+        </div>
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
     </div>
 
     <div style="max-width: 640px;">

@@ -11,7 +11,10 @@
             <h1 class="h3 admin-title">Kategori Buku</h1>
             <p class="admin-subtitle">Kelompokkan buku agar siswa mudah menemukannya.</p>
         </div>
-        <a href="{{ route('kategori.create') }}" class="btn btn-brand px-3">Tambah kategori</a>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <a href="{{ route('kategori.create') }}" class="btn btn-sm btn-brand px-3">Tambah kategori</a>
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
+        </div>
     </div>
 
     <div class="card admin-panel no-hover-lift">
@@ -58,10 +61,12 @@
             </table>
         </div>
 
-        <div class="card-footer bg-transparent d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <div>{!! $kategori->links() !!}</div>
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-secondary px-3">&larr; Kembali</a>
+        @php $tautan = trim((string) $kategori->links()); @endphp
+        @if($tautan !== '')
+        <div class="card-footer bg-transparent">
+            {!! $tautan !!}
         </div>
+        @endif
     </div>
 
 </div>
