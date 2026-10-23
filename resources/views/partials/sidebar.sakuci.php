@@ -161,14 +161,6 @@
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ is_route('favorit.index') ? 'active' : '' }}" href="{{ route('favorit.index') }}">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" class="flex-shrink-0">
-                                <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                            </svg>
-                            Buku Favorit
-                        </a>
-                    </li>
                 </ul>
                 <div class="sidebar-section-title">Peminjaman</div>
                 <ul class="nav nav-pills flex-column p-2 gap-1">

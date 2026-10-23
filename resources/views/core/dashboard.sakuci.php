@@ -28,7 +28,7 @@
                 </h1>
                 <p class="text-secondary mb-0 small">
                     {{ ($user->status_keanggotaan ?? 'non_aktif') === 'aktif' ? 
-                        'Pantau aktivitas peminjaman buku dan buku favoritmu di sini.' : 
+                        'Pantau aktivitas peminjaman bukumu di sini.' :
                         'Kamu belum mengajukan keanggotaan. Silakan ajukan keanggotaan agar dapat meminjam buku.'
                     }}
                 </p>
@@ -56,27 +56,10 @@
         </div>
     </div>
 
-    {{-- Tiga kartu pintasan (semuanya bisa diklik) --}}
-    <div class="row row-cols-1 row-cols-sm-3 g-3 mb-4">
+    {{-- Dua kartu pintasan (semuanya bisa diklik) --}}
+    <div class="row row-cols-1 row-cols-sm-2 g-3 mb-4">
 
-        {{-- Kartu 1: Buku Favorit --}}
-        <div class="col">
-            <a href="{{ route('favorit.index') }}" class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="feature-icon">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="fw-bold fs-5 text-brand-dark">Buku Favorit</div>
-                        <div class="text-secondary small">Koleksi buku yang kamu sukai</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        {{-- Kartu 2: Buku yang dipinjam (klik untuk lompat ke daftar di bawah) --}}
+        {{-- Kartu 1: Buku yang dipinjam (klik untuk lompat ke daftar di bawah) --}}
         <div class="col">
             <a href="#panelDipinjam"
                class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
@@ -99,7 +82,7 @@
             </a>
         </div>
 
-        {{-- Kartu 3: Ajukan Peminjaman (pindahan dari sidebar) --}}
+        {{-- Kartu 2: Ajukan Peminjaman (pindahan dari sidebar) --}}
         <div class="col">
             <a href="{{ route('peminjaman.create') }}" class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                 <div class="d-flex align-items-center gap-3">

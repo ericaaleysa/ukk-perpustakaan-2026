@@ -48,16 +48,20 @@
                     @csrf
                     <div class="mb-3">
                         <label for="nama_lengkap" class="form-label admin-label">Nama lengkap</label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required>
+                        <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ old('nama_lengkap') }}" class="form-control" required>
                     </div>
                     <div class="row g-3 mb-4">
                         <div class="col-md-7">
                             <label for="nis" class="form-label admin-label">NIS <span class="admin-hint">(Nomor Induk Siswa)</span></label>
-                            <input type="text" name="nis" id="nis" class="form-control" inputmode="numeric" required>
+                            <input type="text" name="nis" id="nis" value="{{ old('nis') }}"
+                                   class="form-control {{ errors()->has('nis') ? 'is-invalid' : '' }}"
+                                   inputmode="numeric" maxlength="10" required>
+                            @error('nis') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <div class="admin-hint mt-1">Maksimal 10 karakter.</div>
                         </div>
                         <div class="col-md-5">
                             <label for="kelas" class="form-label admin-label">Kelas</label>
-                            <input type="text" name="kelas" id="kelas" class="form-control" required>
+                            <input type="text" name="kelas" id="kelas" value="{{ old('kelas') }}" class="form-control" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-brand px-4">Ajukan keanggotaan</button>

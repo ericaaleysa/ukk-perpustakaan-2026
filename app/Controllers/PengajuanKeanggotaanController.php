@@ -29,7 +29,7 @@ class PengajuanKeanggotaanController extends Controller
 
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'nis' => 'required|string',
+            'nis' => 'required|string|max:10',
             'kelas' => 'required|string|max:50',
         ]);
 

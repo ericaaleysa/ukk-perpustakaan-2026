@@ -99,7 +99,7 @@
             <div class="mx-auto" style="max-width: 960px;">
                 <div class="row row-cols-2 row-cols-lg-4 g-2 g-md-3">
                     <div class="col">
-                        <div class="card hero-feature-card border-0 shadow-sm h-100 p-3">
+                        <div class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                             <div class="feature-icon mx-auto mb-2">
                                 <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                     <path d="M8 1.884c-1.545-.887-3.837-1.113-5.487-.573C1.923.42 1.5.904 1.5 1.5v10.5c0 .548.44.98.955.86 1.469-.34 3.618-.146 5.045.567V1.884zm1 11.543c1.427-.713 3.576-.907 5.045-.567.516.12.955-.312.955-.86V1.5c0-.596-.423-1.08-1.013-1.19C12.337.77 10.045.996 8.5 1.884v11.543z"/>
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card hero-feature-card border-0 shadow-sm h-100 p-3">
+                        <div class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                             <div class="feature-icon mx-auto mb-2">
                                 <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                     <path d="M8 3.5a.5.5 0 0 1 .5.5v4.09l2.79 1.613a.5.5 0 1 1-.5.866l-3-1.732A.5.5 0 0 1 7.5 8V4a.5.5 0 0 1 .5-.5z"/>
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card hero-feature-card border-0 shadow-sm h-100 p-3">
+                        <div class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                             <div class="feature-icon mx-auto mb-2">
                                 <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .146.021l6 2A.5.5 0 0 1 14.5 2.5v4.243c0 4.248-2.937 7.634-6.234 8.716a.5.5 0 0 1-.532 0C4.437 14.377 1.5 10.991 1.5 6.743V2.5a.5.5 0 0 1 .354-.479l6-2A.5.5 0 0 1 8 0zM10.03 5.22a.75.75 0 0 1 0 1.06L7.53 8.78a.75.75 0 0 1-1.06 0L5.22 7.53a.75.75 0 1 1 1.06-1.06L7 7.19l2.97-2.97a.75.75 0 0 1 1.06 0z"/>
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="card hero-feature-card border-0 shadow-sm h-100 p-3">
+                        <div class="card border-0 shadow-sm p-3 h-100 text-decoration-none text-reset">
                             <div class="feature-icon mx-auto mb-2">
                                 <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                     <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
