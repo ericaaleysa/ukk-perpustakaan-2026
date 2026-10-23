@@ -29,9 +29,16 @@ class PengajuanKeanggotaanController extends Controller
 
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'nis' => 'required|string|max:10',
+            'nis' => 'required|string',
             'kelas' => 'required|string|max:50',
         ]);
+
+        //panjang NIS dicek manual: validator bawaan membaca isian berisi angka sebagai nilai (bukan jumlah karakter)
+        $nis = trim((string) $validatedData['nis']);
+        if ($nis === '' || strlen($nis) > 10) {
+            return redirect()->route('keanggotaan.create')->with('error', 'NIS maksimal 10 karakter.');
+        }
+        $validatedData['nis'] = $nis;
 
         PengajuanKeanggotaan::create([
             'id_user' => $currentUser->id,
