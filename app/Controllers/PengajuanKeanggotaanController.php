@@ -26,7 +26,12 @@ class PengajuanKeanggotaanController extends Controller
     public function store(Request $request) //simpan pengajuan (pengguna)
     {
         $currentUser = User::current();
-
+        // Hanya non-anggota yang boleh mengajukan (pengajuan yang ditolak otomatis kembali ke non_anggota)
+        if (($currentUser->status_keanggotaan ?? 'non_anggota') !== 'non_anggota') {
+            return redirect()->route('keanggotaan.create')
+                ->with('error', 'Pengajuan tidak dapat dikirim dengan status keanggotaan Anda saat ini.');
+        }
+        
         $validatedData = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'nis' => 'required|string',
@@ -35,8 +40,8 @@ class PengajuanKeanggotaanController extends Controller
 
         //panjang NIS dicek manual: validator bawaan membaca isian berisi angka sebagai nilai (bukan jumlah karakter)
         $nis = trim((string) $validatedData['nis']);
-        if ($nis === '' || strlen($nis) > 10) {
-            return redirect()->route('keanggotaan.create')->with('error', 'NIS maksimal 10 karakter.');
+        if ($nis === '' || strlen($nis) > 10 || !ctype_digit($nis)) {
+            return redirect()->route('keanggotaan.create')->with('error', 'NIS harus berupa angka, maksimal 10 digit.');
         }
         $validatedData['nis'] = $nis;
 
@@ -73,6 +78,9 @@ class PengajuanKeanggotaanController extends Controller
     {
         $admin = User::current();
         $pengajuan = PengajuanKeanggotaan::findOrFail($id_pengajuan);
+        if ($pengajuan->status !== 'menunggu') {
+            return redirect()->route('keanggotaan.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
 
         $pengajuan->update([
             'status' => 'disetujui',
@@ -92,6 +100,9 @@ class PengajuanKeanggotaanController extends Controller
     {
         $admin = User::current();
         $pengajuan = PengajuanKeanggotaan::findOrFail($id_pengajuan);
+        if ($pengajuan->status !== 'menunggu') {
+            return redirect()->route('keanggotaan.index')->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+        }
 
         $validatedData = $request->validate([
             'catatan_admin' => 'nullable|string|max:255',

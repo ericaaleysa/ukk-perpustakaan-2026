@@ -22,7 +22,7 @@ class DocsController extends Controller
                     ['p' => 'Kerangka PHP ringan bergaya Laravel tanpa Composer. Fitur: Route, Model, View, Controller, Validation, Session, Middleware, CSRF protection, Query Builder dengan eager loading, dan Bootstrap 5.3.8 built-in.'],
                     ['p' => '<strong>Instalasi cepat:</strong> Clone dari GitHub atau salin folder ke web server Anda.'],
                     ['code' => "# Clone dari GitHub\ngit clone https://github.com/indrabsus/sakuci-framework.git\ncd sakuci-framework\n\n# Atau download dan ekstrak folder\n\n# Salin .env.example jadi .env\ncp .env.example .env\n\n# Jalankan server\nphp sakuci serve\n\n# Buka di browser\nhttp://127.0.0.1:8000", 'lang' => 'bash'],
-                    ['p' => '<strong>Coba akun demo:</strong> admin / rahasia123 &mdash; satu-satunya akun bawaan. Role lain (staff, user, dst.) dibuat sendiri lewat /admin/roles setelah login.'],
+                    ['p' => '<strong>Akun bawaan:</strong> instalasi baru membuat satu akun admin. Segera ganti password-nya setelah login pertama. Role lain (staff, user, dst.) dibuat sendiri lewat /admin/roles setelah login.'],
                 ],
             ],
 
@@ -723,9 +723,6 @@ class DocsController extends Controller
                 'title' => 'Multi-Role Login System',
                 'parts' => [
                     ['p' => 'Instalasi baru hanya punya satu akun & satu role: admin. Role lain (staff, user, editor, dst) dibuat sendiri oleh admin lewat /admin/roles -- baru muncul di dropdown /admin/users setelah dibuat.'],
-                    ['table' => [
-                        ['username' => 'admin', 'password' => 'rahasia123', 'akses' => '/admin'],
-                    ]],
                     ['p' => '<strong>Tambah role baru:</strong> Login sebagai admin, buka /admin/roles, isi nama role. Dua hal dibuat otomatis: berkas middleware <code class="inline">{Role}Only.php</code> di app/Middleware (langsung terdaftar sebagai alias, pakai lewat <code class="inline">Route::group([\'middleware\' => \'nama-role\'], ...)</code>), dan route group <code class="inline">/nama-role</code> di routes/web.php yang sudah dilindungi middleware tersebut.'],
                     ['p' => '<strong>Ganti nama / hapus role:</strong> Di /admin/roles, tiap role (selain admin) punya form ganti nama + toggle registrasi, dan tombol hapus. Middleware & route mengikuti otomatis; ganti nama juga memindahkan seluruh user pemilik role itu ke nama barunya. Role tidak bisa dihapus selama masih ada user yang memakainya.'],
                     ['p' => '<strong>Registrasi mandiri:</strong> Centang "Daftar" saat membuat/mengubah role supaya role itu muncul sebagai pilihan di halaman /register. Kalau tidak ada role yang dicentang, halaman /register otomatis mengarahkan kembali ke /login.'],

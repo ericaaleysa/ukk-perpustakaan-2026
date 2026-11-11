@@ -117,7 +117,7 @@
     {{-- Fitur & Navigasi Utama Admin --}}
     <section class="mb-4">
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
             
             {{-- Kartu 1: Peminjaman Buku --}}
             <div class="col">
@@ -162,31 +162,7 @@
                     </div>
                     <h3 class="h6 fw-semibold mb-1">Cetak Transaksi Peminjaman</h3>
                     <p class="text-secondary small mb-3">Unduh laporan transaksi peminjaman buku untuk keperluan administrasi.</p>
-                    <a href="{{ route('peminjaman.cetak') }}" target="_blank" class="btn btn-sm btn-brand mt-auto">Cetak Laporan</a>
-                </div>
-            </div>
-
-            {{-- Kartu 4: Download / Backup Database --}}
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100 p-3">
-                    <div class="feature-icon mb-3">
-                        <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M4.25 12c0 .552 1.679 1 3.75 1s3.75-.448 3.75-1-.157-.294-.436-.436l-.744.744a4.48 4.48 0 0 1-2.57.692 4.48 4.48 0 0 1-2.57-.692l-.744-.744c-.279.142-.436.284-.436.436z"/>
-                            <path d="M12 4.09c0 .552-1.679 1-3.75 1S4.5 4.642 4.5 4.09 6.179 3.09 8.25 3.09 12 3.538 12 4.09z"/>
-                            <path d="M12.5 6.09c0 .416-1.077.808-2.614.958l-.832-.832c.319-.04.629-.092.919-.153l.36-.36c1.171-.137 2.167-.423 2.167-.703v1.09z"/>
-                            <path d="M12 1h-1v1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h1V1H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2z"/>
-                            <path d="M8.5 1.5a.5.5 0 0 0-1 0v5.793L6.354 6.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 7.293V1.5z"/>
-                        </svg>
-                    </div>
-                    <h3 class="h6 fw-semibold mb-1">Backup Database</h3>
-                    <p class="text-secondary small mb-3">Unduh cadangan basis data (.sql) untuk mengamankan data sistem.</p>
-                    <a href="{{ route('admin.database.export') }}" class="btn btn-sm btn-brand mt-auto d-inline-flex align-items-center justify-content-center gap-1">
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-                        </svg>
-                        Download DB
-                    </a>
+                    <a href="{{ route('peminjaman.cetak_filter') }}" class="btn btn-sm btn-brand mt-auto">Cetak Laporan</a>
                 </div>
             </div>
         </div>

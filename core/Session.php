@@ -11,6 +11,17 @@ class Session
     public static function start(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
+            $https = ($_SERVER['HTTPS'] ?? 'off') !== 'off';
+
+            ini_set('session.use_strict_mode', '1');   // tolak ID session yang tidak dikenal server
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path'     => '/',
+                'httponly' => true,                    // tidak bisa dibaca JavaScript
+                'samesite' => 'Lax',                   // ikut membantu mencegah CSRF
+                'secure'   => $https,
+            ]);
+
             session_name(Config::get('app.session_name', 'batara_session'));
             session_start();
         }

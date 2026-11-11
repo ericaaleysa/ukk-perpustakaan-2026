@@ -134,6 +134,23 @@ class Application
                 return false;
             }
 
+            // Deprecation & notice: cukup dicatat, jangan sampai menjatuhkan halaman
+            if (in_array($severity, [E_DEPRECATED, E_USER_DEPRECATED, E_NOTICE, E_USER_NOTICE], true)) {
+                $directory = $this->basePath('storage/logs');
+
+                if (! is_dir($directory)) {
+                    @mkdir($directory, 0777, true);
+                }
+
+                @file_put_contents(
+                    $directory . '/batara.log',
+                    sprintf("[%s] PERINGATAN: %s di %s:%d%s", date('Y-m-d H:i:s'), $message, $file, $line, PHP_EOL . PHP_EOL),
+                    FILE_APPEND
+                );
+
+                return true;
+            }
+
             throw new \ErrorException($message, 0, $severity, $file, $line);
         });
 

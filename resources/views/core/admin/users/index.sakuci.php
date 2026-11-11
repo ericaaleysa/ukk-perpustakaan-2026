@@ -54,6 +54,55 @@
         </div>
     </div>
 
+    {{-- Pendaftaran menunggu persetujuan --}}
+    @if(count($menunggu) > 0)
+    <div class="card admin-panel no-hover-lift mb-4">
+        <div class="card-body pb-2">
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="form-label admin-label mb-0">Menunggu persetujuan</span>
+                <span class="text-secondary small">{{ count($menunggu) }} pendaftar</span>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table admin-table align-middle">
+                <thead>
+                    <tr>
+                        <th class="col-no">No</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Tanggal daftar</th>
+                        <th class="text-end">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $noMenunggu = 1; @endphp
+                    @foreach($menunggu as $m)
+                    <tr>
+                        <td class="cell-meta">{{ $noMenunggu++ }}</td>
+                        <td class="cell-main">{{ $m->username }}</td>
+                        <td><span class="badge badge-role badge-role-user">{{ $m->role }}</span></td>
+                        <td class="cell-meta">{{ $m->created_at }}</td>
+                        <td class="text-end text-nowrap">
+                            <form action="{{ route('admin.users.setujui', [$m->id]) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-sm btn-brand px-3">Setujui</button>
+                            </form>
+                            <form action="{{ route('admin.users.tolak', [$m->id]) }}" method="POST" class="d-inline"
+                                onsubmit="return confirm('Tolak pendaftaran {{ $m->username }}? Akunnya akan dihapus.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-secondary px-3">Tolak</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
     {{-- Daftar user --}}
     <div class="card admin-panel no-hover-lift">
         @if(count($users) === 0)

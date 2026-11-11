@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `pengajuan_keanggotaan` (
     id_pengajuan        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     id_user             INT UNSIGNED NOT NULL,
-    nis                 VARCHAR(50) NOT NULL,
+    nis                 VARCHAR(10) NOT NULL,
     kelas               VARCHAR(50) NOT NULL,
     status              ENUM('menunggu', 'disetujui', 'ditolak') NOT NULL DEFAULT 'menunggu',
     catatan_admin       TEXT NULL,

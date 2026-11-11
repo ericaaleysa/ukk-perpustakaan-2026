@@ -8,10 +8,17 @@ CREATE TABLE IF NOT EXISTS `peminjaman` (
     tanggal_wajib_kembali   DATE NULL,
     tanggal_dikembalikan    DATE NULL,
     status                  ENUM('menunggu_konfirmasi', 'dipinjam', 'ditolak', 'dikembalikan') NOT NULL DEFAULT 'menunggu_konfirmasi',
+    kondisi_kembali         ENUM('baik','rusak_ringan','rusak_berat','hilang') NULL,
     denda                   INT UNSIGNED NOT NULL DEFAULT 0,
+    denda_telat             INT UNSIGNED NOT NULL DEFAULT 0,
+    denda_kondisi           INT UNSIGNED NOT NULL DEFAULT 0,
     catatan_admin           TEXT NULL,
+    catatan_kondisi         VARCHAR(255) NULL,
     created_at              DATETIME NULL,
     updated_at              DATETIME NULL,
+    status_denda            ENUM('tidak_ada','belum_lunas','lunas') NOT NULL DEFAULT 'tidak_ada',
+    tanggal_bayar_denda     DATE NULL,
+    catatan_bayar           VARCHAR(255) NULL,
     CONSTRAINT fk_peminjaman_user
         FOREIGN KEY (id_user) REFERENCES users(id)
         ON DELETE CASCADE

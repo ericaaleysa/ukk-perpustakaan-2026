@@ -53,6 +53,7 @@
                             <label class="form-label" for="username">Username</label>
                             <input type="text" id="username" name="username" value="{{ old('username') }}" class="form-control {{ errors()->has('username') ? 'is-invalid' : '' }}" autofocus>
                             @error('username') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <div class="admin-hint mt-1"><i>Username tidak dapat diubah setelah dibuat.</i></div>
                         </div>
 
                         <div class="mb-3">

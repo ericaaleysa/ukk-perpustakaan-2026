@@ -70,6 +70,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::put('/users/{id_user}/setujui', [UserController::class, 'setujui'])->name('admin.users.setujui');
+    Route::delete('/users/{id_user}/tolak', [UserController::class, 'tolak'])->name('admin.users.tolak');
 
     Route::get('/database/export', [DatabaseController::class, 'export'])->name('admin.database.export');
 
@@ -106,6 +108,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::put('/peminjaman/{id_peminjaman}/tolak', [PeminjamanController::class, 'reject'])->name('peminjaman.tolak');
     Route::put('/peminjaman/{id_peminjaman}/kembali', [PeminjamanController::class, 'konfirmasiKembali'])->name('peminjaman.kembali');
     Route::put('/peminjaman/{id_peminjaman}/bayar-denda', [PeminjamanController::class, 'bayarDenda'])->name('peminjaman.bayar_denda');
+    Route::get('/peminjaman/cetak-filter', [PeminjamanController::class, 'filterCetak'])->name('peminjaman.cetak_filter');
     Route::get('/peminjaman/cetak', [PeminjamanController::class, 'cetak'])->name('peminjaman.cetak');
 
     //Log Aktivitas

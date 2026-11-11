@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `users` (
     password   VARCHAR(255) NOT NULL,
     role       VARCHAR(50)  NOT NULL DEFAULT 'user',
     created_at DATETIME NULL,
-    updated_at DATETIME NULL
+    updated_at DATETIME NULL,
+    status_keanggotaan ENUM('non_anggota','menunggu_verifikasi','aktif','non_aktif') NOT NULL DEFAULT 'non_anggota'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Satu-satunya akun bawaan: admin, password rahasia123

@@ -10,7 +10,7 @@ class User extends Model
     protected static ?string $table = 'users';
 
     // Kolom yang boleh diisi lewat create()/update()
-    protected array $fillable = ['username', 'password', 'role', 'status_keanggotaan'];
+    protected array $fillable = ['username', 'password', 'role', 'status_keanggotaan', 'status_akun'];
 
     // Password tidak boleh tampil saat di-convert ke array/JSON
     protected array $hidden = ['password'];

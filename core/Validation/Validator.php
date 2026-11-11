@@ -104,6 +104,7 @@ class Validator
             'min'       => $this->size($value) >= (float) ($parameters[0] ?? 0),
             'max'       => $this->size($value) <= (float) ($parameters[0] ?? 0),
             'size'      => $this->size($value) == (float) ($parameters[0] ?? 0),
+            'digits'    => ctype_digit((string) $value) && strlen((string) $value) === (int) ($parameters[0] ?? 0),
             'between'   => $this->size($value) >= (float) ($parameters[0] ?? 0)
                            && $this->size($value) <= (float) ($parameters[1] ?? 0),
             'in'        => in_array((string) $value, $parameters, true),
@@ -205,6 +206,7 @@ class Validator
             'min'        => "Kolom {$label} minimal {$first}.",
             'max'        => "Kolom {$label} maksimal {$first}.",
             'size'       => "Kolom {$label} harus berukuran {$first}.",
+            'digits'     => "Kolom {$label} harus terdiri dari {$first} digit angka.",
             'between'    => "Kolom {$label} harus di antara {$first} dan " . ($parameters[1] ?? '') . '.',
             'in'         => "Kolom {$label} berisi pilihan yang tidak valid.",
             'not_in'     => "Kolom {$label} berisi pilihan yang tidak diizinkan.",

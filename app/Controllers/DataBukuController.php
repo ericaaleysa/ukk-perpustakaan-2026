@@ -117,6 +117,10 @@ class DataBukuController extends Controller
             'genre' => 'nullable|string|max:100',
         ]);
 
+        if ((int) $request->tahun_terbit > (int) date('Y')) {
+            return back()->with('error', 'Tahun terbit tidak boleh melebihi tahun ini.')->withInput();
+        }
+
         //sampul diunggah sebagai file (opsional)
         [$thumbnail, $error] = $this->uploadThumbnail();
         if ($error) {
@@ -153,6 +157,10 @@ class DataBukuController extends Controller
             'sinopsis' => 'nullable|string|max:2000',
             'genre' => 'nullable|string|max:100',
         ]);
+
+        if ((int) $request->tahun_terbit > (int) date('Y')) {
+            return back()->with('error', 'Tahun terbit tidak boleh melebihi tahun ini.')->withInput();
+        }
 
         $data_buku = DataBuku::findOrFail($id_buku);
         $stokLama = (int) $data_buku->stok;
@@ -202,10 +210,21 @@ class DataBukuController extends Controller
         return redirect()->route('data_buku.index')->with('success', 'Data Buku berhasil diperbarui.');
     }
 
-    public function destroy(Request $request, $id_buku) //bagian hapus
+    public function destroy(Request $request, $id_buku)
     {
         $data_buku = DataBuku::findOrFail($id_buku);
         $judul = $data_buku->judul_buku;
+
+        //buku tidak boleh dihapus selama masih ada transaksi yang berlangsung
+        $transaksiAktif = Peminjaman::where('id_buku', $id_buku)
+            ->whereIn('status', ['menunggu_konfirmasi', 'dipinjam'])
+            ->count();
+
+        if ($transaksiAktif > 0) {
+            return redirect()->route('data_buku.index')
+                ->with('error', 'Buku "' . $judul . '" tidak bisa dihapus karena masih ada ' . $transaksiAktif . ' transaksi berlangsung (diajukan/dipinjam).');
+        }
+
         $this->hapusThumbnailLokal($data_buku->thumbnail);
         $data_buku->delete();
 

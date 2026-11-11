@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\LogAktivitas;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
+use App\Models\Peminjaman;
 
 /** Halaman admin untuk menambah user dan menentukan role-nya. */
 class UserController extends Controller
@@ -43,11 +44,15 @@ class UserController extends Controller
             $banding = strcasecmp($a->role, $b->role);
             return $banding !== 0 ? $banding : strcasecmp($a->username, $b->username);
         });
- 
+
+        $menunggu = array_values(array_filter($users, fn ($u) => ($u->status_akun ?? 'aktif') === 'menunggu'));
+        $users    = array_values(array_filter($users, fn ($u) => ($u->status_akun ?? 'aktif') !== 'menunggu'));
+
         return view('core.admin.users.index', [
             'users' => $users,
             'roles' => Role::orderBy('name')->get(),
             'urut'  => $urut,
+            'menunggu' => $menunggu,
         ]);
     }
  
@@ -85,6 +90,16 @@ class UserController extends Controller
         // Selalu sisakan minimal satu admin
         if ($user->role === 'admin' && User::where('role', 'admin')->count() <= 1) {
             return redirect()->route('admin.users.index')->with('error', 'Admin terakhir tidak bisa dihapus.');
+        }
+
+        // Tidak boleh dihapus selama masih punya transaksi berlangsung (stok buku bisa bocor)
+        $transaksiAktif = Peminjaman::where('id_user', $user->id)
+            ->whereIn('status', ['menunggu_konfirmasi', 'dipinjam'])
+            ->count();
+
+        if ($transaksiAktif > 0) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Akun "' . $user->username . '" tidak bisa dihapus karena masih punya ' . $transaksiAktif . ' transaksi peminjaman berlangsung.');
         }
  
         $username = $user->username;
@@ -127,5 +142,38 @@ class UserController extends Controller
  
         return redirect()->route('admin.users.index')->with('success', 'Username berhasil diubah menjadi "' . $baru . '".');
     }
- 
+
+    /* setujui akun hasil register mandiri */
+    public function setujui($id_user)
+    {
+        $user = User::findOrFail($id_user);
+
+        if (($user->status_akun ?? 'aktif') !== 'menunggu') {
+            return redirect()->route('admin.users.index')->with('error', 'Akun ini tidak sedang menunggu persetujuan.');
+        }
+
+        $user->update(['status_akun' => 'aktif']);
+
+        LogAktivitas::catat('user', 'Menyetujui pendaftaran akun "' . $user->username . '" (role ' . $user->role . ')');
+
+        return redirect()->route('admin.users.index')->with('success', 'Akun "' . $user->username . '" disetujui dan sekarang bisa login.');
+    }
+
+    /* tolak pendaftaran: akun dihapus supaya username bisa dipakai lagi */
+    public function tolak($id_user)
+    {
+        $user = User::findOrFail($id_user);
+
+        if (($user->status_akun ?? 'aktif') !== 'menunggu') {
+            return redirect()->route('admin.users.index')->with('error', 'Hanya akun yang menunggu persetujuan yang bisa ditolak.');
+        }
+
+        $username = $user->username;
+        $user->delete();
+
+        LogAktivitas::catat('user', 'Menolak pendaftaran akun "' . $username . '"');
+
+        return redirect()->route('admin.users.index')->with('success', 'Pendaftaran akun "' . $username . '" ditolak.');
+    }
+    
 }

@@ -27,21 +27,10 @@
 
     {{-- Toolbar (tidak ikut tercetak) --}}
     <div class="toolbar">
-        <form method="GET" action="{{ route('peminjaman.cetak') }}">
-            <label for="tanggal_dari">Dari</label>
-            <input type="date" name="tanggal_dari" id="tanggal_dari" value="{{ $tanggalDari }}">
-            <label for="tanggal_sampai">Sampai</label>
-            <input type="date" name="tanggal_sampai" id="tanggal_sampai" value="{{ $tanggalSampai }}">
-            <button type="submit">Terapkan</button>
-            @if($tanggalDari || $tanggalSampai)
-                <a href="{{ route('peminjaman.cetak') }}">Reset</a>
-            @endif
-        </form>
-
         <span class="spacer"></span>
         <span class="hint">Di jendela cetak, pilih Printer atau "Simpan sebagai PDF"</span>
         <button type="button" class="btn-print" onclick="window.print()">🖨 Cetak</button>
-        <a href="{{ route('admin.dashboard') }}">&larr; Kembali</a>
+        <a href="{{ route('peminjaman.cetak_filter') }}">&larr; Ubah periode</a>
     </div>
 
     <div class="lembar">

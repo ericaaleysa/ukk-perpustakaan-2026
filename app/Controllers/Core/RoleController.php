@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\LogAktivitas;
 use Sakuci\Controller;
 use Sakuci\Http\Request;
+use App\Models\Peminjaman;
 
 /**
  * Halaman admin untuk mengelola role: tambah, ganti nama, hapus, dan atur
@@ -22,6 +23,12 @@ class RoleController extends Controller
 
     /** Penanda di komentar berkas middleware supaya aman dihapus otomatis nanti. */
     protected const GENERATED_MARKER = 'Dibuat otomatis oleh RoleController';
+    /** Nama yang bentrok dengan route / alias middleware / folder yang sudah dipakai sistem. */
+    protected const RESERVED_ROLES = [
+        'admin', 'auth', 'guest', 'login', 'logout', 'register', 'dashboard', 'docs',
+        'tentang', 'kategori', 'keanggotaan', 'peminjaman', 'anggota', 'roles', 'users',
+        'data_buku', 'log_aktivitas', 'database', 'api', 'uploads', 'vendor', 'css', 'js', 'storage',
+    ];
 
     public function index()
     {
@@ -40,6 +47,14 @@ class RoleController extends Controller
 
         if (Role::firstWhere('name', $name)) {
             return back()->withErrors(['name' => 'Role "' . $name . '" sudah ada.'])->withInput();
+        }
+
+        if ($this->namaTerlarang($name)) {
+            return back()->withErrors(['name' => 'Nama "' . $name . '" dipakai oleh sistem (route/middleware) dan tidak boleh dijadikan nama role.'])->withInput();
+        }
+
+        if (! $this->fileBisaDitulis()) {
+            return back()->with('error', 'Role tidak bisa dibuat: file config/app.php, routes/web.php, atau folder app/Middleware tidak bisa ditulis oleh server.')->withInput();
         }
 
         Role::create([
@@ -68,8 +83,18 @@ class RoleController extends Controller
         $oldName = $role->name;
         $newName = strtolower($data['name']);
 
-        if ($newName !== $oldName && Role::firstWhere('name', $newName)) {
-            return back()->withErrors(['name' => 'Role "' . $newName . '" sudah ada.']);
+        if ($newName !== $oldName) {
+            if (Role::firstWhere('name', $newName)) {
+                return back()->withErrors(['name' => 'Role "' . $newName . '" sudah ada.']);
+            }
+
+            if ($this->namaTerlarang($newName)) {
+                return back()->withErrors(['name' => 'Nama "' . $newName . '" dipakai oleh sistem (route/middleware) dan tidak boleh dijadikan nama role.']);
+            }
+
+            if (! $this->fileBisaDitulis()) {
+                return back()->with('error', 'Nama role tidak bisa diganti: file config/app.php, routes/web.php, atau folder app/Middleware tidak bisa ditulis oleh server.');
+            }
         }
 
         $role->update([
@@ -85,9 +110,7 @@ class RoleController extends Controller
 
             $this->ensureMiddlewareFor($newName);
             $this->ensureRouteFor($newName);
-        }
 
-        if ($newName !== $oldName) {
             LogAktivitas::catat('role', 'Mengubah nama role "' . $oldName . '" menjadi "' . $newName . '"');
         } else {
             LogAktivitas::catat('role', 'Mengubah pengaturan role "' . $newName . '"');
@@ -95,11 +118,21 @@ class RoleController extends Controller
 
         return back()->with('success', 'Role "' . $oldName . '" berhasil diperbarui.');
     }
-
+    
     public function destroy(Role $role)
     {
         if ($role->name === static::PROTECTED_ROLE) {
             abort(403, 'Role "admin" tidak bisa dihapus.');
+        }
+
+        // Blokir bila ada user pemilik role ini yang masih punya transaksi berlangsung
+        $idUser = User::where('role', $role->name)->pluck('id');
+        $transaksiAktif = Peminjaman::whereIn('id_user', $idUser)
+            ->whereIn('status', ['menunggu_konfirmasi', 'dipinjam'])
+            ->count();
+
+        if ($transaksiAktif > 0) {
+            return back()->with('error', 'Role "' . $role->name . '" tidak bisa dihapus karena ada user pemiliknya yang masih punya ' . $transaksiAktif . ' transaksi peminjaman berlangsung.');
         }
 
         $pemakai = User::where('role', $role->name)->count();
@@ -117,6 +150,20 @@ class RoleController extends Controller
         $message .= $pemakai > 0 ? ' ' . $pemakai . ' user pemilik role ini ikut dihapus.' : '';
 
         return back()->with('success', $message);
+    }
+
+    protected function namaTerlarang(string $name): bool
+    {
+        return in_array($name, static::RESERVED_ROLES, true);
+    }
+
+    /** Pastikan server bisa menulis file yang diubah otomatis saat role dibuat/diganti. */
+    protected function fileBisaDitulis(): bool
+    {
+        return is_writable(base_path('config/app.php'))
+            && is_writable(base_path('routes/web.php'))
+            && is_dir(app_path('Middleware'))
+            && is_writable(app_path('Middleware'));
     }
 
     /*

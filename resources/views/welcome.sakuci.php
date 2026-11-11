@@ -94,7 +94,6 @@
             </div>
 
             {{-- Kartu fitur (dipindah ke dalam hero, deskripsi dipersingkat) --}}
-            <h2 class="h6 fw-bold text-uppercase text-secondary mb-3">Kenapa Memilih NEXLIB?</h2>
 
             <div class="mx-auto" style="max-width: 960px;">
                 <div class="row row-cols-2 row-cols-lg-4 g-2 g-md-3">

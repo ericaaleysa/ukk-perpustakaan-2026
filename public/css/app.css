@@ -1551,3 +1551,57 @@ html { scroll-behavior: smooth; }
     justify-content: center;
 }
 .edit-pill-icon { width: .9rem; height: .9rem; }
+
+/* ===================================================================
+   Tema gelap: aksen biru dibuat lebih terang agar terlihat jelas
+   =================================================================== */
+[data-bs-theme="dark"] {
+    --brand-bright: #6bb8ff;
+    --brand: #4a9be0;
+    --brand-dark: #3a86cf;
+    --brand-text: #7cc0ff;      /* khusus untuk TEKS / garis aksen */
+    --brand-subtle: rgba(74, 155, 224, .18);
+}
+
+/* Teks aksen */
+[data-bs-theme="dark"] .text-brand,
+[data-bs-theme="dark"] .text-brand-dark,
+[data-bs-theme="dark"] .notice a,
+[data-bs-theme="dark"] .pagination .page-link,
+[data-bs-theme="dark"] .error-code {
+    color: var(--brand-text) !important;
+}
+
+/* Tombol outline brand (ikut yang di dalam kartu) */
+[data-bs-theme="dark"] .btn-outline-brand,
+[data-bs-theme="dark"] .card:not(.hero-feature-card) .btn-outline-brand {
+    border-color: var(--brand-text);
+    color: var(--brand-text);
+}
+[data-bs-theme="dark"] .btn-outline-brand:hover,
+[data-bs-theme="dark"] .btn-outline-brand:focus,
+[data-bs-theme="dark"] .card:not(.hero-feature-card) .btn-outline-brand:hover,
+[data-bs-theme="dark"] .card:not(.hero-feature-card) .btn-outline-brand:focus {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+}
+
+/* Pensil edit, tombol mata password, sidebar */
+[data-bs-theme="dark"] .edit-pill { border-color: var(--brand-text); color: var(--brand-text); }
+[data-bs-theme="dark"] .edit-pill:hover { background: var(--brand-subtle); }
+[data-bs-theme="dark"] .edit-toggle:checked ~ .edit-row .edit-pill { background: var(--brand); color: #fff; }
+[data-bs-theme="dark"] .password-toggle:hover,
+[data-bs-theme="dark"] #sidebarUtama .nav-link:hover { color: var(--brand-text); }
+
+/* Ikon fitur & nomor langkah */
+[data-bs-theme="dark"] .step-number { color: var(--brand-text); }
+[data-bs-theme="dark"] .feature-icon::after { background: var(--brand); }
+
+/* Fokus input */
+[data-bs-theme="dark"] .admin-panel .form-control:focus,
+[data-bs-theme="dark"] .admin-panel .form-select:focus,
+[data-bs-theme="dark"] .hero-feature-card .form-control:focus {
+    border-color: var(--brand-text);
+    box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--brand) 40%, transparent);
+}

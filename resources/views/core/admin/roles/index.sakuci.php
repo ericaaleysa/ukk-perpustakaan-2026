@@ -27,7 +27,7 @@
                            placeholder="contoh: siswa"
                            class="form-control {{ errors()->has('name') ? 'is-invalid' : '' }}">
                     @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    <div class="admin-hint mt-1">Huruf, angka, strip (-), dan garis bawah (_). Route dan middleware-nya dibuat otomatis.</div>
+                    <div class="admin-hint mt-1">Huruf, angka, strip (-), dan garis bawah (_).</div>
                 </div>
                 <div class="col-12 col-md-4">
                     <label class="form-label admin-label">Pendaftaran</label>

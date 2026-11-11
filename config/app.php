@@ -11,7 +11,7 @@ return [
     'name'     => env('APP_NAME', 'NEXLIB'),
 
     // Saat true, halaman error menampilkan detail lengkap. Matikan di produksi.
-    'debug'    => env('APP_DEBUG', true),
+    'debug'    => env('APP_DEBUG', false),
 
     'timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
