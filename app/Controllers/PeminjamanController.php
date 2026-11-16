@@ -318,8 +318,9 @@ class PeminjamanController extends Controller
         ]);
 
         //kondisi buku saat kembali (dicek manual terhadap daftar kondisi yang diizinkan)
-        $kondisi = $tarif = $this->tarifDenda();
-        if (!array_key_exists($kondisi, self::LABEL_KONDISI)) {
+        $tarif = $this->tarifDenda();
+        $kondisi = $request->kondisi_kembali ?? '';
+        if (!is_string($kondisi) || !array_key_exists($kondisi, self::LABEL_KONDISI)) {
             return redirect()->route('peminjaman.index')->with('error', 'Kondisi buku tidak valid.');
         }
 
