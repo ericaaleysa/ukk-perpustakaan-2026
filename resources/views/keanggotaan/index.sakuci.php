@@ -27,7 +27,7 @@
                     <tr>
                         <th style="width: 60px;">No</th>
                         <th>Nama lengkap</th>
-                        <th>NIS</th>
+                        <th>NISN</th>
                         <th>Kelas</th>
                         <th>Tanggal pengajuan</th>
                         <th class="text-end">Aksi</th>

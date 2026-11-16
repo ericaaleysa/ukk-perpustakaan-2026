@@ -52,12 +52,13 @@
                     </div>
                     <div class="row g-3 mb-4">
                         <div class="col-md-7">
-                            <label for="nis" class="form-label admin-label">NIS <span class="admin-hint">(Nomor Induk Siswa)</span></label>
+                            <label for="nis" class="form-label admin-label">NISN <span class="admin-hint">(Nomor Induk Siswa Nasional)</span></label>
                             <input type="text" name="nis" id="nis" value="{{ old('nis') }}"
                                    class="form-control {{ errors()->has('nis') ? 'is-invalid' : '' }}"
-                                   inputmode="numeric" maxlength="10" required>
+                                   inputmode="numeric" pattern="\d{10}" minlength="10" maxlength="10"
+                                   title="NISN harus tepat 10 digit angka" required>
                             @error('nis') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <div class="admin-hint mt-1">Maksimal 10 karakter.</div>
+                            <div class="admin-hint mt-1">Harus tepat 10 digit angka.</div>
                         </div>
                         <div class="col-md-5">
                             <label for="kelas" class="form-label admin-label">Kelas</label>

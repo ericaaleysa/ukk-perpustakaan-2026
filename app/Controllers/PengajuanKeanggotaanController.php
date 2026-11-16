@@ -38,10 +38,10 @@ class PengajuanKeanggotaanController extends Controller
             'kelas' => 'required|string|max:50',
         ]);
 
-        //panjang NIS dicek manual: validator bawaan membaca isian berisi angka sebagai nilai (bukan jumlah karakter)
+        //NISN dicek manual: harus tepat 10 digit angka (validator bawaan membaca isian berisi angka sebagai nilai, bukan jumlah karakter)
         $nis = trim((string) $validatedData['nis']);
-        if ($nis === '' || strlen($nis) > 10 || !ctype_digit($nis)) {
-            return redirect()->route('keanggotaan.create')->with('error', 'NIS harus berupa angka, maksimal 10 digit.');
+        if (!preg_match('/^\d{10}$/', $nis)) {
+            return redirect()->route('keanggotaan.create')->with('error', 'NISN harus tepat 10 digit angka.');
         }
         $validatedData['nis'] = $nis;
 
