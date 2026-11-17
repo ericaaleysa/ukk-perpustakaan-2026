@@ -57,6 +57,13 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" class="form-control {{ errors()->has('email') ? 'is-invalid' : '' }}" autocomplete="email" placeholder="nama@contoh.com">
+                            @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <div class="admin-hint mt-1"><i>Notifikasi persetujuan akun akan dikirim ke email ini.</i></div>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label" for="password">Password</label>
                             <div class="password-field">
                                 <input type="password" id="password" name="password" class="form-control {{ errors()->has('password') ? 'is-invalid' : '' }}">

@@ -69,6 +69,7 @@
                     <tr>
                         <th class="col-no">No</th>
                         <th>Username</th>
+                        <th>Email</th>
                         <th>Role</th>
                         <th>Tanggal daftar</th>
                         <th class="text-end">Aksi</th>
@@ -80,6 +81,7 @@
                     <tr>
                         <td class="cell-meta">{{ $noMenunggu++ }}</td>
                         <td class="cell-main">{{ $m->username }}</td>
+                        <td class="cell-meta">{{ $m->email ?? '-' }}</td>
                         <td><span class="badge badge-role badge-role-user">{{ $m->role }}</span></td>
                         <td class="cell-meta">{{ $m->created_at }}</td>
                         <td class="text-end text-nowrap">

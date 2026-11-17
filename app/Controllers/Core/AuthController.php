@@ -42,12 +42,14 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'username' => 'required|min:3|max:50|alpha_dash|unique:users,username',
+            'email'    => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'role'     => 'required|in:' . implode(',', $allowed),
         ]);
 
         $user = User::create([
             'username'    => $data['username'],
+            'email'       => strtolower(trim($data['email'])),
             'password'    => password_hash($data['password'], PASSWORD_DEFAULT),
             'role'        => $data['role'],
             'status_akun' => 'menunggu',
@@ -56,7 +58,7 @@ class AuthController extends Controller
         LogAktivitas::catat('akun', 'Mendaftar akun baru "' . $user->username . '" (menunggu persetujuan admin)', $user);
 
         // Tidak langsung login: tunggu persetujuan admin
-        return redirect('/login')->with('success', 'Pendaftaran berhasil. Akunmu menunggu persetujuan admin, kamu bisa login setelah disetujui.');
+        return redirect('/login')->with('success', 'Pendaftaran berhasil. Akunmu menunggu persetujuan admin; kami akan mengirim email ke ' . $user->email . ' setelah disetujui.');
     }
 
     public function login(Request $request)
